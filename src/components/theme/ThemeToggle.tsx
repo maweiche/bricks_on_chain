@@ -29,60 +29,62 @@ export function ThemeToggle() {
   }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button 
-          variant="outline" 
-          size="icon"
-          className="relative w-10 h-10 hover:bg-background"
-        >
-          <AnimatePresence mode="wait">
-            {theme !== "dark" ? (
+    <React.Suspense fallback={null}>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button 
+            variant="outline" 
+            size="icon"
+            className="relative w-10 h-10 hover:bg-background"
+          >
+            <AnimatePresence mode="wait">
+              {theme !== "dark" ? (
+                <motion.div
+                  key="sun"
+                  variants={iconVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  className="absolute inset-0 flex items-center justify-center"
+                  transition={{ duration: 0.3, ease: "anticipate" }}
+                >
+                  <Sun className="w-5 h-5" />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="moon"
+                  variants={iconVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  className="absolute inset-0 flex items-center justify-center"
+                  transition={{ duration: 0.3, ease: "anticipate" }}
+                >
+                  <Moon className="w-5 h-5" />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <AnimatePresence>
+            {["light", "dark", "system"].map((t) => (
               <motion.div
-                key="sun"
-                variants={iconVariants}
+                key={t}
+                variants={menuItemVariants}
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                className="absolute inset-0 flex items-center justify-center"
-                transition={{ duration: 0.3, ease: "anticipate" }}
+                transition={{ duration: 0.2 }}
               >
-                <Sun className="w-5 h-5" />
+                <DropdownMenuItem onClick={() => setTheme(t)}>
+                  {t.charAt(0).toUpperCase() + t.slice(1)}
+                </DropdownMenuItem>
               </motion.div>
-            ) : (
-              <motion.div
-                key="moon"
-                variants={iconVariants}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                className="absolute inset-0 flex items-center justify-center"
-                transition={{ duration: 0.3, ease: "anticipate" }}
-              >
-                <Moon className="w-5 h-5" />
-              </motion.div>
-            )}
+            ))}
           </AnimatePresence>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <AnimatePresence>
-          {["light", "dark", "system"].map((t) => (
-            <motion.div
-              key={t}
-              variants={menuItemVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              transition={{ duration: 0.2 }}
-            >
-              <DropdownMenuItem onClick={() => setTheme(t)}>
-                {t.charAt(0).toUpperCase() + t.slice(1)}
-              </DropdownMenuItem>
-            </motion.div>
-          ))}
-        </AnimatePresence>
-      </DropdownMenuContent>
-    </DropdownMenu>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </React.Suspense>
   )
 }

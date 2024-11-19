@@ -1,8 +1,14 @@
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import localFont from "next/font/local";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme";
-import { Navbar } from "@/components/layout/Navbar";
+import { SolanaProvider } from "@/components/providers";
+import { Toaster } from "@/components/ui/toaster";
+
+const Navbar = dynamic(() => import("@/components/layout").then((mod) => mod.Navbar), {
+  ssr: false,
+});
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -36,10 +42,13 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Navbar />
-          <main className="pt-16">
-            {children}
-          </main>
+          <SolanaProvider>
+            {/* <Toaster /> */}
+            <Navbar />
+            <main className="pt-16">
+              {children}
+            </main>
+          </SolanaProvider>
         </ThemeProvider>
       </body>
     </html>
