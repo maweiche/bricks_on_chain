@@ -70,6 +70,23 @@
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
   }
+  .sheet-content-enter {
+    transform: translateX(100%);
+  }
+
+  .sheet-content-enter-active {
+    transform: translateX(0);
+    transition: transform 300ms ease-out;
+  }
+
+  .sheet-content-exit {
+    transform: translateX(0);
+  }
+
+  .sheet-content-exit-active {
+    transform: translateX(100%);
+    transition: transform 300ms ease-out;
+  }
 }
  
 @layer base {

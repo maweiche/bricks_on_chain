@@ -4,8 +4,8 @@ import { PropertySlice, createPropertySlice } from './slices/propertySlice'
 import { UserSlice, createUserSlice } from './slices/userSlice'
 import { AuthSlice, createAuthSlice } from './slices/authSlice'
 import { SettingsSlice, createSettingsSlice } from './slices/settingsSlice'
-
-type StoreState = PropertySlice & UserSlice & AuthSlice & SettingsSlice
+import { CartItem, CartSlice, createCartSlice } from './slices/cartSlice'
+type StoreState = PropertySlice & UserSlice & AuthSlice & SettingsSlice & CartSlice
 
 export const useStore = create<StoreState>()(
   persist(
@@ -14,6 +14,7 @@ export const useStore = create<StoreState>()(
       ...createUserSlice(...a),
       ...createAuthSlice(...a),
       ...createSettingsSlice(...a),
+      ...createCartSlice(...a),
     }),
     {
       name: 'real-estate-store',
@@ -23,6 +24,7 @@ export const useStore = create<StoreState>()(
         votes: state.votes,
         filters: state.filters,
         settings: state.settings,
+        items: state.items,
       }),
     }
   )
@@ -31,3 +33,4 @@ export const useStore = create<StoreState>()(
 export type { Property, User, Investment, Vote } from './types'
 export type { PropertyFilters } from './slices/propertySlice'
 export type { UserSettings } from './slices/settingsSlice'
+export type { CartItem } from './slices/cartSlice'

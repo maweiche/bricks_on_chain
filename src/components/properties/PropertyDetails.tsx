@@ -38,6 +38,7 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { PurchaseDialog } from '../purchasing/PurchaseDialog';
 
 // Mock data for the property value history
 const valueHistory = [
@@ -58,6 +59,7 @@ const investorDistribution = [
 
 export default function PropertyDetails({ id }: { id: string }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isPurchaseDialogOpen, setIsPurchaseDialogOpen] = useState(false);
   const { isAuthenticated, walletConnected } = useAuth();
   const { toast } = useToast();
 
@@ -337,7 +339,17 @@ export default function PropertyDetails({ id }: { id: string }) {
                 <Button 
                   className="w-full" 
                   size="lg"
-                  onClick={handleInvest}
+                  onClick={() => {
+                    if (!isAuthenticated) {
+                      toast({
+                        title: "Authentication Required",
+                        description: "Please connect your wallet to invest",
+                        variant: "destructive",
+                      });
+                      return;
+                    }
+                    setIsPurchaseDialogOpen(true);
+                  }}
                   disabled={data.property?.funded}
                 >
                   {data.property?.funded ? 'Fully Funded' : 'Invest Now'}
@@ -353,6 +365,11 @@ export default function PropertyDetails({ id }: { id: string }) {
               </div>
             </CardContent>
           </Card>
+          <PurchaseDialog
+            isOpen={isPurchaseDialogOpen}
+            onClose={() => setIsPurchaseDialogOpen(false)}
+            property={data.property}
+          />
         </div>
       </div>
     </div>

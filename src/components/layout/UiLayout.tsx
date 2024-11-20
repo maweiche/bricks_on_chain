@@ -8,6 +8,11 @@ import { Toaster } from '../ui/toaster'
 import { useToast } from '@/hooks/use-toast'
 import { useAuth } from '@/hooks/use-auth'
 import { ProfileDialog } from '../profile/ProfileDialog'
+import { useStore } from '@/lib/store';
+import { ShoppingCart } from 'lucide-react';
+import { Button } from '../ui/button'
+import { Cart } from '../purchasing/ShoppingCart'
+
 const Navbar = dynamic(() => import("@/components/layout").then((mod) => mod.Navbar), {
   ssr: false,
 });
@@ -41,6 +46,8 @@ export function UiLayout({ children }: { children: ReactNode }) {
           )}
         </Suspense>
         <Toaster />
+        <Cart />
+        {CartButton()}
       </div>
       <Footer />
     </main>
@@ -127,11 +134,31 @@ export function ellipsify(str = '', len = 4) {
 }
 
 export function useTransactionToast() {
-    const { toast } = useToast();
+  const { toast } = useToast();
   return (signature: string) => {
     toast({
         title: 'Transaction sent...',
         description: `https://explorer.solana.com/account/${signature}`
     })
   }
+}
+
+export function CartButton() {
+  const { items, setIsOpen, getTotalFractions } = useStore();
+  
+  return (
+    <Button
+      variant="outline"
+      size="icon"
+      className="fixed bottom-4 right-4 h-12 w-12 rounded-full shadow-lg hover:shadow-xl transition-all duration-200"
+      onClick={() => setIsOpen(true)}
+    >
+      <ShoppingCart className="w-5 h-5" />
+      {items.length > 0 && (
+        <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground w-5 h-5 rounded-full text-xs flex items-center justify-center">
+          {getTotalFractions()}
+        </span>
+      )}
+    </Button>
+  );
 }

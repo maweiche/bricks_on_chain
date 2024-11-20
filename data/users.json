@@ -13,6 +13,56 @@
         "investmentUpdates": false,
         "marketingUpdates": false
       }
-    }
+    },
+    "investments": [
+      {
+        "id": "inv_1732133421112_prop_1",
+        "propertyId": "prop_1",
+        "amount": 100,
+        "fractionCount": 1,
+        "purchaseDate": "2024-11-20T20:10:21.112Z",
+        "status": "active",
+        "transactionSignature": "1732133421112_c4u9c",
+        "wallet": "7wK3jPMYjpZHZAghjersW6hBNMgi9VAGr75AhYRqR2n"
+      },
+      {
+        "id": "inv_1732133464899_prop_1",
+        "propertyId": "prop_1",
+        "amount": 100,
+        "fractionCount": 1,
+        "purchaseDate": "2024-11-20T20:11:04.899Z",
+        "status": "active",
+        "transactionSignature": "1732133464899_ug7ffo",
+        "wallet": "7wK3jPMYjpZHZAghjersW6hBNMgi9VAGr75AhYRqR2n"
+      },
+      {
+        "id": "inv_1732133464899_prop_6",
+        "propertyId": "prop_6",
+        "amount": 300,
+        "fractionCount": 3,
+        "purchaseDate": "2024-11-20T20:11:04.899Z",
+        "status": "active",
+        "transactionSignature": "1732133464899_ug7ffo",
+        "wallet": "7wK3jPMYjpZHZAghjersW6hBNMgi9VAGr75AhYRqR2n"
+      },
+      {
+        "id": "inv_1732133577891",
+        "propertyId": "prop_1",
+        "fractionCount": 1,
+        "amount": 100,
+        "purchaseDate": "2024-11-20T20:12:57.891Z",
+        "status": "active"
+      },
+      {
+        "id": "inv_1732134237398",
+        "propertyId": "prop_1",
+        "amount": 100,
+        "fractionCount": 1,
+        "purchaseDate": "2024-11-20T20:23:57.398Z",
+        "status": "active",
+        "transactionSignature": "1732134237398_ewf3z",
+        "wallet": "7wK3jPMYjpZHZAghjersW6hBNMgi9VAGr75AhYRqR2n"
+      }
+    ]
   }
 ]

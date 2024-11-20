@@ -26,6 +26,7 @@ import {
   ChevronLeft
 } from 'lucide-react';
 import Link from 'next/link';
+import { PurchaseButton } from '../purchasing/PurchaseButton';
 
 // Constants for filtering
 const ITEMS_PER_PAGE = 10;
@@ -258,15 +259,24 @@ export default function AllListings() {
                     </div>
                   </CardContent>
 
-                  <CardFooter className="pt-2">
+                  <CardFooter className="pt-2 flex flex-col gap-2">
                     <Link href={`/properties/${property.id}`} className="w-full">
                       <Button 
                         className="w-full" 
                         variant={property.funded ? "secondary" : "default"}
                       >
-                        {property.funded ? 'View Details' : 'Invest Now'}
+                        {property.funded ? 'See what you missed!' : 'View Details'}
                       </Button>
                     </Link>
+                    {property && !property.funded && (
+                      <PurchaseButton 
+                        property={{
+                          ...property,
+                          title: property.title?.toString() || '',
+                          price: Number(property.price)
+                        }} 
+                      />
+                    )}
                   </CardFooter>
                 </Card>
               </motion.div>
