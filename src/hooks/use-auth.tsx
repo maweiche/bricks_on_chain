@@ -1,94 +1,100 @@
-// hooks/useAuth.ts
 import { useWallet } from '@solana/wallet-adapter-react'
 import { useStore } from '@/lib/store'
-import { useToast } from '@/hooks/use-toast'
-import { useCallback, useEffect, useRef } from 'react'
-import { motion } from 'framer-motion'
+import { useEffect, useState } from 'react'
 
-export const useAuth = () => {
+export function useAuth() {
   const { connected, publicKey, disconnect: walletDisconnect } = useWallet()
-  const checkAuth = useStore(state => state.checkAuth)
   const user = useStore(state => state.user)
-  const createProfile = useStore(state => state.createProfile)
-  const updateProfile = useStore(state => state.updateProfile)
-  const { toast } = useToast()
-  
-  const authChecked = useRef(false)
-  const welcomeToastShown = useRef(false)
+  const isAdmin = useStore(state => state.isAdmin)
+  const checkAuth = useStore(state => state.checkAuth)
+  const [authState, setAuthState] = useState({
+    isLoading: true,
+    isInitialized: false,
+    lastCheckedAddress: null as string | null
+  })
 
-  // Handle initial auth check
+  // Debug logging
   useEffect(() => {
+    console.log('Current State:', {
+      connected,
+      publicKey: publicKey?.toString(),
+      user,
+      isAdmin,
+      authState
+    })
+  }, [connected, publicKey, user, isAdmin, authState])
+
+  useEffect(() => {
+    let mounted = true
+    let timeoutId: NodeJS.Timeout
+
     const checkUserAuth = async () => {
-      if (!publicKey || authChecked.current) return
-      
+      if (!connected || !publicKey) {
+        if (mounted) {
+          setAuthState(prev => ({
+            isLoading: false,
+            isInitialized: true,
+            lastCheckedAddress: null
+          }))
+        }
+        return
+      }
+
+      const address = publicKey.toString()
+
+      // Don't recheck the same address
+      if (authState.lastCheckedAddress === address) {
+        return
+      }
+
       try {
-        authChecked.current = true
-        await checkAuth(publicKey.toString())
+        await checkAuth(address)
+        if (mounted) {
+          setAuthState({
+            isLoading: false,
+            isInitialized: true,
+            lastCheckedAddress: address
+          })
+        }
       } catch (error) {
         console.error('Auth check failed:', error)
+        if (mounted) {
+          setAuthState({
+            isLoading: false,
+            isInitialized: true,
+            lastCheckedAddress: null
+          })
+        }
       }
     }
 
-    if (connected && publicKey) {
+    // Add a small delay to ensure wallet state is stable
+    timeoutId = setTimeout(() => {
       checkUserAuth()
-    } else {
-      authChecked.current = false
-      welcomeToastShown.current = false
+    }, 100)
+
+    return () => {
+      mounted = false
+      clearTimeout(timeoutId)
     }
-  }, [connected, publicKey, checkAuth])
+  }, [connected, publicKey, checkAuth, authState.lastCheckedAddress])
 
-  // Handle welcome notifications
-  useEffect(() => {
-    if (!welcomeToastShown.current && connected && authChecked.current) {
-      welcomeToastShown.current = true
+  const isAuthenticated = Boolean(
+    connected && 
+    publicKey &&
+    user && 
+    !authState.isLoading && 
+    authState.isInitialized &&
+    authState.lastCheckedAddress === publicKey.toString()
+  )
 
-      if (user) {
-        // Existing user welcome back
-        toast({
-          title: `Welcome back, {user.name || 'Anon'}! 🎉`,
-          description: (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
-            >
-              Connected with {publicKey?.toString().slice(0, 4)}...{publicKey?.toString().slice(-4)}
-            </motion.div>
-          ),
-        })
-      } else {
-        // New user welcome
-        toast({
-          title: ` Welcome to BricksOnChain! 🏠`,
-          description: (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="space-y-2"
-            >
-              <p>Let's set up your profile to get started.</p>
-            </motion.div>
-          ),
-          duration: 5000,
-        })
-      }
-    }
-  }, [connected, user, publicKey, toast, authChecked.current])
-
-  const disconnect = useCallback(() => {
-    walletDisconnect()
-    useStore.getState().disconnect()
-    authChecked.current = false
-    welcomeToastShown.current = false
-  }, [walletDisconnect])
+  const isAdminUser = Boolean(isAuthenticated && isAdmin)
 
   return {
     user,
-    isAuthenticated: !!user && connected,
-    disconnect,
-    isNewUser: connected && authChecked.current && !user,
-    createProfile,
-    updateProfile,
+    isAdmin: isAdminUser,
+    isAuthenticated,
+    isLoading: authState.isLoading || !authState.isInitialized,
+    walletConnected: connected && !!publicKey
   }
 }

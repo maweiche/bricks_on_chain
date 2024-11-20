@@ -5,6 +5,7 @@
     "email": "maweiche@gmail.com",
     "id": "user_1732106067757",
     "joinedAt": "2024-11-20T12:34:27.757Z",
+    "role": "admin",
     "settings": {
       "notifications": {
         "email": false,

@@ -1,3 +1,5 @@
+import { UserSettings } from '../store'
+
 export interface Property {
     id: string
     title: string
@@ -21,8 +23,10 @@ export interface Property {
     email?: string
     avatar?: string
     joinedAt: Date
+    role: 'user' | 'admin'
+    settings?: UserSettings
   }
-  
+
   export interface Investment {
     id: string
     propertyId: string
