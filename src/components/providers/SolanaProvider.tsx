@@ -11,7 +11,12 @@ import { WalletModalProvider } from '@solana/wallet-adapter-react-ui'
 import { ReactNode, useCallback, useMemo } from 'react'
 import { Connection, Keypair } from '@solana/web3.js'
 import { useToast } from '@/hooks/use-toast'
-import { SolanaErrorBoundary } from '@/components/blockchain'
+import { SolanaErrorBoundary } from '@/components/solana'
+// Import required wallet adapters
+import { PhantomWalletAdapter, SolflareWalletAdapter, TorusWalletAdapter } from '@solana/wallet-adapter-wallets'
+
+// Required styles for the wallet modal
+require('@solana/wallet-adapter-react-ui/styles.css')
 
 // Custom error types
 export enum SolanaErrorType {
@@ -29,32 +34,37 @@ interface SolanaError extends Error {
 // Error handler utility
 export const handleSolanaError = (error: unknown) => {
   const solanaError = error as SolanaError
-  const { toast } = useToast();
+  const { toast } = useToast()
+  
   switch (solanaError.type) {
     case SolanaErrorType.WALLET_CONNECTION:
-        toast({
-            title: "Wallet Error",
-            description: solanaError.message,
-        })
-        break
+      toast({
+        title: "Wallet Error",
+        description: solanaError.message,
+        variant: "destructive"
+      })
+      break
     case SolanaErrorType.TRANSACTION:
-        toast({
-            title: "Transaction Error",
-            description: solanaError.message,
-        })
-        break
+      toast({
+        title: "Transaction Error",
+        description: solanaError.message,
+        variant: "destructive"
+      })
+      break
     case SolanaErrorType.NETWORK:
-        toast({
-            title: "Network Error",
-            description: solanaError.message,
-        })
-        break
+      toast({
+        title: "Network Error",
+        description: solanaError.message,
+        variant: "destructive"
+      })
+      break
     default:
-        toast({
-            title: "Unknown Error",
-            description: solanaError.message,
-        })
-        break
+      toast({
+        title: "Unknown Error",
+        description: solanaError.message,
+        variant: "destructive"
+      })
+      break
   }
   
   console.error('Solana Error:', {
@@ -72,47 +82,56 @@ export const WalletButton = dynamic(
 
 // Custom hook for transaction handling
 export const useSolanaTransaction = () => {
-    const { toast } = useToast()
-    const handleTransaction = async (
-        transaction: Promise<unknown>,
-        options?: {
-        onSuccess?: () => void
-        onError?: (error: unknown) => void
-        successMessage?: string
-        }
-    ) => {
-        const { onSuccess, onError, successMessage } = options || {}
+  const { toast } = useToast()
+  
+  const handleTransaction = async (
+    transaction: Promise<unknown>,
+    options?: {
+      onSuccess?: () => void
+      onError?: (error: unknown) => void
+      successMessage?: string
+    }
+  ) => {
+    const { onSuccess, onError, successMessage } = options || {}
     
     try {
+      toast({
+        title: "Processing Transaction",
+        description: "Please wait...",
+      })
+      
+      await transaction
+      
+      if (successMessage) {
         toast({
-            title: "Processing Transaction",
-            description: "Please wait...",
+          title: "Transaction Complete",
+          description: successMessage,
         })
-        await transaction
-        toast({
-            title: "Transaction Complete",
-            description: successMessage || "Transaction completed successfully",
-        })
-        
-        if (successMessage) {
-            toast({
-                title: "Transaction Complete",
-                description: successMessage,
-            })
-        }
-        
-        onSuccess?.()
-        } catch (error) {
-            handleSolanaError(error)
-            onError?.(error)
-        }
+      }
+      
+      onSuccess?.()
+    } catch (error) {
+      handleSolanaError(error)
+      onError?.(error)
     }
-
-    return { handleTransaction }
+  }
+  
+  return { handleTransaction }
 }
 
 export function SolanaProvider({ children }: { children: ReactNode }) {
+  // Configure your network endpoint
   const endpoint = useMemo(() => 'https://api.devnet.solana.com', [])
+  
+  // Initialize wallet adapters
+  const wallets = useMemo(
+    () => [
+      new PhantomWalletAdapter(),
+      new SolflareWalletAdapter(),
+      new TorusWalletAdapter(),
+    ],
+    []
+  )
   
   const onError = useCallback((error: WalletError) => {
     handleSolanaError({
@@ -124,7 +143,7 @@ export function SolanaProvider({ children }: { children: ReactNode }) {
   return (
     <SolanaErrorBoundary>
       <ConnectionProvider endpoint={endpoint}>
-        <WalletProvider wallets={[]} onError={onError} autoConnect={true}>
+        <WalletProvider wallets={wallets} onError={onError} autoConnect={true}>
           <WalletModalProvider>{children}</WalletModalProvider>
         </WalletProvider>
       </ConnectionProvider>

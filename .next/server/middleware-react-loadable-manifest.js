@@ -1,1 +1,0 @@
-self.__REACT_LOADABLE_MANIFEST="{\"components/providers/SolanaProvider.tsx -> @solana/wallet-adapter-react-ui\":{\"id\":\"components/providers/SolanaProvider.tsx -> @solana/wallet-adapter-react-ui\",\"files\":[\"static/chunks/_app-pages-browser_node_modules_solana_wallet-adapter-react-ui_lib_esm_index_js.js\"]}}"

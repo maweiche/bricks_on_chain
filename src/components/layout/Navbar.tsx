@@ -92,10 +92,7 @@ export function Navbar() {
                     ))}
                     <ThemeToggle />
                     <motion.div variants={itemVariants}>
-                        {/* <WalletButton /> */}
-                        <Button className="bg-primary hover:bg-primary/90">
-                            Connect Wallet
-                        </Button>
+                        <WalletButton />
                     </motion.div>
                 </div>
 
@@ -108,27 +105,27 @@ export function Navbar() {
                         onClick={toggleMenu}
                     >
                         <AnimatePresence mode="wait">
-                        {isOpen ? (
-                            <motion.div
-                            key="close"
-                            initial={{ rotate: -90 }}
-                            animate={{ rotate: 0 }}
-                            exit={{ rotate: 90 }}
-                            transition={{ duration: 0.2 }}
-                            >
-                            <X className="w-6 h-6" />
-                            </motion.div>
-                        ) : (
-                            <motion.div
-                            key="menu"
-                            initial={{ rotate: 90 }}
-                            animate={{ rotate: 0 }}
-                            exit={{ rotate: -90 }}
-                            transition={{ duration: 0.2 }}
-                            >
-                            <Menu className="w-6 h-6" />
-                            </motion.div>
-                        )}
+                            {isOpen ? (
+                                <motion.div
+                                    key="close"
+                                    initial={{ rotate: -90 }}
+                                    animate={{ rotate: 0 }}
+                                    exit={{ rotate: 90 }}
+                                    transition={{ duration: 0.2 }}
+                                >
+                                    <X className="w-6 h-6" />
+                                </motion.div>
+                            ) : (
+                                <motion.div
+                                    key="menu"
+                                    initial={{ rotate: 90 }}
+                                    animate={{ rotate: 0 }}
+                                    exit={{ rotate: -90 }}
+                                    transition={{ duration: 0.2 }}
+                                >
+                                    <Menu className="w-6 h-6" />
+                                </motion.div>
+                            )}
                         </AnimatePresence>
                     </Button>
                 </div>
