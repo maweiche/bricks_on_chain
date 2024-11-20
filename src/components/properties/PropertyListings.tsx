@@ -33,7 +33,7 @@ const ITEMS_PER_PAGE = 10;
 const PROPERTY_TYPES = ['all', 'house', 'apartment', 'commercial'];
 const LOCATIONS = ['all', 'New York, NY', 'Miami, FL', 'Chicago, IL', 'San Francisco, CA', 'Los Angeles, CA', 'Austin, TX', 'Boston, MA', 'Seattle, WA'];
 
-export default function AllListings() {
+export default function PropertyListings() {
   // State
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState({
