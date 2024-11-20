@@ -7,6 +7,8 @@ export function useAuth() {
   const user = useStore(state => state.user)
   const isAdmin = useStore(state => state.isAdmin)
   const checkAuth = useStore(state => state.checkAuth)
+  const createProfile = useStore(state => state.createProfile)
+  const updateProfile = useStore(state => state.updateProfile)
   const [authState, setAuthState] = useState({
     isLoading: true,
     isInitialized: false,
@@ -95,6 +97,8 @@ export function useAuth() {
     isAdmin: isAdminUser,
     isAuthenticated,
     isLoading: authState.isLoading || !authState.isInitialized,
-    walletConnected: connected && !!publicKey
+    walletConnected: connected && !!publicKey,
+    createProfile,
+    updateProfile
   }
 }

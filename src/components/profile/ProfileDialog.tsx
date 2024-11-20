@@ -29,6 +29,7 @@ export function ProfileDialog({
     try {
       await createProfile({
         address: publicKey.toString(),
+        role: 'user',
         ...data
       })
       onClose()

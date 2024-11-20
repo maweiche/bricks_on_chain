@@ -8,10 +8,12 @@ export interface AuthSlice {
   error: string | null
   isAdmin: boolean
   checkAuth: (address: string) => Promise<void>
+  createProfile: (userData: Omit<User, 'id' | 'joinedAt'>) => Promise<void>
+  updateProfile: (userData: Partial<User>) => Promise<void>
   disconnect: () => void
 }
 
-export const createAuthSlice: StateCreator<AuthSlice> = (set) => ({
+export const createAuthSlice: StateCreator<AuthSlice> = (set, get) => ({
   user: null,
   isAdmin: false,
   isLoading: false,
@@ -35,6 +37,29 @@ export const createAuthSlice: StateCreator<AuthSlice> = (set) => ({
     } catch (error) {
       console.error('Auth check failed:', error)
       set({ user: null, isAdmin: false })
+    }
+  },
+
+  createProfile: async (userData) => {
+    set({ isLoading: true, error: null })
+    try {
+      const user = await db.createUser(userData)
+      set({ user, isLoading: false })
+    } catch (error) {
+      set({ error: (error as Error).message, isLoading: false })
+    }
+  },
+
+  updateProfile: async (userData) => {
+    const currentUser = get().user
+    if (!currentUser) throw new Error('No user logged in')
+    
+    set({ isLoading: true, error: null })
+    try {
+      const updatedUser = await db.updateUser(currentUser.id, userData)
+      set({ user: updatedUser, isLoading: false })
+    } catch (error) {
+      set({ error: (error as Error).message, isLoading: false })
     }
   },
 

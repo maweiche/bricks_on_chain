@@ -18,15 +18,8 @@ const Footer = dynamic(() => import("@/components/layout").then((mod) => mod.Foo
 
 export function UiLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname()
-  const { isAuthenticated, isNewUser } = useAuth()
+  const { isAuthenticated, isLoading, walletConnected } = useAuth()
   const [showProfileModal, setShowProfileModal] = useState(false)
-
-  // Show profile creation modal for new users
-  useEffect(() => {
-    if (isNewUser) {
-      setShowProfileModal(true)
-    }
-  }, [isNewUser])
 
   return (
     <main className="h-full flex flex-col">
@@ -40,7 +33,7 @@ export function UiLayout({ children }: { children: ReactNode }) {
           }
         >
           {children}
-          {showProfileModal && (
+          {walletConnected && !isLoading && !isAuthenticated && (
             <ProfileDialog 
               isOpen={showProfileModal}
               onClose={() => setShowProfileModal(false)}
