@@ -3,10 +3,11 @@
 import * as React from 'react'
 import dynamic from 'next/dynamic'
 import {usePathname} from 'next/navigation'
-import {ReactNode, Suspense, useEffect, useRef} from 'react'
+import {ReactNode, Suspense, useState, useEffect, useRef} from 'react'
 import { Toaster } from '../ui/toaster'
 import { useToast } from '@/hooks/use-toast'
-
+import { useAuth } from '@/hooks/use-auth'
+import { ProfileDialog } from '../profile/ProfileDialog'
 const Navbar = dynamic(() => import("@/components/layout").then((mod) => mod.Navbar), {
   ssr: false,
 });
@@ -17,6 +18,15 @@ const Footer = dynamic(() => import("@/components/layout").then((mod) => mod.Foo
 
 export function UiLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname()
+  const { isAuthenticated, isNewUser } = useAuth()
+  const [showProfileModal, setShowProfileModal] = useState(false)
+
+  // Show profile creation modal for new users
+  useEffect(() => {
+    if (isNewUser) {
+      setShowProfileModal(true)
+    }
+  }, [isNewUser])
 
   return (
     <main className="h-full flex flex-col">
@@ -30,6 +40,12 @@ export function UiLayout({ children }: { children: ReactNode }) {
           }
         >
           {children}
+          {showProfileModal && (
+            <ProfileDialog 
+              isOpen={showProfileModal}
+              onClose={() => setShowProfileModal(false)}
+            />
+          )}
         </Suspense>
         <Toaster />
       </div>
