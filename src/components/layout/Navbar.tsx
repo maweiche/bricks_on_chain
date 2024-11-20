@@ -4,7 +4,7 @@ import * as React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
-import { Menu, X } from "lucide-react"
+import { Menu, Settings, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme"
@@ -12,9 +12,8 @@ import { WalletButton } from "@/components/providers"
 
 const navItems = [
   { name: "Properties", path: "/properties" },
-  { name: "Invest", path: "/invest" },
   { name: "Dashboard", path: "/dashboard" },
-  { name: "About", path: "/about" },
+  { name: "Admin", path: "/admin" },
 ]
 
 export function Navbar() {
@@ -91,6 +90,18 @@ export function Navbar() {
                         </motion.div>
                     ))}
                     <ThemeToggle />
+                    <motion.div variants={itemVariants}>
+                        <Button 
+                            variant="outline" 
+                            size="icon"
+                            className="relative w-10 h-10 hover:bg-background"
+                            asChild
+                        >
+                            <Link href="/dashboard/settings">
+                                <Settings size={24} />
+                            </Link>
+                        </Button>
+                    </motion.div>
                     <motion.div variants={itemVariants}>
                         <WalletButton />
                     </motion.div>

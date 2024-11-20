@@ -5,6 +5,8 @@ import { FullScreenLoader } from '@/components/loading'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { useStore } from '@/lib/store'
 import { motion } from 'framer-motion'
+import Link from 'next/link'
+import { Settings } from 'lucide-react'
 
 export default function Dashboard() {
   const { user, isAuthenticated } = useAuth()

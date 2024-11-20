@@ -1,0 +1,220 @@
+{
+  "properties": [
+    {
+      "id": "prop_1",
+      "title": "Modern Downtown Loft",
+      "description": "Stunning open-concept loft in the heart of downtown. Features exposed brick walls, high ceilings, and industrial-style finishes.",
+      "location": "New York, NY",
+      "price": 750000,
+      "type": "apartment",
+      "images": [
+        "https://loremflickr.com/200/200?random=1",
+        "https://loremflickr.com/200/200?random=2"
+      ],
+      "funded": false,
+      "fundingGoal": 1000000,
+      "currentFunding": 750000,
+      "roi": 12.5,
+      "createdAt": "2024-11-01T10:00:00Z",
+      "updatedAt": "2024-11-20T10:00:00Z"
+    },
+    {
+      "id": "prop_2",
+      "title": "Beachfront Villa",
+      "description": "Luxurious beachfront property with panoramic ocean views. Private pool and direct beach access.",
+      "location": "Miami, FL",
+      "price": 2500000,
+      "type": "house",
+      "images": [
+        "https://loremflickr.com/200/200?random=3",
+        "https://loremflickr.com/200/200?random=4"
+      ],
+      "funded": true,
+      "fundingGoal": 3000000,
+      "currentFunding": 3000000,
+      "roi": 15.8,
+      "createdAt": "2024-10-15T10:00:00Z",
+      "updatedAt": "2024-11-20T10:00:00Z"
+    },
+    {
+      "id": "prop_3",
+      "title": "Mountain Retreat",
+      "description": "Cozy mountain cabin with stunning views. Perfect for vacation rentals.",
+      "location": "Aspen, CO",
+      "price": 1200000,
+      "type": "house",
+      "images": [
+        "https://loremflickr.com/200/200?random=5",
+        "https://loremflickr.com/200/200?random=6"
+      ],
+      "funded": false,
+      "fundingGoal": 1500000,
+      "currentFunding": 900000,
+      "roi": 14.2,
+      "createdAt": "2024-11-05T10:00:00Z",
+      "updatedAt": "2024-11-20T10:00:00Z"
+    },
+    {
+      "id": "prop_4",
+      "title": "Commercial Office Space",
+      "description": "Prime location office space in the business district. Recently renovated.",
+      "location": "Chicago, IL",
+      "price": 3500000,
+      "type": "commercial",
+      "images": [
+        "https://loremflickr.com/200/200?random=7",
+        "https://loremflickr.com/200/200?random=8"
+      ],
+      "funded": false,
+      "fundingGoal": 4000000,
+      "currentFunding": 2800000,
+      "roi": 18.5,
+      "createdAt": "2024-11-10T10:00:00Z",
+      "updatedAt": "2024-11-20T10:00:00Z"
+    },
+    {
+      "id": "prop_5",
+      "title": "Urban Micro-Apartment",
+      "description": "Efficiently designed micro-apartment in trendy neighborhood. Smart home features throughout.",
+      "location": "San Francisco, CA",
+      "price": 450000,
+      "type": "apartment",
+      "images": [
+        "https://loremflickr.com/200/200?random=9",
+        "https://loremflickr.com/200/200?random=10"
+      ],
+      "funded": true,
+      "fundingGoal": 500000,
+      "currentFunding": 500000,
+      "roi": 11.2,
+      "createdAt": "2024-10-20T10:00:00Z",
+      "updatedAt": "2024-11-20T10:00:00Z"
+    },
+    {
+      "id": "prop_6",
+      "title": "Retail Space",
+      "description": "High-traffic retail location with modern amenities and ample parking.",
+      "location": "Los Angeles, CA",
+      "price": 1800000,
+      "type": "commercial",
+      "images": [
+        "https://loremflickr.com/200/200?random=11",
+        "https://loremflickr.com/200/200?random=12"
+      ],
+      "funded": false,
+      "fundingGoal": 2000000,
+      "currentFunding": 1200000,
+      "roi": 16.8,
+      "createdAt": "2024-11-15T10:00:00Z",
+      "updatedAt": "2024-11-20T10:00:00Z"
+    },
+    {
+      "id": "prop_7",
+      "title": "Suburban Family Home",
+      "description": "Spacious family home in quiet suburb. Large backyard and modern kitchen.",
+      "location": "Austin, TX",
+      "price": 850000,
+      "type": "house",
+      "images": [
+        "https://loremflickr.com/200/200?random=13",
+        "https://loremflickr.com/200/200?random=14"
+      ],
+      "funded": false,
+      "fundingGoal": 1000000,
+      "currentFunding": 600000,
+      "roi": 13.5,
+      "createdAt": "2024-11-08T10:00:00Z",
+      "updatedAt": "2024-11-20T10:00:00Z"
+    },
+    {
+      "id": "prop_8",
+      "title": "Historic Brownstone",
+      "description": "Beautifully restored historic brownstone with original features.",
+      "location": "Boston, MA",
+      "price": 2200000,
+      "type": "house",
+      "images": [
+        "https://loremflickr.com/200/200?random=15",
+        "https://loremflickr.com/200/200?random=16"
+      ],
+      "funded": true,
+      "fundingGoal": 2500000,
+      "currentFunding": 2500000,
+      "roi": 14.8,
+      "createdAt": "2024-10-25T10:00:00Z",
+      "updatedAt": "2024-11-20T10:00:00Z"
+    },
+    {
+      "id": "prop_9",
+      "title": "Warehouse Space",
+      "description": "Industrial warehouse with modern logistics capabilities.",
+      "location": "Seattle, WA",
+      "price": 4200000,
+      "type": "commercial",
+      "images": [
+        "https://loremflickr.com/200/200?random=17",
+        "https://loremflickr.com/200/200?random=18"
+      ],
+      "funded": false,
+      "fundingGoal": 5000000,
+      "currentFunding": 3500000,
+      "roi": 19.2,
+      "createdAt": "2024-11-12T10:00:00Z",
+      "updatedAt": "2024-11-20T10:00:00Z"
+    },
+    {
+      "id": "prop_10",
+      "title": "Luxury Penthouse",
+      "description": "Stunning penthouse with 360-degree city views and private rooftop terrace.",
+      "location": "Miami, FL",
+      "price": 3800000,
+      "type": "apartment",
+      "images": [
+        "https://loremflickr.com/200/200?random=19",
+        "https://loremflickr.com/200/200?random=20"
+      ],
+      "funded": false,
+      "fundingGoal": 4500000,
+      "currentFunding": 2900000,
+      "roi": 17.5,
+      "createdAt": "2024-11-18T10:00:00Z",
+      "updatedAt": "2024-11-20T10:00:00Z"
+    },
+    {
+      "id": "prop_1732120149808",
+      "title": "Modern Downtown Flat",
+      "description": "Stunning open-concept loft in the heart of downtown. Features exposed brick walls, high ceilings, and industrial-style finishes.",
+      "location": "New York, NY",
+      "price": 750000,
+      "type": "apartment",
+      "images": [
+        "https://loremflickr.com/200/200?random=1",
+        "https://loremflickr.com/200/200?random=2"
+      ],
+      "funded": false,
+      "fundingGoal": 1000000,
+      "currentFunding": 750000,
+      "roi": 12.5,
+      "createdAt": "2024-11-20T16:29:09.808Z",
+      "updatedAt": "2024-11-20T16:29:09.808Z"
+    },
+    {
+      "id": "prop_1732120164753",
+      "title": "Modern Downtown Flat",
+      "description": "Stunning open-concept loft in the heart of downtown. Features exposed brick walls, high ceilings, and industrial-style finishes.",
+      "location": "New York, NY",
+      "price": 750000,
+      "type": "apartment",
+      "images": [
+        "https://loremflickr.com/200/200?random=1",
+        "https://loremflickr.com/200/200?random=2"
+      ],
+      "funded": false,
+      "fundingGoal": 1000000,
+      "currentFunding": 750000,
+      "roi": 12.5,
+      "createdAt": "2024-11-20T16:29:24.753Z",
+      "updatedAt": "2024-11-20T16:29:24.753Z"
+    }
+  ]
+}
