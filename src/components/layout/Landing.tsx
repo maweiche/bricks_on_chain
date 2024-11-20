@@ -1,3 +1,5 @@
+"use client";
+
 import React from 'react';
 import { motion, Variants, Transition } from 'framer-motion';
 import { WalletButton } from '../providers';
@@ -91,9 +93,9 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ icon: Icon, title, descriptio
   </motion.div>
 );
 
-const LandingPage: React.FC = () => {
+export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-white">
+    <div className="min-h-screen pt-20 bg-gradient-to-b from-slate-900 to-slate-800 text-white">
       {/* Hero Section */}
       <div className="container mx-auto px-4 pt-20 pb-32">
         <motion.div
@@ -172,6 +174,4 @@ const LandingPage: React.FC = () => {
       </motion.div>
     </div>
   );
-};
-
-export default LandingPage;
+}

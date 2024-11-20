@@ -1,8 +1,10 @@
 import { Navbar } from "./Navbar";
 import { UiLayout } from "./UiLayout";
 import LandingPage from "./Landing";
+import Footer from "./Footer";
 export {
-    Navbar,
     UiLayout,
-    LandingPage
+    Navbar,
+    LandingPage,
+    Footer
 }
