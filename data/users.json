@@ -4,6 +4,14 @@
     "name": "Matt",
     "email": "maweiche@gmail.com",
     "id": "user_1732106067757",
-    "joinedAt": "2024-11-20T12:34:27.757Z"
+    "joinedAt": "2024-11-20T12:34:27.757Z",
+    "settings": {
+      "notifications": {
+        "email": false,
+        "push": false,
+        "investmentUpdates": false,
+        "marketingUpdates": false
+      }
+    }
   }
 ]

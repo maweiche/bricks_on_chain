@@ -1,4 +1,3 @@
-// /lib/store/types.ts
 export interface Property {
     id: string
     title: string
