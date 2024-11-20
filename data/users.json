@@ -62,6 +62,36 @@
         "status": "active",
         "transactionSignature": "1732134237398_ewf3z",
         "wallet": "7wK3jPMYjpZHZAghjersW6hBNMgi9VAGr75AhYRqR2n"
+      },
+      {
+        "id": "inv_1732134563743",
+        "propertyId": "prop_1",
+        "amount": 200,
+        "fractionCount": 2,
+        "purchaseDate": "2024-11-20T20:29:23.743Z",
+        "status": "active",
+        "transactionSignature": "1732134563743_vw1ozi",
+        "wallet": "7wK3jPMYjpZHZAghjersW6hBNMgi9VAGr75AhYRqR2n"
+      },
+      {
+        "id": "inv_1732134609547_prop_1",
+        "propertyId": "prop_1",
+        "amount": 100,
+        "fractionCount": 1,
+        "purchaseDate": "2024-11-20T20:30:09.547Z",
+        "status": "active",
+        "transactionSignature": "1732134609547_yiz8ek",
+        "wallet": "7wK3jPMYjpZHZAghjersW6hBNMgi9VAGr75AhYRqR2n"
+      },
+      {
+        "id": "inv_1732134609547_prop_3",
+        "propertyId": "prop_3",
+        "amount": 100,
+        "fractionCount": 1,
+        "purchaseDate": "2024-11-20T20:30:09.547Z",
+        "status": "active",
+        "transactionSignature": "1732134609547_yiz8ek",
+        "wallet": "7wK3jPMYjpZHZAghjersW6hBNMgi9VAGr75AhYRqR2n"
       }
     ]
   }

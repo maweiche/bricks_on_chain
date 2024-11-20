@@ -27,7 +27,7 @@ export function UiLayout({ children }: { children: ReactNode }) {
   const [showProfileModal, setShowProfileModal] = useState(false)
 
   return (
-    <main className="h-full flex flex-col">
+    <main className="h-full w-full flex flex-col">
       <Navbar />
       <div className="flex-grow">
         <Suspense

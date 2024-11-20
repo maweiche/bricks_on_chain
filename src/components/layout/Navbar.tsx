@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
@@ -63,7 +64,12 @@ export function Navbar() {
                     transition={{ duration: 0.5 }}
                 >
                 <Link href="/" className="flex items-center space-x-2">
-                    <span className="text-2xl font-bold text-primary">BricksOnChain</span>
+                    <Image
+                        src="/logo.svg"
+                        alt="Logo"
+                        width={48}
+                        height={48}
+                    />
                 </Link>
                 </motion.div>
 

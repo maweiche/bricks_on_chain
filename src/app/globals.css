@@ -4,88 +4,77 @@
  
 @layer base {
   :root {
+    /* Light theme */
     --background: 0 0% 100%;
-    --foreground: 222 47% 11%;
+    --foreground: 240 10% 3.9%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 240 10% 3.9%;
  
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 240 10% 3.9%;
  
-    --primary: 358 67% 55%;  /* Brick Red */
-    --primary-foreground: 210 40% 98%;
+    /* Pelorus - Teal as Primary */
+    --primary: 181 51% 50%;
+    --primary-foreground: 355.7 100% 97.3%;
  
-    --secondary: 226 17% 22%;  /* Steel Blue */
-    --secondary-foreground: 210 40% 98%;
+    /* Medium Purple as Secondary */
+    --secondary: 255 75% 64%;
+    --secondary-foreground: 355.7 100% 97.3%;
+
+    /* Minsk - Dark Purple as Tertiary */
+    --tertiary: 264 45% 34%;
+    --tertiary-foreground: 355.7 100% 97.3%;
  
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
  
-    --accent: 42 100% 67%;  /* Gold */
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 181 51% 50%;
+    --accent-foreground: 240 5.9% 10%;
  
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 98%;
 
-    --success: 172 70% 35%;  /* Forest */
-    --success-foreground: 210 40% 98%;
- 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222 47% 11%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 181 51% 50%;
  
     --radius: 0.5rem;
   }
  
   .dark {
-    --background: 222 47% 11%;
-    --foreground: 210 40% 98%;
+    /* Dark theme */
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
  
-    --card: 222 47% 11%;
-    --card-foreground: 210 40% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
  
-    --popover: 222 47% 11%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
  
-    --primary: 358 67% 55%;  /* Brick Red - maintained */
-    --primary-foreground: 222.2 47.4% 11.2%;
+    /* Adjusted for dark mode visibility */
+    --primary: 181 51% 60%;
+    --primary-foreground: 240 5.9% 10%;
  
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 255 75% 74%;
+    --secondary-foreground: 240 5.9% 10%;
+
+    --tertiary: 264 45% 44%;
+    --tertiary-foreground: 0 0% 98%;
  
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
  
-    --accent: 42 100% 67%;  /* Gold - maintained */
-    --accent-foreground: 210 40% 98%;
+    --accent: 181 51% 60%;
+    --accent-foreground: 0 0% 98%;
  
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --success: 172 70% 35%;  /* Forest - maintained */
-    --success-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 98%;
  
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-  }
-  .sheet-content-enter {
-    transform: translateX(100%);
-  }
-
-  .sheet-content-enter-active {
-    transform: translateX(0);
-    transition: transform 300ms ease-out;
-  }
-
-  .sheet-content-exit {
-    transform: translateX(0);
-  }
-
-  .sheet-content-exit-active {
-    transform: translateX(100%);
-    transition: transform 300ms ease-out;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 181 51% 60%;
   }
 }
  

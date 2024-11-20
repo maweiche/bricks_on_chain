@@ -1,9 +1,11 @@
 "use client";
 
 import React from 'react';
+import Image from 'next/image';
 import { motion, Variants, Transition } from 'framer-motion';
 import { WalletButton } from '../providers';
 import { Building2, Users, Coins, ChevronRight, BarChart3, LucideIcon } from 'lucide-react';
+import { Badge } from '../ui/badge';
 
 // Types
 interface FeatureItem {
@@ -95,17 +97,33 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ icon: Icon, title, descriptio
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen pt-20 bg-gradient-to-b from-slate-900 to-slate-800 text-white">
+    <div className="min-h-screen pt-20 bg-background">
       {/* Hero Section */}
-      <div className="container mx-auto px-4 pt-20 pb-32">
+      <div className="container mx-auto px-4 pt-20 pb-32 h-[90vh]">
         <motion.div
           variants={fadeIn}
           initial="initial"
           animate="animate"
           transition={defaultTransition}
-          className="max-w-4xl mx-auto text-center"
+          className="max-w-4xl mx-auto text-center items-center justify-center flex flex-col gap-8" 
         >
-          <motion.h1
+          <motion.image
+            variants={fadeIn}
+            initial="initial"
+            animate="animate"
+            transition={{
+              ...defaultTransition,
+              delay: 0.2
+            }}
+          >
+            <Image
+              src="/logo.svg"
+              alt="Logo"
+              width={360}
+              height={360}
+            />
+          </motion.image>
+          {/* <motion.h1
             variants={fadeIn}
             initial="initial"
             animate="animate"
@@ -117,7 +135,7 @@ export default function LandingPage() {
           >
             Invest in Real Estate,
             <br />Token by Token
-          </motion.h1>
+          </motion.h1> */}
           
           <motion.p
             variants={fadeIn}
@@ -127,10 +145,9 @@ export default function LandingPage() {
               ...defaultTransition,
               delay: 0.4
             }}
-            className="text-xl text-slate-300 mb-8"
+            className="text-xl text-secondary mb-8"
           >
-            Join the future of property investment through blockchain-powered fractional ownership.
-            Start building your real estate portfolio with as little as you want.
+            Start building your real estate portfolio through blockchain-powered fractional ownership.
           </motion.p>
           
           <motion.div
@@ -148,7 +165,10 @@ export default function LandingPage() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               transition={springTransition}
-              className="flex items-center gap-2 px-6 py-3 bg-slate-700 rounded-lg hover:bg-slate-600 transition-colors"
+              className="flex items-center gap-2 px-6 py-3 bg-primary text-muted rounded-lg hover:bg-slate-600 transition-colors"
+              onClick={() => {
+                document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
+              }}
             >
               Learn More <ChevronRight size={20} />
             </motion.button>
@@ -162,8 +182,15 @@ export default function LandingPage() {
         whileInView="animate"
         viewport={{ once: true }}
         variants={containerVariants}
-        className="bg-slate-800/50 py-24"
+        className="py-24 flex flex-col items-center justify-center bg-slate-800/50"
+        id='features'
       >
+        <Badge
+          className="text-secondary bg-muted text-3xl px-4 py-2 rounded-full"
+          style={{ transform: 'translateY(-50%)' }}
+        >
+          How it Works
+        </Badge>
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {features.map((feature, index) => (

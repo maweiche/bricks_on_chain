@@ -40,16 +40,21 @@ export default function Footer() {
         whileInView="visible"
         viewport={{ once: true }}
         variants={footerAnimation}
+        className='w-full h-full flex flex-col items-center justify-center bg-slate-900/50 backdrop-blur'
       >
         <Card className="w-full self-center overflow-hidden rounded-none flex flex-row justify-center md:justify-between md:py-14 items-start w-full bg-slate-900/50 backdrop-blur md:px-12">
           <CardContent className="flex flex-col py-4 gap-4 items-center w-1/2">
-            <motion.div 
+            <motion.image
               className="flex flex-row md:gap-6 items-center"
               variants={itemAnimation}
             >
-              <Building2 className="h-8 w-8 text-blue-400" />
-              <h1 className="text-xl md:text-3xl text-white mt-2 md:mt-0">BricksOnChain</h1>
-            </motion.div>
+              <Image
+                src="/logo.svg"
+                alt="Logo"
+                width={120}
+                height={120}
+              />
+            </motion.image>
             
             {/* <motion.div 
               className="flex flex-row gap-14 items-center justify-center align-center"
