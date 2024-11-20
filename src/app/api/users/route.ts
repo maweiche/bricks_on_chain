@@ -27,17 +27,23 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const address = searchParams.get('address')
   
-  if (!address) {
-    return NextResponse.json({ error: 'Address is required' }, { status: 400 })
-  }
-
   try {
     const data = await fs.readFile(USERS_FILE, 'utf-8')
     const users = JSON.parse(data) as User[]
-    const user = users.find(u => u.address.toLowerCase() === address.toLowerCase())
-    return NextResponse.json({ user })
+
+    // If address is provided, return single user
+    if (address) {
+      const user = users.find(u => u.address.toLowerCase() === address.toLowerCase())
+      return NextResponse.json({ user })
+    }
+
+    // If no address, return all users
+    return NextResponse.json({ users })
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to fetch user' }, { status: 500 })
+    return NextResponse.json(
+      { error: 'Failed to fetch user(s)' }, 
+      { status: 500 }
+    )
   }
 }
 
