@@ -39,6 +39,7 @@ import {
 } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { PurchaseDialog } from '../purchasing/PurchaseDialog';
+import ROISimulationChart from './PropertyRoiSimChart';
 
 // Mock data for the property value history
 const valueHistory = [
@@ -203,29 +204,7 @@ export default function PropertyDetails({ id }: { id: string }) {
                   <p className="leading-relaxed">{data.property?.description}</p>
                 </CardContent>
               </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Property Value History</CardTitle>
-                  <CardDescription>Historical property valuation over time</CardDescription>
-                </CardHeader>
-                <CardContent className="h-[300px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={valueHistory}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="month" />
-                      <YAxis />
-                      <Tooltip />
-                      <Line
-                        type="monotone"
-                        dataKey="value"
-                        stroke="#2D3142"
-                        strokeWidth={2}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
+              <ROISimulationChart expectedROI={data.property?.roi} />
             </TabsContent>
 
             <TabsContent value="financials" className="space-y-4">
@@ -248,6 +227,28 @@ export default function PropertyDetails({ id }: { id: string }) {
                       <div className="text-2xl font-bold">$5,000</div>
                     </div>
                   </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Property Value History</CardTitle>
+                  <CardDescription>Historical property valuation over time</CardDescription>
+                </CardHeader>
+                <CardContent className="h-[300px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={valueHistory}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="month" />
+                      <YAxis />
+                      <Tooltip />
+                      <Line
+                        type="monotone"
+                        dataKey="value"
+                        stroke="#2D3142"
+                        strokeWidth={2}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
                 </CardContent>
               </Card>
             </TabsContent>
