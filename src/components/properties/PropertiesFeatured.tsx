@@ -81,7 +81,7 @@ const PropertyCard = ({
               initial={false}
               animate={isHovered ? { opacity: 1 } : { opacity: 0 }}
             >
-              <Button variant="secondary" className="gap-2">
+              <Button variant="secondary" className="gap-2" onClick={()=>router.push(`/properties/${property.id}`)}>
                 View Details <ArrowRight className="h-4 w-4" />
               </Button>
             </motion.div>

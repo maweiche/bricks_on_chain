@@ -11,18 +11,19 @@ import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { WalletButton } from '@/components/providers'
 import { ThemeToggle } from '@/components/theme'
+import UserDropdown from './UserDropdown'
+import { useAuth } from '@/hooks/use-auth'
+import { useWallet } from '@solana/wallet-adapter-react'
 
 const navItems = [
-  { name: 'Properties', path: '/properties' },
-  { name: 'Dashboard', path: '/dashboard' },
-  { name: 'Governance', path: '/union' },
-  { name: 'Admin', path: '/admin' },
+  { name: 'Explore Properties', path: '/properties' },
 ]
 
 export function Navbar() {
   const [isOpen, setIsOpen] = React.useState(false)
   const pathname = usePathname()
-
+  const { user, isAuthenticated } = useAuth()
+  const { publicKey } = useWallet()
   const toggleMenu = () => setIsOpen(!isOpen)
 
   const navVariants = {
@@ -69,7 +70,6 @@ export function Navbar() {
               <Image src="/logo.svg" alt="Logo" width={48} height={48} />
             </Link>
           </motion.div>
-
           {/* Desktop Navigation */}
           <div className="hidden md:flex md:items-center md:space-x-6">
             {navItems.map((item) => (
@@ -82,7 +82,7 @@ export function Navbar() {
                 <Link
                   href={item.path}
                   className={cn(
-                    'text-sm font-medium transition-colors hover:text-primary',
+                    'text-sm font-medium transition-colors hover:font-semibold hover:text-primary hover:border-2 border-primary px-4 py-2 bg-white rounded-full ',
                     pathname === item.path
                       ? 'text-primary'
                       : 'text-muted-foreground'
@@ -93,7 +93,11 @@ export function Navbar() {
               </motion.div>
             ))}
             <ThemeToggle />
-            <motion.div variants={itemVariants}>
+            {user && isAuthenticated && (
+              <UserDropdown user={user} userBalance={undefined} />
+            )}
+            
+            {/* <motion.div variants={itemVariants}>
               <Button
                 variant="outline"
                 size="icon"
@@ -104,10 +108,12 @@ export function Navbar() {
                   <Settings size={24} />
                 </Link>
               </Button>
-            </motion.div>
-            <motion.div variants={itemVariants}>
-              <WalletButton />
-            </motion.div>
+            </motion.div> */}
+            {!publicKey && (
+              <motion.div variants={itemVariants}>
+                <WalletButton />
+              </motion.div>
+            )}
           </div>
 
           {/* Mobile Menu Button */}

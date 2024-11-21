@@ -35,7 +35,7 @@ export function ThemeToggle() {
           <Button
             variant="outline"
             size="icon"
-            className="relative h-10 w-10 hover:bg-background"
+            className="relative h-10 w-10 bg-white/50 hover:bg-background hover:font-bold"
           >
             <AnimatePresence mode="wait">
               {theme !== 'dark' ? (
