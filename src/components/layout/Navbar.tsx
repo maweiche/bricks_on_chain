@@ -5,7 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Menu, Settings, X } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -96,19 +96,6 @@ export function Navbar() {
             {user && isAuthenticated && (
               <UserDropdown user={user} userBalance={undefined} />
             )}
-            
-            {/* <motion.div variants={itemVariants}>
-              <Button
-                variant="outline"
-                size="icon"
-                className="relative h-10 w-10 hover:bg-background"
-                asChild
-              >
-                <Link href="/dashboard/settings">
-                  <Settings size={24} />
-                </Link>
-              </Button>
-            </motion.div> */}
             {!publicKey && (
               <motion.div variants={itemVariants}>
                 <WalletButton />

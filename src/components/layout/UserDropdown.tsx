@@ -5,17 +5,22 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuIte
 import { ChevronDown, Copy, Settings2, ListOrdered, LogOut, Settings, IdCard, Vote, LockKeyhole } from "lucide-react";
 import { IconCurrencyDollar, IconCurrencySolana } from '@tabler/icons-react';
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useSolanaPrice } from "@/hooks/use-solana-price";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { WalletButton } from "../providers";
+import { USDC_MINT } from "@/components/solana"
+import { PublicKey, LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { getAssociatedTokenAddress } from "@solana/spl-token";
+import { rpcManager } from '@/lib/rpc/rpc-manager';
 
-const UserDropdown = ({ user, userBalance }: { user: User, userBalance: any }) => {
-    console.log('USER DROPDOWN ->', user);
+const UserDropdown = ({ user }: { user: User, userBalance: any }) => {
+    // console.log('USER DROPDOWN ->', user);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const { publicKey, disconnect } = useWallet();
+    const [userBalance, setUserBalance] = useState({ sol: 0, usdc: 0 })
     const router = useRouter();
     const copyToClipboard = (text: any) => {
       navigator.clipboard.writeText(text);
@@ -24,23 +29,45 @@ const UserDropdown = ({ user, userBalance }: { user: User, userBalance: any }) =
         description: text,
       });
     };
-
-    const handleLogout = async () => {
-        disconnect()
-    }
-        
+    
     const {
-        currentPrice,
-        priceChange,
-        dayRange,
-        solToUsd,
-        usdToSol,
-        formatUsd,
-        formatSol,
-        isLoading,
-        error,
-        lastUpdate
-      } = useSolanaPrice();
+      currentPrice,
+      priceChange,
+      dayRange,
+      solToUsd,
+      usdToSol,
+      formatUsd,
+      formatSol,
+      isLoading,
+      error,
+      lastUpdate
+    } = useSolanaPrice();
+
+    const getBalances = async(publicKey: PublicKey) => {
+      try {
+        const connection = rpcManager.getConnection()
+        const balance = await connection.getBalance(publicKey)
+        const usdcAta = await getAssociatedTokenAddress(publicKey, new PublicKey(USDC_MINT))
+        const usdcBalance = await connection.getBalance(usdcAta)
+
+        const obj = {
+          sol: (balance / LAMPORTS_PER_SOL),
+          usdc: usdcBalance
+        }
+
+        setUserBalance(obj)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    useEffect(() => {
+      if (publicKey) {
+        getBalances(publicKey)
+      }
+    }, [publicKey])
+
+    
   
     return (
       <DropdownMenu>

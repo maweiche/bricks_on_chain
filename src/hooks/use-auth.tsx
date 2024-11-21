@@ -17,15 +17,15 @@ export function useAuth() {
   })
 
   // Debug logging
-  useEffect(() => {
-    console.log('Current State:', {
-      connected,
-      publicKey: publicKey?.toString(),
-      user,
-      isAdmin,
-      authState,
-    })
-  }, [connected, publicKey, user, isAdmin, authState])
+  // useEffect(() => {
+  //   console.log('Current State:', {
+  //     connected,
+  //     publicKey: publicKey?.toString(),
+  //     user,
+  //     isAdmin,
+  //     authState,
+  //   })
+  // }, [connected, publicKey, user, isAdmin, authState])
 
   useEffect(() => {
     let mounted = true
