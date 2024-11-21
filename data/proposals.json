@@ -1,0 +1,61 @@
+{
+  "proposals": [
+    {
+      "id": "prop_1",
+      "title": "Upgrade Building Security System",
+      "description": "Install modern security cameras and access control system in all common areas to enhance resident safety.",
+      "type": "PROPERTY_IMPROVEMENT",
+      "status": "ACTIVE",
+      "creator": {
+        "id": "user_1",
+        "address": "7wK3jPMYjpZHZAghjersW6hBNMgi9VAGr75AhYRqR2n",
+        "name": "Matt"
+      },
+      "startDate": "2024-11-20T00:00:00Z",
+      "endDate": "2024-12-20T00:00:00Z",
+      "propertyId": "prop_1",
+      "requiredQuorum": 51,
+      "votingPower": {
+        "for": 30,
+        "against": 20,
+        "total": 100
+      },
+      "votes": {
+        "for": [],
+        "against": [
+          "7wK3jPMYjpZHZAghjersW6hBNMgi9VAGr75AhYRqR2n"
+        ]
+      },
+      "createdAt": "2024-11-20T00:00:00Z",
+      "updatedAt": "2024-11-21T14:34:37.404Z"
+    },
+    {
+      "id": "prop_2",
+      "title": "Implement Regular Maintenance Schedule",
+      "description": "Establish a quarterly maintenance schedule for all common areas and essential building systems.",
+      "type": "MAINTENANCE",
+      "status": "ACTIVE",
+      "creator": {
+        "id": "user_1",
+        "address": "7wK3jPMYjpZHZAghjersW6hBNMgi9VAGr75AhYRqR2n",
+        "name": "Matt"
+      },
+      "startDate": "2024-11-20T00:00:00Z",
+      "endDate": "2024-12-20T00:00:00Z",
+      "requiredQuorum": 51,
+      "votingPower": {
+        "for": 55,
+        "against": 35,
+        "total": 100
+      },
+      "votes": {
+        "for": [],
+        "against": [
+          "7wK3jPMYjpZHZAghjersW6hBNMgi9VAGr75AhYRqR2n"
+        ]
+      },
+      "createdAt": "2024-11-20T00:00:00Z",
+      "updatedAt": "2024-11-21T14:33:07.249Z"
+    }
+  ]
+}

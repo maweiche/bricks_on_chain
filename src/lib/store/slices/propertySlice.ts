@@ -2,12 +2,22 @@ import { StateCreator } from 'zustand'
 
 import { Property } from '../types'
 
+export enum Status {
+  ACTIVE = 'ACTIVE',
+  PASSED = 'PASSED',
+  REJECTED = 'REJECTED',
+  EXPIRED = 'EXPIRED',
+  AVAILABLE = 'available',
+  FUNDED = 'funded',
+  ALL = 'all'
+}
+
 export interface PropertyFilters {
   minPrice?: number
   maxPrice?: number
   location?: string
   type?: string
-  status?: 'available' | 'funded' | 'all'
+  status?: Status
 }
 
 export interface PropertySlice {

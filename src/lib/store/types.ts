@@ -25,16 +25,18 @@ export interface User {
   joinedAt: Date
   role: 'user' | 'admin'
   settings?: UserSettings
+  investments?: Investment[]
 }
 
 export interface Investment {
   id: string
   propertyId: string
-  userId: string
+  wallet: string
   amount: number
-  tokens: number
+  fractionCount: number
   status: 'pending' | 'active' | 'completed'
-  timestamp: Date
+  purchaseDate: Date
+  transactionSignature: string
 }
 
 export interface Vote {
@@ -45,7 +47,7 @@ export interface Vote {
   timestamp: Date
 }
 
-interface Proposal {
+export interface Proposal {
   id: string
   title: string
   description: string
