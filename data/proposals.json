@@ -16,18 +16,18 @@
       "propertyId": "prop_1",
       "requiredQuorum": 51,
       "votingPower": {
-        "for": 30,
+        "for": 41,
         "against": 20,
         "total": 100
       },
       "votes": {
-        "for": [],
-        "against": [
+        "for": [
           "7wK3jPMYjpZHZAghjersW6hBNMgi9VAGr75AhYRqR2n"
-        ]
+        ],
+        "against": []
       },
       "createdAt": "2024-11-20T00:00:00Z",
-      "updatedAt": "2024-11-21T14:34:37.404Z"
+      "updatedAt": "2024-11-21T14:40:21.679Z"
     },
     {
       "id": "prop_2",
@@ -56,6 +56,33 @@
       },
       "createdAt": "2024-11-20T00:00:00Z",
       "updatedAt": "2024-11-21T14:33:07.249Z"
+    },
+    {
+      "id": "prop_1732206089508",
+      "title": "Decrease Rent by 20%",
+      "description": "I would like to decrease everyone's rent by 20% effective immediately",
+      "type": "POLICY_CHANGE",
+      "requiredQuorum": 51,
+      "endDate": "2024-11-29T23:00:00.000Z",
+      "creator": {
+        "id": "user_1732106067757",
+        "address": "7wK3jPMYjpZHZAghjersW6hBNMgi9VAGr75AhYRqR2n",
+        "name": "Matt"
+      },
+      "status": "ACTIVE",
+      "createdAt": "2024-11-21T16:21:29.508Z",
+      "updatedAt": "2024-11-21T16:21:40.850Z",
+      "votingPower": {
+        "for": 11,
+        "against": 0,
+        "total": 100
+      },
+      "votes": {
+        "for": [
+          "7wK3jPMYjpZHZAghjersW6hBNMgi9VAGr75AhYRqR2n"
+        ],
+        "against": []
+      }
     }
   ]
 }

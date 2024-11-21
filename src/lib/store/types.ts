@@ -74,3 +74,39 @@ export interface Proposal {
   createdAt: Date
   updatedAt: Date
 }
+
+export interface CreateProposalResponse {
+  proposal: {
+    id: string
+    title: string
+    description: string
+    type: 'PROPERTY_IMPROVEMENT' | 'MAINTENANCE' | 'POLICY_CHANGE' | 'OTHER'
+    status: 'ACTIVE' | 'PASSED' | 'REJECTED' | 'EXPIRED'
+    creator: {
+      id: string
+      address: string
+      name?: string
+    }
+    startDate: string
+    endDate: string
+    propertyId?: string
+    requiredQuorum: number
+    votingPower: {
+      for: number
+      against: number
+      total: number
+    }
+    votes: {
+      for: string[]
+      against: string[]
+    }
+    createdAt: string
+    updatedAt: string
+  }
+}
+
+export interface CreateProposalError {
+  code: string
+  message: string
+  details?: Record<string, string[]>
+}

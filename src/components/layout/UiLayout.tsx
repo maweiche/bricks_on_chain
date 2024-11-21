@@ -108,7 +108,7 @@ function CartButton() {
     <Button
       variant="outline"
       size="icon"
-      className="fixed bottom-4 right-6 z-[100] h-12 w-12 rounded-full shadow-lg transition-all duration-200 hover:shadow-xl"
+      className="fixed bottom-4 left-6 z-[100] h-12 w-12 rounded-full shadow-lg transition-all duration-200 hover:shadow-xl"
       onClick={() => setIsOpen(true)}
     >
       <ShoppingCart className="h-5 w-5" />

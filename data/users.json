@@ -84,6 +84,296 @@
         "status": "active",
         "transactionSignature": "1732134609547_yiz8ek",
         "wallet": "7wK3jPMYjpZHZAghjersW6hBNMgi9VAGr75AhYRqR2n"
+      },
+      {
+        "id": "inv_1732199905688",
+        "propertyId": "prop_1",
+        "amount": 100,
+        "fractionCount": 1,
+        "purchaseDate": "2024-11-21T14:38:25.688Z",
+        "status": "active",
+        "transactionSignature": "1732199905688_08own",
+        "wallet": "7wK3jPMYjpZHZAghjersW6hBNMgi9VAGr75AhYRqR2n"
+      }
+    ]
+  },
+  {
+    "address": "8xL4kQNYkpZIZBghjersW6hBNMgi9VAGr75AhYRqR3o",
+    "name": "John",
+    "email": "john.doe@example.com",
+    "id": "user_1732106067758",
+    "joinedAt": "2024-11-21T12:34:27.757Z",
+    "role": "user",
+    "settings": {
+      "notifications": {
+        "email": true,
+        "push": true,
+        "investmentUpdates": true,
+        "marketingUpdates": true
+      }
+    },
+    "investments": [
+      {
+        "id": "inv_1732133421113_prop_2",
+        "propertyId": "prop_2",
+        "amount": 200,
+        "fractionCount": 2,
+        "purchaseDate": "2024-11-21T20:10:21.112Z",
+        "status": "active",
+        "transactionSignature": "1732133421113_c4u9d",
+        "wallet": "8xL4kQNYkpZIZBghjersW6hBNMgi9VAGr75AhYRqR3o"
+      }
+    ]
+  },
+  {
+    "address": "9yM5lRNZlqZJZCghjersW6hBNMgi9VAGr75AhYRqR4p",
+    "name": "Alice",
+    "email": "alice.smith@example.com",
+    "id": "user_1732106067759",
+    "joinedAt": "2024-11-22T12:34:27.757Z",
+    "role": "user",
+    "settings": {
+      "notifications": {
+        "email": false,
+        "push": true,
+        "investmentUpdates": false,
+        "marketingUpdates": true
+      }
+    },
+    "investments": [
+      {
+        "id": "inv_1732133421114_prop_3",
+        "propertyId": "prop_3",
+        "amount": 300,
+        "fractionCount": 3,
+        "purchaseDate": "2024-11-22T20:10:21.112Z",
+        "status": "active",
+        "transactionSignature": "1732133421114_c4u9e",
+        "wallet": "9yM5lRNZlqZJZCghjersW6hBNMgi9VAGr75AhYRqR4p"
+      }
+    ]
+  },
+  {
+    "address": "0zN6mSOZmzZKZDghjersW6hBNMgi9VAGr75AhYRqR5q",
+    "name": "Bob",
+    "email": "bob.jones@example.com",
+    "id": "user_1732106067760",
+    "joinedAt": "2024-11-23T12:34:27.757Z",
+    "role": "user",
+    "settings": {
+      "notifications": {
+        "email": true,
+        "push": false,
+        "investmentUpdates": true,
+        "marketingUpdates": false
+      }
+    },
+    "investments": [
+      {
+        "id": "inv_1732133421115_prop_4",
+        "propertyId": "prop_4",
+        "amount": 400,
+        "fractionCount": 4,
+        "purchaseDate": "2024-11-23T20:10:21.112Z",
+        "status": "active",
+        "transactionSignature": "1732133421115_c4u9f",
+        "wallet": "0zN6mSOZmzZKZDghjersW6hBNMgi9VAGr75AhYRqR5q"
+      }
+    ]
+  },
+  {
+    "address": "1aO7nTPanAZLZEghjersW6hBNMgi9VAGr75AhYRqR6r",
+    "name": "Charlie",
+    "email": "charlie.brown@example.com",
+    "id": "user_1732106067761",
+    "joinedAt": "2024-11-24T12:34:27.757Z",
+    "role": "user",
+    "settings": {
+      "notifications": {
+        "email": false,
+        "push": false,
+        "investmentUpdates": true,
+        "marketingUpdates": true
+      }
+    },
+    "investments": [
+      {
+        "id": "inv_1732133421116_prop_5",
+        "propertyId": "prop_5",
+        "amount": 500,
+        "fractionCount": 5,
+        "purchaseDate": "2024-11-24T20:10:21.112Z",
+        "status": "active",
+        "transactionSignature": "1732133421116_c4u9g",
+        "wallet": "1aO7nTPanAZLZEghjersW6hBNMgi9VAGr75AhYRqR6r"
+      }
+    ]
+  },
+  {
+    "address": "2bP8oUQboBZMAFghjersW6hBNMgi9VAGr75AhYRqR7s",
+    "name": "David",
+    "email": "david.wilson@example.com",
+    "id": "user_1732106067762",
+    "joinedAt": "2024-11-25T12:34:27.757Z",
+    "role": "user",
+    "settings": {
+      "notifications": {
+        "email": true,
+        "push": true,
+        "investmentUpdates": false,
+        "marketingUpdates": false
+      }
+    },
+    "investments": [
+      {
+        "id": "inv_1732133421117_prop_6",
+        "propertyId": "prop_6",
+        "amount": 600,
+        "fractionCount": 6,
+        "purchaseDate": "2024-11-25T20:10:21.112Z",
+        "status": "active",
+        "transactionSignature": "1732133421117_c4u9h",
+        "wallet": "2bP8oUQboBZMAFghjersW6hBNMgi9VAGr75AhYRqR7s"
+      }
+    ]
+  },
+  {
+    "address": "3cQ9pVRcpCZNBHghjersW6hBNMgi9VAGr75AhYRqR8t",
+    "name": "Eve",
+    "email": "eve.miller@example.com",
+    "id": "user_1732106067763",
+    "joinedAt": "2024-11-26T12:34:27.757Z",
+    "role": "user",
+    "settings": {
+      "notifications": {
+        "email": false,
+        "push": true,
+        "investmentUpdates": true,
+        "marketingUpdates": false
+      }
+    },
+    "investments": [
+      {
+        "id": "inv_1732133421118_prop_7",
+        "propertyId": "prop_7",
+        "amount": 700,
+        "fractionCount": 7,
+        "purchaseDate": "2024-11-26T20:10:21.112Z",
+        "status": "active",
+        "transactionSignature": "1732133421118_c4u9i",
+        "wallet": "3cQ9pVRcpCZNBHghjersW6hBNMgi9VAGr75AhYRqR8t"
+      }
+    ]
+  },
+  {
+    "address": "4dR0qWSdqDZOCIghjersW6hBNMgi9VAGr75AhYRqR9u",
+    "name": "Frank",
+    "email": "frank.moore@example.com",
+    "id": "user_1732106067764",
+    "joinedAt": "2024-11-27T12:34:27.757Z",
+    "role": "user",
+    "settings": {
+      "notifications": {
+        "email": true,
+        "push": false,
+        "investmentUpdates": true,
+        "marketingUpdates": true
+      }
+    },
+    "investments": [
+      {
+        "id": "inv_1732133421119_prop_8",
+        "propertyId": "prop_8",
+        "amount": 800,
+        "fractionCount": 8,
+        "purchaseDate": "2024-11-27T20:10:21.112Z",
+        "status": "active",
+        "transactionSignature": "1732133421119_c4u9j",
+        "wallet": "4dR0qWSdqDZOCIghjersW6hBNMgi9VAGr75AhYRqR9u"
+      }
+    ]
+  },
+  {
+    "address": "5eS1rXTerEZPDJghjersW6hBNMgi9VAGr75AhYRqS0v",
+    "name": "Grace",
+    "email": "grace.taylor@example.com",
+    "id": "user_1732106067765",
+    "joinedAt": "2024-11-28T12:34:27.757Z",
+    "role": "user",
+    "settings": {
+      "notifications": {
+        "email": false,
+        "push": true,
+        "investmentUpdates": false,
+        "marketingUpdates": true
+      }
+    },
+    "investments": [
+      {
+        "id": "inv_1732133421120_prop_9",
+        "propertyId": "prop_9",
+        "amount": 900,
+        "fractionCount": 9,
+        "purchaseDate": "2024-11-28T20:10:21.112Z",
+        "status": "active",
+        "transactionSignature": "1732133421120_c4u9k",
+        "wallet": "5eS1rXTerEZPDJghjersW6hBNMgi9VAGr75AhYRqS0v"
+      }
+    ]
+  },
+  {
+    "address": "6fT2sYUfsFZQEKghjersW6hBNMgi9VAGr75AhYRqS1w",
+    "name": "Hank",
+    "email": "hank.anderson@example.com",
+    "id": "user_1732106067766",
+    "joinedAt": "2024-11-29T12:34:27.757Z",
+    "role": "user",
+    "settings": {
+      "notifications": {
+        "email": true,
+        "push": false,
+        "investmentUpdates": true,
+        "marketingUpdates": false
+      }
+    },
+    "investments": [
+      {
+        "id": "inv_1732133421121_prop_10",
+        "propertyId": "prop_10",
+        "amount": 1000,
+        "fractionCount": 10,
+        "purchaseDate": "2024-11-29T20:10:21.112Z",
+        "status": "active",
+        "transactionSignature": "1732133421121_c4u9l",
+        "wallet": "6fT2sYUfsFZQEKghjersW6hBNMgi9VAGr75AhYRqS1w"
+      }
+    ]
+  },
+  {
+    "address": "7gU3tZVgtGZRFLghjersW6hBNMgi9VAGr75AhYRqS2x",
+    "name": "Ivy",
+    "email": "ivy.johnson@example.com",
+    "id": "user_1732106067767",
+    "joinedAt": "2024-11-30T12:34:27.757Z",
+    "role": "user",
+    "settings": {
+      "notifications": {
+        "email": false,
+        "push": true,
+        "investmentUpdates": true,
+        "marketingUpdates": true
+      }
+    },
+    "investments": [
+      {
+        "id": "inv_1732133421122_prop_11",
+        "propertyId": "prop_11",
+        "amount": 1100,
+        "fractionCount": 11,
+        "purchaseDate": "2024-11-30T20:10:21.112Z",
+        "status": "active",
+        "transactionSignature": "1732133421122_c4u9m",
+        "wallet": "7gU3tZVgtGZRFLghjersW6hBNMgi9VAGr75AhYRqS2x"
       }
     ]
   }

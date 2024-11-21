@@ -15,6 +15,7 @@ import { ThemeToggle } from '@/components/theme'
 const navItems = [
   { name: 'Properties', path: '/properties' },
   { name: 'Dashboard', path: '/dashboard' },
+  { name: 'Governance', path: '/union' },
   { name: 'Admin', path: '/admin' },
 ]
 

@@ -1,0 +1,18 @@
+{
+    "platformName": "RWA Platform",
+    "supportEmail": "support@example.com",
+    "maintenanceMode": false,
+    "minimumInvestment": 100,
+    "maximumInvestment": 10000,
+    "platformFee": 2.5,
+    "proposalDuration": 7,
+    "minimumQuorum": 51,
+    "votingDelay": 24,
+    "twoFactorRequired": true,
+    "passwordExpiration": 90,
+    "sessionTimeout": 60,
+    "emailNotifications": true,
+    "investmentAlerts": true,
+    "proposalAlerts": true,
+    "maintenanceAlerts": true
+}
