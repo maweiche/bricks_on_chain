@@ -7,10 +7,10 @@ import { IconCurrencyDollar, IconCurrencySolana } from '@tabler/icons-react';
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
 import { useSolanaPrice } from "@/hooks/use-solana-price";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { WalletButton } from "../providers";
+import { WalletButton } from "../../providers";
 import { USDC_MINT } from "@/components/solana"
 import { PublicKey, LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { getAssociatedTokenAddress } from "@solana/spl-token";
@@ -87,7 +87,7 @@ const UserDropdown = ({ user }: { user: User, userBalance: any }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent
           align="end"
-          className="w-screen md:w-80 p-4 bg-white dark:bg-white rounded-3xl border border-zinc-300 dark:border-zinc-700 flex flex-col items-center"
+          className="w-screen md:w-[340px] p-4 bg-white dark:bg-white rounded-3xl border border-zinc-300 dark:border-zinc-700 flex flex-col items-center"
         >
 
           {/* User Profile Snippet */}
@@ -113,7 +113,7 @@ const UserDropdown = ({ user }: { user: User, userBalance: any }) => {
           </div>
 
           {/* Site Navigation */}
-          <div className="w-full grid grid-cols-2 items-center mt-2 mb-2">
+          <div className="w-full grid grid-cols-2 items-center mt-2 mb-2 border border-zinc-300 dark:border-zinc-600 p-2 rounded-2xl">
             <DropdownMenuItem className="flex flex-row items-center cursor-pointer text-secondary w-fit px-4 rounded-full gap-2 hover:bg-slate-200" onClick={()=> {router.push('/dashboard/settings')}}>
               <Settings size={24} />
               <span className="text-lg font-semibold">Settings</span>
@@ -162,7 +162,7 @@ const UserDropdown = ({ user }: { user: User, userBalance: any }) => {
           </div>
           
           {/* Test Funds */}
-          <div className='flex flex-col w-full items-center justify-center mt-2 bg-slate-500/20 p-2 rounded-2xl'>
+          {/* <div className='flex flex-col w-full items-center justify-center mt-2 bg-slate-500/20 p-2 rounded-2xl'>
               <p>Need Test Funds?</p>
               <div className='flex flex-row justify-center items-center gap-2 w-full h-fit'>
                 <Link href='https://faucet.circle.com/' target='_blank'>
@@ -172,7 +172,7 @@ const UserDropdown = ({ user }: { user: User, userBalance: any }) => {
                   <Button variant='outline' className='mt-4 w-full'>Get SOL</Button>
                 </Link>
               </div>
-            </div>
+            </div> */}
         </DropdownMenuContent>
         
       </DropdownMenu>

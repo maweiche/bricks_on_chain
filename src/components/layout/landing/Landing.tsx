@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { Suspense } from 'react'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import { motion, Transition, Variants } from 'framer-motion'
@@ -13,12 +13,14 @@ import {
   Users,
 } from 'lucide-react'
 
-import { WalletButton } from '../providers'
-import { Badge } from '../ui/badge'
-import Cursor from '../ui/cursor'
+import { WalletButton } from '../../providers'
+import { Badge } from '../../ui/badge'
+import Cursor from '../../ui/cursor'
+import { ModelLoader } from './ModelLoader'
+import { FeaturesSection } from './FeaturesSection'
 
 const PropertiesFeatured = dynamic(
-  () => import('../properties/PropertiesFeatured')
+  () => import('../../properties/PropertiesFeatured')
 )
 
 interface FeatureItem {
@@ -188,7 +190,7 @@ export default function LandingPage() {
         whileInView="animate"
         viewport={{ once: true }}
         variants={containerVariants}
-        className="mt-12 flex w-full flex-col items-center justify-center py-24"
+        className="mt-12 flex w-full flex-col items-center justify-center pt-24 pb-2"
         id="properties"
       >
         <PropertiesFeatured />
@@ -200,23 +202,31 @@ export default function LandingPage() {
         whileInView="animate"
         viewport={{ once: true }}
         variants={containerVariants}
-        className="mt-12 flex flex-col items-center justify-center bg-slate-800/50 py-24"
+        className="mt-12 flex flex-col items-center justify-center py-2"
         id="features"
       >
-        <Badge
-          className="rounded-full bg-muted px-4 py-2 text-3xl text-secondary"
-          style={{ transform: 'translateY(-50%)' }}
-        >
-          How it Works
-        </Badge>
-        <div className="container mx-auto px-4">
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-            {features.map((feature, index) => (
-              <FeatureCard key={feature.title} {...feature} index={index} />
-            ))}
-          </div>
-        </div>
+        <FeaturesSection />
       </motion.div>
+
+      {/* Three JS How it Works Section */}
+      {/* <motion.div
+        initial="initial"
+        whileInView="animate"
+        viewport={{ once: true }}
+        variants={containerVariants}
+        className="w-full flex flex-col items-center"
+        id="features"
+      >
+        <Suspense fallback={<ModelLoader />}>
+          <Badge
+            className="rounded-full bg-muted px-4 py-2 text-3xl text-secondary w-fit"
+            style={{ transform: 'translateY(-50%)' }}
+          >
+            How it Works
+          </Badge>
+          <FeaturesSection />
+        </Suspense>
+      </motion.div> */}
     </div>
   )
 }
