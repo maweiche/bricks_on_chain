@@ -4,14 +4,12 @@ import {
   SolanaErrorType,
   SolanaProvider,
   useAnchorProvider,
-  useSolanaTransaction,
   WalletButton,
 } from './SolanaProvider'
 
 export {
   WalletButton,
   useAnchorProvider,
-  useSolanaTransaction,
   handleSolanaError,
   SolanaErrorType,
   SolanaProvider,

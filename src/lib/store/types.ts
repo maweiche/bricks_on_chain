@@ -44,3 +44,31 @@ export interface Vote {
   vote: 'for' | 'against'
   timestamp: Date
 }
+
+interface Proposal {
+  id: string
+  title: string
+  description: string
+  creator: {
+    id: string
+    address: string
+    name?: string
+  }
+  type: 'PROPERTY_IMPROVEMENT' | 'MAINTENANCE' | 'POLICY_CHANGE' | 'OTHER'
+  status: 'ACTIVE' | 'PASSED' | 'REJECTED' | 'EXPIRED'
+  startDate: Date
+  endDate: Date
+  propertyId?: string
+  requiredQuorum: number
+  votingPower: {
+    for: number
+    against: number
+    total: number
+  }
+  votes: {
+    for: string[]
+    against: string[]
+  }
+  createdAt: Date
+  updatedAt: Date
+}

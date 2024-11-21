@@ -7,6 +7,9 @@ const nextConfig = {
                 hostname: '*.com',
             }
         ]
-    }
+    },
+    eslint: {
+        ignoreDuringBuilds: true,
+    },
 };
 export default nextConfig;

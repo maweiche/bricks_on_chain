@@ -62,12 +62,12 @@ export function ProtectedRoute({
 
   // Always show loading when authenticating
   if (isLoading) {
-    return <FullScreenLoader text="Verifying access..." />
+    return <FullScreenLoader />
   }
 
   // Show loading when wallet is connected but auth isn't complete
   if (walletConnected && !isAuthenticated) {
-    return <FullScreenLoader text="Checking permissions..." />
+    return <FullScreenLoader />
   }
 
   // Only render children when fully authenticated and authorized
