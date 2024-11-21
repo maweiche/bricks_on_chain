@@ -2,155 +2,102 @@
 
 import * as React from 'react'
 import dynamic from 'next/dynamic'
-import {usePathname} from 'next/navigation'
-import {ReactNode, Suspense, useState, useEffect, useRef} from 'react'
+import {ReactNode, useState, useEffect} from 'react'
 import { Toaster } from '../ui/toaster'
-import { useToast } from '@/hooks/use-toast'
 import { useAuth } from '@/hooks/use-auth'
 import { ProfileDialog } from '../profile/ProfileDialog'
 import { useStore } from '@/lib/store';
 import { ShoppingCart } from 'lucide-react';
 import { Button } from '../ui/button'
-import { Cart } from '../purchasing/ShoppingCart'
+import { ErrorBoundary, SuspenseBoundary } from '@/components/providers'
+import { NavbarSkeleton, FooterSkeleton } from '@/components/loading'
 
 const Navbar = dynamic(() => import("@/components/layout").then((mod) => mod.Navbar), {
+  loading: () => <NavbarSkeleton />,
   ssr: false,
 });
 
 const Footer = dynamic(() => import("@/components/layout").then((mod) => mod.Footer), {
+  loading: () => <FooterSkeleton />,
+  ssr: false,
+});
+
+const Cart = dynamic(() => import('../purchasing/ShoppingCart').then(mod => mod.Cart), {
+  loading: () => null,
   ssr: false,
 });
 
 export function UiLayout({ children }: { children: ReactNode }) {
-  const pathname = usePathname()
   const { isAuthenticated, isLoading, walletConnected } = useAuth()
+  const [mounted, setMounted] = useState(false)
   const [showProfileModal, setShowProfileModal] = useState(false)
 
-  return (
-    <main className="h-full w-full flex flex-col">
-      <Navbar />
-      <div className="flex-grow">
-        <Suspense
-          fallback={
-            <div className="text-center my-32">
-              <span className="loading loading-spinner loading-lg"></span>
-            </div>
-          }
-        >
-          {children}
-          {walletConnected && !isLoading && !isAuthenticated && (
-            <ProfileDialog 
-              isOpen={showProfileModal}
-              onClose={() => setShowProfileModal(false)}
-            />
-          )}
-        </Suspense>
-        <Toaster />
-        <Cart />
-        {CartButton()}
-      </div>
-      <Footer />
-    </main>
-  )
-}
-
-export function AppModal({
-  children,
-  title,
-  hide,
-  show,
-  submit,
-  submitDisabled,
-  submitLabel,
-}: {
-  children: ReactNode
-  title: string
-  hide: () => void
-  show: boolean
-  submit?: () => void
-  submitDisabled?: boolean
-  submitLabel?: string
-}) {
-  const dialogRef = useRef<HTMLDialogElement | null>(null)
-
   useEffect(() => {
-    if (!dialogRef.current) return
-    if (show) {
-      dialogRef.current.showModal()
-    } else {
-      dialogRef.current.close()
-    }
-  }, [show, dialogRef])
+    setMounted(true)
+  }, [])
 
   return (
-    <dialog className="modal" ref={dialogRef}>
-      <div className="modal-box space-y-5">
-        <h3 className="font-bold text-lg">{title}</h3>
-        {children}
-        <div className="modal-action">
-          <div className="join space-x-2">
-            {submit ? (
-              <button className="btn btn-xs lg:btn-md btn-primary" onClick={submit} disabled={submitDisabled}>
-                {submitLabel || 'Save'}
-              </button>
-            ) : null}
-            <button onClick={hide} className="btn">
-              Close
-            </button>
-          </div>
+    <ErrorBoundary
+      onError={(error, info) => {
+        console.error('Layout error:', error, info)
+      }}
+    >
+      <main className="h-full w-full flex flex-col">
+        <Navbar />
+        
+        <div className="flex-grow">
+          <SuspenseBoundary 
+            fullScreen
+            onError={(error) => {
+              console.error('Suspense error:', error)
+            }}
+          >
+            {mounted ? children : null}
+          </SuspenseBoundary>
+          
+          <ErrorBoundary fallback={null}>
+            {mounted && walletConnected && !isLoading && !isAuthenticated && (
+              <ProfileDialog 
+                isOpen={showProfileModal}
+                onClose={() => setShowProfileModal(false)}
+              />
+            )}
+          </ErrorBoundary>
+          
+          <ErrorBoundary fallback={null}>
+            <Toaster />
+          </ErrorBoundary>
+          
+          <ErrorBoundary fallback={null}>
+            {mounted && <Cart />}
+          </ErrorBoundary>
+          
+          <ErrorBoundary fallback={null}>
+            {mounted && <CartButton />}
+          </ErrorBoundary>
         </div>
-      </div>
-    </dialog>
+
+        <Footer />
+      </main>
+    </ErrorBoundary>
   )
 }
 
-export function AppHero({
-  children,
-  title,
-  subtitle,
-}: {
-  children?: ReactNode
-  title: ReactNode
-  subtitle: ReactNode
-}) {
-  return (
-    <div className="hero py-[64px]">
-      <div className="hero-content text-center">
-        <div className="max-w-2xl">
-          {typeof title === 'string' ? <h1 className="text-5xl font-bold">{title}</h1> : title}
-          {typeof subtitle === 'string' ? <p className="py-6">{subtitle}</p> : subtitle}
-          {children}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-export function ellipsify(str = '', len = 4) {
-  if (str.length > 30) {
-    return str.substring(0, len) + '..' + str.substring(str.length - len, str.length)
-  }
-  return str
-}
-
-export function useTransactionToast() {
-  const { toast } = useToast();
-  return (signature: string) => {
-    toast({
-        title: 'Transaction sent...',
-        description: `https://explorer.solana.com/account/${signature}`
-    })
-  }
-}
-
-export function CartButton() {
+function CartButton() {
   const { items, setIsOpen, getTotalFractions } = useStore();
+  const [mounted, setMounted] = useState(false);
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  
+  if (!mounted) return null;
   
   return (
     <Button
       variant="outline"
       size="icon"
-      className="fixed bottom-4 right-4 h-12 w-12 rounded-full shadow-lg hover:shadow-xl transition-all duration-200"
+      className="fixed bottom-4 right-6 h-12 w-12 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 z-[100]"
       onClick={() => setIsOpen(true)}
     >
       <ShoppingCart className="w-5 h-5" />
@@ -162,3 +109,4 @@ export function CartButton() {
     </Button>
   );
 }
+

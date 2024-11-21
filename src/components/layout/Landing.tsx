@@ -1,13 +1,15 @@
 "use client";
 
 import React from 'react';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { motion, Variants, Transition } from 'framer-motion';
 import { WalletButton } from '../providers';
 import { Building2, Users, Coins, ChevronRight, BarChart3, LucideIcon } from 'lucide-react';
 import { Badge } from '../ui/badge';
 
-// Types
+const PropertiesFeatured = dynamic(() => import('../properties/PropertiesFeatured'));
+
 interface FeatureItem {
   icon: LucideIcon;
   title: string;
@@ -19,7 +21,6 @@ interface FeatureCardProps extends FeatureItem {
   index: number;
 }
 
-// Animation variants
 const fadeIn: Variants = {
   initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0 }
@@ -35,7 +36,6 @@ const containerVariants: Variants = {
   }
 };
 
-// Transition configurations
 const springTransition: Transition = {
   type: "spring",
   damping: 20,
@@ -46,7 +46,6 @@ const defaultTransition: Transition = {
   duration: 0.5
 };
 
-// Features data
 const features: FeatureItem[] = [
   {
     icon: Building2,
@@ -99,7 +98,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen pt-20 bg-background">
       {/* Hero Section */}
-      <div className="container mx-auto px-4 pt-20 pb-32 h-[90vh]">
+      <div className="container mx-auto px-4 pt-20 pb-32 h-[70vh]">
         <motion.div
           variants={fadeIn}
           initial="initial"
@@ -123,20 +122,7 @@ export default function LandingPage() {
               height={360}
             />
           </motion.image>
-          {/* <motion.h1
-            variants={fadeIn}
-            initial="initial"
-            animate="animate"
-            transition={{
-              ...defaultTransition,
-              delay: 0.2
-            }}
-            className="text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400"
-          >
-            Invest in Real Estate,
-            <br />Token by Token
-          </motion.h1> */}
-          
+
           <motion.p
             variants={fadeIn}
             initial="initial"
@@ -176,13 +162,24 @@ export default function LandingPage() {
         </motion.div>
       </div>
 
+      <motion.div
+        initial="initial"
+        whileInView="animate"
+        viewport={{ once: true }}
+        variants={containerVariants}
+        className="mt-12 py-24 flex flex-col items-center justify-center w-full"
+        id='properties'
+      >
+        <PropertiesFeatured />
+      </motion.div>
+
       {/* Features Section */}
       <motion.div
         initial="initial"
         whileInView="animate"
         viewport={{ once: true }}
         variants={containerVariants}
-        className="py-24 flex flex-col items-center justify-center bg-slate-800/50"
+        className="mt-12 py-24 flex flex-col items-center justify-center bg-slate-800/50"
         id='features'
       >
         <Badge
@@ -198,6 +195,8 @@ export default function LandingPage() {
             ))}
           </div>
         </div>
+
+        
       </motion.div>
     </div>
   );

@@ -6,6 +6,10 @@ import {
     SolanaErrorType,
     SolanaProvider 
 } from "./SolanaProvider";
+import {
+    ErrorBoundary,
+    SuspenseBoundary
+} from "./ErrorBoundary";
 
 export { 
     WalletButton, 
@@ -13,5 +17,7 @@ export {
     useSolanaTransaction, 
     handleSolanaError,
     SolanaErrorType,
-    SolanaProvider
+    SolanaProvider,
+    ErrorBoundary,
+    SuspenseBoundary
 };
