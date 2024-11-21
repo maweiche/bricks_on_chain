@@ -41,6 +41,8 @@ export function ProfileDialog({
         address: publicKey.toString(),
         role: 'user',
         ...data,
+        id: '',
+        joinedAt: new Date(),
       })
       onClose()
     } catch (error) {
