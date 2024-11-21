@@ -1,7 +1,8 @@
-"use client"
+'use client'
 
 import { useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
+
 import { useAuth } from '@/hooks/use-auth'
 import { useToast } from '@/hooks/use-toast'
 import { FullScreenLoader } from '@/components/loading'
@@ -11,7 +12,10 @@ interface ProtectedRouteProps {
   requireAdmin?: boolean
 }
 
-export function ProtectedRoute({ children, requireAdmin = false }: ProtectedRouteProps) {
+export function ProtectedRoute({
+  children,
+  requireAdmin = false,
+}: ProtectedRouteProps) {
   const { isAuthenticated, isAdmin, isLoading, walletConnected } = useAuth()
   const { toast } = useToast()
   const router = useRouter()
@@ -46,7 +50,15 @@ export function ProtectedRoute({ children, requireAdmin = false }: ProtectedRout
         return
       }
     }
-  }, [isLoading, walletConnected, isAuthenticated, isAdmin, requireAdmin, router, toast])
+  }, [
+    isLoading,
+    walletConnected,
+    isAuthenticated,
+    isAdmin,
+    requireAdmin,
+    router,
+    toast,
+  ])
 
   // Always show loading when authenticating
   if (isLoading) {

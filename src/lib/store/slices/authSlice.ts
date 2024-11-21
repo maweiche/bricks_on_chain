@@ -1,6 +1,8 @@
 import { StateCreator } from 'zustand'
-import { User } from '../types'
+
 import { db } from '@/lib/db'
+
+import { User } from '../types'
 
 export interface AuthSlice {
   user: User | null
@@ -23,16 +25,16 @@ export const createAuthSlice: StateCreator<AuthSlice> = (set, get) => ({
     try {
       const res = await fetch(`/api/users?address=${address}`)
       const data = await res.json()
-      
+
       if (!data.user) {
         set({ user: null, isAdmin: false })
         return
       }
-  
+
       // Set both states together
       set({
         user: data.user,
-        isAdmin: data.user.role === 'admin'
+        isAdmin: data.user.role === 'admin',
       })
     } catch (error) {
       console.error('Auth check failed:', error)
@@ -53,7 +55,7 @@ export const createAuthSlice: StateCreator<AuthSlice> = (set, get) => ({
   updateProfile: async (userData) => {
     const currentUser = get().user
     if (!currentUser) throw new Error('No user logged in')
-    
+
     set({ isLoading: true, error: null })
     try {
       const updatedUser = await db.updateUser(currentUser.id, userData)
@@ -63,9 +65,10 @@ export const createAuthSlice: StateCreator<AuthSlice> = (set, get) => ({
     }
   },
 
-  disconnect: () => set({ 
-    user: null, 
-    isAdmin: false, 
-    error: null 
-  })
+  disconnect: () =>
+    set({
+      user: null,
+      isAdmin: false,
+      error: null,
+    }),
 })

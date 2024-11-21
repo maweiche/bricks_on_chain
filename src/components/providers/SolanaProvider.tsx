@@ -1,5 +1,6 @@
-"use client"
+'use client'
 
+import { ReactNode, useCallback, useMemo } from 'react'
 import dynamic from 'next/dynamic'
 import { AnchorProvider } from '@coral-xyz/anchor'
 import { WalletError } from '@solana/wallet-adapter-base'
@@ -8,12 +9,16 @@ import {
   WalletProvider,
 } from '@solana/wallet-adapter-react'
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui'
-import { ReactNode, useCallback, useMemo } from 'react'
+// Import required wallet adapters
+import {
+  PhantomWalletAdapter,
+  SolflareWalletAdapter,
+  TorusWalletAdapter,
+} from '@solana/wallet-adapter-wallets'
 import { Connection, Keypair } from '@solana/web3.js'
+
 import { useToast } from '@/hooks/use-toast'
 import { SolanaErrorBoundary } from '@/components/solana'
-// Import required wallet adapters
-import { PhantomWalletAdapter, SolflareWalletAdapter, TorusWalletAdapter } from '@solana/wallet-adapter-wallets'
 
 // Required styles for the wallet modal
 require('@solana/wallet-adapter-react-ui/styles.css')
@@ -35,38 +40,38 @@ interface SolanaError extends Error {
 export const handleSolanaError = (error: unknown) => {
   const solanaError = error as SolanaError
   const { toast } = useToast()
-  
+
   switch (solanaError.type) {
     case SolanaErrorType.WALLET_CONNECTION:
       toast({
-        title: "Wallet Error",
+        title: 'Wallet Error',
         description: solanaError.message,
-        variant: "destructive"
+        variant: 'destructive',
       })
       break
     case SolanaErrorType.TRANSACTION:
       toast({
-        title: "Transaction Error",
+        title: 'Transaction Error',
         description: solanaError.message,
-        variant: "destructive"
+        variant: 'destructive',
       })
       break
     case SolanaErrorType.NETWORK:
       toast({
-        title: "Network Error",
+        title: 'Network Error',
         description: solanaError.message,
-        variant: "destructive"
+        variant: 'destructive',
       })
       break
     default:
       toast({
-        title: "Unknown Error",
+        title: 'Unknown Error',
         description: solanaError.message,
-        variant: "destructive"
+        variant: 'destructive',
       })
       break
   }
-  
+
   console.error('Solana Error:', {
     type: solanaError.type,
     message: solanaError.message,
@@ -83,7 +88,7 @@ export const WalletButton = dynamic(
 // Custom hook for transaction handling
 export const useSolanaTransaction = () => {
   const { toast } = useToast()
-  
+
   const handleTransaction = async (
     transaction: Promise<unknown>,
     options?: {
@@ -93,36 +98,36 @@ export const useSolanaTransaction = () => {
     }
   ) => {
     const { onSuccess, onError, successMessage } = options || {}
-    
+
     try {
       toast({
-        title: "Processing Transaction",
-        description: "Please wait...",
+        title: 'Processing Transaction',
+        description: 'Please wait...',
       })
-      
+
       await transaction
-      
+
       if (successMessage) {
         toast({
-          title: "Transaction Complete",
+          title: 'Transaction Complete',
           description: successMessage,
         })
       }
-      
+
       onSuccess?.()
     } catch (error) {
       handleSolanaError(error)
       onError?.(error)
     }
   }
-  
+
   return { handleTransaction }
 }
 
 export function SolanaProvider({ children }: { children: ReactNode }) {
   // Configure your network endpoint
   const endpoint = useMemo(() => 'https://api.devnet.solana.com', [])
-  
+
   // Initialize wallet adapters
   const wallets = useMemo(
     () => [
@@ -132,7 +137,7 @@ export function SolanaProvider({ children }: { children: ReactNode }) {
     ],
     []
   )
-  
+
   const onError = useCallback((error: WalletError) => {
     handleSolanaError({
       ...error,
@@ -154,16 +159,16 @@ export function SolanaProvider({ children }: { children: ReactNode }) {
 export function useAnchorProvider() {
   const connection = new Connection(
     'https://api.devnet.solana.com',
-    "confirmed"
+    'confirmed'
   )
   const wallet = Keypair.generate()
-  
+
   try {
     // @ts-expect-error - wallet is dummy variable, signing is not needed
-    return new AnchorProvider(connection, wallet, { commitment: "confirmed" })
+    return new AnchorProvider(connection, wallet, { commitment: 'confirmed' })
   } catch (error) {
     handleSolanaError({
-      ...error as Error,
+      ...(error as Error),
       type: SolanaErrorType.WALLET_CONNECTION,
     })
     throw error

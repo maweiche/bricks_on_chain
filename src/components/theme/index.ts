@@ -1,4 +1,4 @@
-import { ThemeProvider } from "./ThemeProvider";
-import { ThemeToggle } from "./ThemeToggle";
+import { ThemeProvider } from './ThemeProvider'
+import { ThemeToggle } from './ThemeToggle'
 
-export { ThemeProvider, ThemeToggle };
+export { ThemeProvider, ThemeToggle }

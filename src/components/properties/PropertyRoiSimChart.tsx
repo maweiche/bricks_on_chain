@@ -1,74 +1,83 @@
-import { useState, useMemo } from 'react';
+import { useMemo, useState } from 'react'
+import { Clock, DollarSign } from 'lucide-react'
 import {
-  LineChart,
+  CartesianGrid,
   Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer
-} from 'recharts';
-import { Slider } from "@/components/ui/slider"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { DollarSign, Clock } from "lucide-react"
+} from 'recharts'
+
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Slider } from '@/components/ui/slider'
 
 const ROISimulationChart = ({ expectedROI = 12 }) => {
-  const [investmentAmount, setInvestmentAmount] = useState(5000);
-  const [timeFrameYears, setTimeFrameYears] = useState(1);
-  
+  const [investmentAmount, setInvestmentAmount] = useState(5000)
+  const [timeFrameYears, setTimeFrameYears] = useState(1)
+
   // Generate data points based on selected time frame
   const simulationData = useMemo(() => {
-    const monthlyROI = expectedROI / 12; // Monthly ROI rate
-    const totalMonths = timeFrameYears * 12;
-    const data = [];
-    const today = new Date();
-    
+    const monthlyROI = expectedROI / 12 // Monthly ROI rate
+    const totalMonths = timeFrameYears * 12
+    const data = []
+    const today = new Date()
+
     for (let i = totalMonths; i >= 0; i--) {
-      const date = new Date(today.getFullYear(), today.getMonth() - i, 1);
-      const monthsElapsed = totalMonths - i;
-      const compoundedValue = investmentAmount * Math.pow(1 + (monthlyROI / 100), monthsElapsed);
-      
+      const date = new Date(today.getFullYear(), today.getMonth() - i, 1)
+      const monthsElapsed = totalMonths - i
+      const compoundedValue =
+        investmentAmount * Math.pow(1 + monthlyROI / 100, monthsElapsed)
+
       data.push({
-        month: date.toLocaleDateString('en-US', { 
-          month: monthsElapsed % 12 === 0 ? 'short' : 'numeric', 
-          year: '2-digit'
+        month: date.toLocaleDateString('en-US', {
+          month: monthsElapsed % 12 === 0 ? 'short' : 'numeric',
+          year: '2-digit',
         }),
         value: compoundedValue,
         profit: compoundedValue - investmentAmount,
-        isYearMark: monthsElapsed % 12 === 0
-      });
+        isYearMark: monthsElapsed % 12 === 0,
+      })
     }
-    return data;
-  }, [investmentAmount, expectedROI, timeFrameYears]);
+    return data
+  }, [investmentAmount, expectedROI, timeFrameYears])
 
   // Calculate current value and profit
-  const currentValue = simulationData[simulationData.length - 1].value;
-  const totalProfit = currentValue - investmentAmount;
-  const profitPercentage = (totalProfit / investmentAmount) * 100;
+  const currentValue = simulationData[simulationData.length - 1].value
+  const totalProfit = currentValue - investmentAmount
+  const profitPercentage = (totalProfit / investmentAmount) * 100
 
   const handleAmountSliderChange = (values: number[]) => {
-    setInvestmentAmount(values[0]);
-  };
+    setInvestmentAmount(values[0])
+  }
 
   const handleTimeFrameSliderChange = (values: number[]) => {
-    setTimeFrameYears(values[0]);
-  };
+    setTimeFrameYears(values[0])
+  }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseFloat(e.target.value.replace(/[^0-9.]/g, ''));
+    const value = parseFloat(e.target.value.replace(/[^0-9.]/g, ''))
     if (!isNaN(value)) {
-      setInvestmentAmount(value);
+      setInvestmentAmount(value)
     }
-  };
+  }
 
   // Custom X-Axis tick formatter to show only year marks
   const formatXAxis = (tickItem: string, index: number) => {
-    const dataPoint = simulationData[index];
-    return dataPoint?.isYearMark ? tickItem : '';
-  };
+    const dataPoint = simulationData[index]
+    return dataPoint?.isYearMark ? tickItem : ''
+  }
 
-  const annualizedReturn = Math.pow(1 + totalProfit / investmentAmount, 1 / timeFrameYears) - 1;
+  const annualizedReturn =
+    Math.pow(1 + totalProfit / investmentAmount, 1 / timeFrameYears) - 1
 
   return (
     <Card>
@@ -79,22 +88,37 @@ const ROISimulationChart = ({ expectedROI = 12 }) => {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="p-4 rounded-lg bg-secondary/10">
-            <div className="text-sm text-muted-foreground mb-1">Initial Investment</div>
-            <div className="text-2xl font-bold">${investmentAmount.toLocaleString()}</div>
-          </div>
-          <div className="p-4 rounded-lg bg-secondary/10">
-            <div className="text-sm text-muted-foreground mb-1">Projected Value</div>
-            <div className="text-2xl font-bold">${Math.round(currentValue).toLocaleString()}</div>
-          </div>
-          <div className="p-4 rounded-lg bg-secondary/10">
-            <div className="text-sm text-muted-foreground mb-1">Total Return</div>
-            <div className={`text-2xl font-bold ${totalProfit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-              {totalProfit >= 0 ? '+' : '-'}${Math.abs(Math.round(totalProfit)).toLocaleString()}
-              <span className="text-sm ml-1">({profitPercentage.toFixed(1)}%)</span>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div className="rounded-lg bg-secondary/10 p-4">
+            <div className="mb-1 text-sm text-muted-foreground">
+              Initial Investment
             </div>
-            <div className="text-sm text-muted-foreground mt-1">
+            <div className="text-2xl font-bold">
+              ${investmentAmount.toLocaleString()}
+            </div>
+          </div>
+          <div className="rounded-lg bg-secondary/10 p-4">
+            <div className="mb-1 text-sm text-muted-foreground">
+              Projected Value
+            </div>
+            <div className="text-2xl font-bold">
+              ${Math.round(currentValue).toLocaleString()}
+            </div>
+          </div>
+          <div className="rounded-lg bg-secondary/10 p-4">
+            <div className="mb-1 text-sm text-muted-foreground">
+              Total Return
+            </div>
+            <div
+              className={`text-2xl font-bold ${totalProfit >= 0 ? 'text-green-600' : 'text-red-600'}`}
+            >
+              {totalProfit >= 0 ? '+' : '-'}$
+              {Math.abs(Math.round(totalProfit)).toLocaleString()}
+              <span className="ml-1 text-sm">
+                ({profitPercentage.toFixed(1)}%)
+              </span>
+            </div>
+            <div className="mt-1 text-sm text-muted-foreground">
               {(annualizedReturn * 100).toFixed(1)}% annualized
             </div>
           </div>
@@ -106,7 +130,7 @@ const ROISimulationChart = ({ expectedROI = 12 }) => {
             <label className="text-sm font-medium">Investment Amount</label>
             <div className="flex items-center space-x-4">
               <div className="relative flex-1">
-                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                <DollarSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   type="text"
                   value={investmentAmount.toLocaleString()}
@@ -132,7 +156,7 @@ const ROISimulationChart = ({ expectedROI = 12 }) => {
             <label className="text-sm font-medium">Time Frame</label>
             <div className="flex items-center space-x-4">
               <div className="relative flex-1">
-                <Clock className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                <Clock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   type="text"
                   value={`${timeFrameYears} ${timeFrameYears === 1 ? 'year' : 'years'}`}
@@ -158,18 +182,21 @@ const ROISimulationChart = ({ expectedROI = 12 }) => {
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={simulationData}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis 
-                dataKey="month" 
+              <XAxis
+                dataKey="month"
                 tick={{ fontSize: 12 }}
                 tickFormatter={formatXAxis}
                 interval={0}
               />
-              <YAxis 
+              <YAxis
                 tick={{ fontSize: 12 }}
                 tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
               />
               <Tooltip
-                formatter={(value: number) => [`$${Math.round(value).toLocaleString()}`, 'Value']}
+                formatter={(value: number) => [
+                  `$${Math.round(value).toLocaleString()}`,
+                  'Value',
+                ]}
                 labelFormatter={(label) => `Date: ${label}`}
               />
               <Line
@@ -183,12 +210,13 @@ const ROISimulationChart = ({ expectedROI = 12 }) => {
           </ResponsiveContainer>
         </div>
 
-        <div className="text-sm text-muted-foreground text-center">
-          *Past performance does not guarantee future results. This simulation assumes a constant {expectedROI}% annual ROI.
+        <div className="text-center text-sm text-muted-foreground">
+          *Past performance does not guarantee future results. This simulation
+          assumes a constant {expectedROI}% annual ROI.
         </div>
       </CardContent>
     </Card>
-  );
-};
+  )
+}
 
-export default ROISimulationChart;
+export default ROISimulationChart

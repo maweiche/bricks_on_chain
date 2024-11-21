@@ -3,8 +3,10 @@
 
 import { Component, ReactNode } from 'react'
 import { AlertCircle } from 'lucide-react'
+
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { FullScreenLoader, ButtonLoader } from '../loading'
+
+import { ButtonLoader, FullScreenLoader } from '../loading'
 
 interface Props {
   children: ReactNode
@@ -53,14 +55,14 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 }
 
-export function SuspenseBoundary({ 
+export function SuspenseBoundary({
   children,
   fullScreen = false,
-  onError 
+  onError,
 }: {
-  children: ReactNode;
-  fullScreen?: boolean;
-  onError?: (error: Error, info: React.ErrorInfo) => void;
+  children: ReactNode
+  fullScreen?: boolean
+  onError?: (error: Error, info: React.ErrorInfo) => void
 }) {
   return (
     <ErrorBoundary

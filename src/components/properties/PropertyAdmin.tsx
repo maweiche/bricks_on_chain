@@ -1,39 +1,48 @@
 'use client'
-import React, { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
+
+import React, { useState } from 'react'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { AnimatePresence, motion } from 'framer-motion'
+import {
+  DollarSign,
+  Edit,
+  ImagePlus,
+  Loader2,
+  Plus,
+  Trash2,
+} from 'lucide-react'
+
+import { useToast } from '@/hooks/use-toast'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
 import {
-  Trash2,
-  Edit,
-  Plus,
-  Loader2,
-  ImagePlus,
-  DollarSign,
-} from 'lucide-react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { Textarea } from '@/components/ui/textarea'
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../ui/select'
 
 export default function PropertyAdmin() {
-  const [selectedProperties, setSelectedProperties] = useState<string[]>([]);
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [selectedProperties, setSelectedProperties] = useState<string[]>([])
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [newProperty, setNewProperty] = useState({
     id: '',
     title: '',
@@ -46,19 +55,19 @@ export default function PropertyAdmin() {
     fundingGoal: 0,
     currentFunding: 0,
     roi: 0,
-  });
+  })
 
-  const queryClient = useQueryClient();
-  const { toast } = useToast();
+  const queryClient = useQueryClient()
+  const { toast } = useToast()
 
   // Fetch properties
   const { data: properties, isLoading } = useQuery({
     queryKey: ['properties'],
     queryFn: async () => {
-      const res = await fetch('/api/properties');
-      return res.json();
+      const res = await fetch('/api/properties')
+      return res.json()
     },
-  });
+  })
 
   // Delete mutation
   const deleteMutation = useMutation({
@@ -67,25 +76,25 @@ export default function PropertyAdmin() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ids }),
-      });
-      if (!res.ok) throw new Error('Failed to delete properties');
+      })
+      if (!res.ok) throw new Error('Failed to delete properties')
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['properties'] });
+      queryClient.invalidateQueries({ queryKey: ['properties'] })
       toast({
         title: 'Success',
         description: 'Properties deleted successfully',
-      });
-      setSelectedProperties([]);
+      })
+      setSelectedProperties([])
     },
     onError: () => {
       toast({
         title: 'Error',
         description: 'Failed to delete properties',
         variant: 'destructive',
-      });
+      })
     },
-  });
+  })
 
   // Add mutation
   const addMutation = useMutation({
@@ -94,16 +103,16 @@ export default function PropertyAdmin() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(propertyData),
-      });
-      if (!res.ok) throw new Error('Failed to add property');
+      })
+      if (!res.ok) throw new Error('Failed to add property')
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['properties'] });
+      queryClient.invalidateQueries({ queryKey: ['properties'] })
       toast({
         title: 'Success',
         description: 'Property added successfully',
-      });
-      setIsAddDialogOpen(false);
+      })
+      setIsAddDialogOpen(false)
       setNewProperty({
         id: '',
         title: '',
@@ -116,45 +125,45 @@ export default function PropertyAdmin() {
         fundingGoal: 0,
         currentFunding: 0,
         roi: 0,
-      });
+      })
     },
     onError: () => {
       toast({
         title: 'Error',
         description: 'Failed to add property',
         variant: 'destructive',
-      });
+      })
     },
-  });
+  })
 
   const handleSelectProperty = (id: string) => {
-    setSelectedProperties(prev =>
-      prev.includes(id)
-        ? prev.filter(p => p !== id)
-        : [...prev, id]
-    );
-  };
+    setSelectedProperties((prev) =>
+      prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]
+    )
+  }
 
   const handleDeleteSelected = () => {
-    if (window.confirm('Are you sure you want to delete the selected properties?')) {
-      deleteMutation.mutate(selectedProperties);
+    if (
+      window.confirm('Are you sure you want to delete the selected properties?')
+    ) {
+      deleteMutation.mutate(selectedProperties)
     }
-  };
+  }
 
   const handleAddProperty = (e: React.FormEvent) => {
-    e.preventDefault();
-    addMutation.mutate(newProperty);
-  };
+    e.preventDefault()
+    addMutation.mutate(newProperty)
+  }
 
   return (
     <div className="container mx-auto py-8">
-      <div className="flex justify-between items-center mb-6">
+      <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold">Property Management</h1>
         <div className="space-x-2">
           <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
             <DialogTrigger asChild>
               <Button>
-                <Plus className="w-4 h-4 mr-2" />
+                <Plus className="mr-2 h-4 w-4" />
                 Add Property
               </Button>
             </DialogTrigger>
@@ -166,23 +175,27 @@ export default function PropertyAdmin() {
                 <Input
                   placeholder="Title"
                   value={newProperty.title}
-                  onChange={e => setNewProperty(prev => ({
-                    ...prev,
-                    title: e.target.value
-                  }))}
+                  onChange={(e) =>
+                    setNewProperty((prev) => ({
+                      ...prev,
+                      title: e.target.value,
+                    }))
+                  }
                 />
                 <Textarea
                   placeholder="Description"
                   value={newProperty.description}
-                  onChange={(e: { target: { value: any; }; }) => setNewProperty(prev => ({
-                    ...prev,
-                    description: e.target.value
-                  }))}
+                  onChange={(e: { target: { value: any } }) =>
+                    setNewProperty((prev) => ({
+                      ...prev,
+                      description: e.target.value,
+                    }))
+                  }
                 />
                 {/* Add other fields as needed */}
                 <Button type="submit" disabled={addMutation.isPending}>
                   {addMutation.isPending ? (
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   ) : (
                     'Add Property'
                   )}
@@ -190,7 +203,7 @@ export default function PropertyAdmin() {
               </form>
             </DialogContent>
           </Dialog>
-          
+
           {selectedProperties.length > 0 && (
             <Button
               variant="destructive"
@@ -198,9 +211,9 @@ export default function PropertyAdmin() {
               disabled={deleteMutation.isPending}
             >
               {deleteMutation.isPending ? (
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               ) : (
-                <Trash2 className="w-4 h-4 mr-2" />
+                <Trash2 className="mr-2 h-4 w-4" />
               )}
               Delete Selected
             </Button>
@@ -208,19 +221,23 @@ export default function PropertyAdmin() {
         </div>
       </div>
 
-      <div className="bg-card rounded-lg shadow">
+      <div className="rounded-lg bg-card shadow">
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead className="w-12">
                 <input
                   type="checkbox"
-                  checked={selectedProperties.length === properties?.properties.length}
+                  checked={
+                    selectedProperties.length === properties?.properties.length
+                  }
                   onChange={(e) => {
                     if (e.target.checked) {
-                      setSelectedProperties(properties?.properties.map((p: any) => p.id) || []);
+                      setSelectedProperties(
+                        properties?.properties.map((p: any) => p.id) || []
+                      )
                     } else {
-                      setSelectedProperties([]);
+                      setSelectedProperties([])
                     }
                   }}
                   className="rounded"
@@ -237,13 +254,13 @@ export default function PropertyAdmin() {
             <AnimatePresence mode="wait">
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8">
-                    <Loader2 className="w-6 h-6 animate-spin mx-auto" />
+                  <TableCell colSpan={6} className="py-8 text-center">
+                    <Loader2 className="mx-auto h-6 w-6 animate-spin" />
                   </TableCell>
                 </TableRow>
               ) : properties?.properties.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8">
+                  <TableCell colSpan={6} className="py-8 text-center">
                     <p className="text-muted-foreground">No properties found</p>
                   </TableCell>
                 </TableRow>
@@ -264,12 +281,14 @@ export default function PropertyAdmin() {
                         className="rounded"
                       />
                     </TableCell>
-                    <TableCell className="font-medium">{property.title}</TableCell>
+                    <TableCell className="font-medium">
+                      {property.title}
+                    </TableCell>
                     <TableCell>{property.location}</TableCell>
                     <TableCell>${property.price.toLocaleString()}</TableCell>
                     <TableCell>
                       <span
-                        className={`px-2 py-1 rounded-full text-xs ${
+                        className={`rounded-full px-2 py-1 text-xs ${
                           property.funded
                             ? 'bg-green-100 text-green-800'
                             : 'bg-blue-100 text-blue-800'
@@ -284,11 +303,11 @@ export default function PropertyAdmin() {
                           variant="ghost"
                           size="icon"
                           onClick={() => {
-                            setNewProperty(property);
-                            setIsAddDialogOpen(true);
+                            setNewProperty(property)
+                            setIsAddDialogOpen(true)
                           }}
                         >
-                          <Edit className="w-4 h-4" />
+                          <Edit className="h-4 w-4" />
                         </Button>
                         <Button
                           variant="ghost"
@@ -296,7 +315,7 @@ export default function PropertyAdmin() {
                           className="text-destructive"
                           onClick={() => handleSelectProperty(property.id)}
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
                     </TableCell>
@@ -317,17 +336,19 @@ export default function PropertyAdmin() {
             </DialogTitle>
           </DialogHeader>
           <form onSubmit={handleAddProperty} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="space-y-4">
                 <div>
                   <label className="text-sm font-medium">Title</label>
                   <Input
                     placeholder="Property Title"
                     value={newProperty.title}
-                    onChange={e => setNewProperty(prev => ({
-                      ...prev,
-                      title: e.target.value
-                    }))}
+                    onChange={(e) =>
+                      setNewProperty((prev) => ({
+                        ...prev,
+                        title: e.target.value,
+                      }))
+                    }
                   />
                 </div>
 
@@ -336,10 +357,12 @@ export default function PropertyAdmin() {
                   <Input
                     placeholder="Property Location"
                     value={newProperty.location}
-                    onChange={e => setNewProperty(prev => ({
-                      ...prev,
-                      location: e.target.value
-                    }))}
+                    onChange={(e) =>
+                      setNewProperty((prev) => ({
+                        ...prev,
+                        location: e.target.value,
+                      }))
+                    }
                   />
                 </div>
 
@@ -347,10 +370,12 @@ export default function PropertyAdmin() {
                   <label className="text-sm font-medium">Type</label>
                   <Select
                     value={newProperty.type}
-                    onValueChange={(value) => setNewProperty(prev => ({
-                      ...prev,
-                      type: value
-                    }))}
+                    onValueChange={(value) =>
+                      setNewProperty((prev) => ({
+                        ...prev,
+                        type: value,
+                      }))
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select type" />
@@ -369,10 +394,12 @@ export default function PropertyAdmin() {
                     type="number"
                     placeholder="Property Price"
                     value={newProperty.price}
-                    onChange={e => setNewProperty(prev => ({
-                      ...prev,
-                      price: Number(e.target.value)
-                    }))}
+                    onChange={(e) =>
+                      setNewProperty((prev) => ({
+                        ...prev,
+                        price: Number(e.target.value),
+                      }))
+                    }
                   />
                 </div>
               </div>
@@ -384,10 +411,12 @@ export default function PropertyAdmin() {
                     type="number"
                     placeholder="Funding Goal"
                     value={newProperty.fundingGoal}
-                    onChange={e => setNewProperty(prev => ({
-                      ...prev,
-                      fundingGoal: Number(e.target.value)
-                    }))}
+                    onChange={(e) =>
+                      setNewProperty((prev) => ({
+                        ...prev,
+                        fundingGoal: Number(e.target.value),
+                      }))
+                    }
                   />
                 </div>
 
@@ -397,10 +426,12 @@ export default function PropertyAdmin() {
                     type="number"
                     placeholder="Current Funding"
                     value={newProperty.currentFunding}
-                    onChange={e => setNewProperty(prev => ({
-                      ...prev,
-                      currentFunding: Number(e.target.value)
-                    }))}
+                    onChange={(e) =>
+                      setNewProperty((prev) => ({
+                        ...prev,
+                        currentFunding: Number(e.target.value),
+                      }))
+                    }
                   />
                 </div>
 
@@ -410,21 +441,25 @@ export default function PropertyAdmin() {
                     type="number"
                     placeholder="Expected ROI"
                     value={newProperty.roi}
-                    onChange={e => setNewProperty(prev => ({
-                      ...prev,
-                      roi: Number(e.target.value)
-                    }))}
+                    onChange={(e) =>
+                      setNewProperty((prev) => ({
+                        ...prev,
+                        roi: Number(e.target.value),
+                      }))
+                    }
                   />
                 </div>
 
                 <div>
                   <label className="text-sm font-medium">Status</label>
                   <Select
-                    value={newProperty.funded ? "funded" : "funding"}
-                    onValueChange={(value) => setNewProperty(prev => ({
-                      ...prev,
-                      funded: value === "funded"
-                    }))}
+                    value={newProperty.funded ? 'funded' : 'funding'}
+                    onValueChange={(value) =>
+                      setNewProperty((prev) => ({
+                        ...prev,
+                        funded: value === 'funded',
+                      }))
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select status" />
@@ -444,10 +479,12 @@ export default function PropertyAdmin() {
                 placeholder="Property Description"
                 className="h-32"
                 value={newProperty.description}
-                onChange={(e: { target: { value: any; }; }) => setNewProperty(prev => ({
-                  ...prev,
-                  description: e.target.value
-                }))}
+                onChange={(e: { target: { value: any } }) =>
+                  setNewProperty((prev) => ({
+                    ...prev,
+                    description: e.target.value,
+                  }))
+                }
               />
             </div>
 
@@ -461,7 +498,7 @@ export default function PropertyAdmin() {
               </Button>
               <Button type="submit" disabled={addMutation.isPending}>
                 {addMutation.isPending ? (
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 ) : (
                   <>{newProperty.id ? 'Update' : 'Add'} Property</>
                 )}
@@ -471,5 +508,5 @@ export default function PropertyAdmin() {
         </DialogContent>
       </Dialog>
     </div>
-  );
+  )
 }

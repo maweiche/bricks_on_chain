@@ -1,18 +1,19 @@
-import { useWallet } from '@solana/wallet-adapter-react'
-import { useStore } from '@/lib/store'
 import { useEffect, useState } from 'react'
+import { useWallet } from '@solana/wallet-adapter-react'
+
+import { useStore } from '@/lib/store'
 
 export function useAuth() {
   const { connected, publicKey, disconnect: walletDisconnect } = useWallet()
-  const user = useStore(state => state.user)
-  const isAdmin = useStore(state => state.isAdmin)
-  const checkAuth = useStore(state => state.checkAuth)
-  const createProfile = useStore(state => state.createProfile)
-  const updateProfile = useStore(state => state.updateProfile)
+  const user = useStore((state) => state.user)
+  const isAdmin = useStore((state) => state.isAdmin)
+  const checkAuth = useStore((state) => state.checkAuth)
+  const createProfile = useStore((state) => state.createProfile)
+  const updateProfile = useStore((state) => state.updateProfile)
   const [authState, setAuthState] = useState({
     isLoading: true,
     isInitialized: false,
-    lastCheckedAddress: null as string | null
+    lastCheckedAddress: null as string | null,
   })
 
   // Debug logging
@@ -22,7 +23,7 @@ export function useAuth() {
       publicKey: publicKey?.toString(),
       user,
       isAdmin,
-      authState
+      authState,
     })
   }, [connected, publicKey, user, isAdmin, authState])
 
@@ -33,10 +34,10 @@ export function useAuth() {
     const checkUserAuth = async () => {
       if (!connected || !publicKey) {
         if (mounted) {
-          setAuthState(prev => ({
+          setAuthState((prev) => ({
             isLoading: false,
             isInitialized: true,
-            lastCheckedAddress: null
+            lastCheckedAddress: null,
           }))
         }
         return
@@ -55,7 +56,7 @@ export function useAuth() {
           setAuthState({
             isLoading: false,
             isInitialized: true,
-            lastCheckedAddress: address
+            lastCheckedAddress: address,
           })
         }
       } catch (error) {
@@ -64,7 +65,7 @@ export function useAuth() {
           setAuthState({
             isLoading: false,
             isInitialized: true,
-            lastCheckedAddress: null
+            lastCheckedAddress: null,
           })
         }
       }
@@ -82,12 +83,12 @@ export function useAuth() {
   }, [connected, publicKey, checkAuth, authState.lastCheckedAddress])
 
   const isAuthenticated = Boolean(
-    connected && 
-    publicKey &&
-    user && 
-    !authState.isLoading && 
-    authState.isInitialized &&
-    authState.lastCheckedAddress === publicKey.toString()
+    connected &&
+      publicKey &&
+      user &&
+      !authState.isLoading &&
+      authState.isInitialized &&
+      authState.lastCheckedAddress === publicKey.toString()
   )
 
   const isAdminUser = Boolean(isAuthenticated && isAdmin)
@@ -99,6 +100,6 @@ export function useAuth() {
     isLoading: authState.isLoading || !authState.isInitialized,
     walletConnected: connected && !!publicKey,
     createProfile,
-    updateProfile
+    updateProfile,
   }
 }

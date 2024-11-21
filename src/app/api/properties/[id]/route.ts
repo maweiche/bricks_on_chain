@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { z } from 'zod'
 import fs from 'fs/promises'
 import path from 'path'
+import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 
 // Path to our JSON file
 const DB_PATH = path.join(process.cwd(), 'data', 'properties.json')
@@ -23,21 +23,31 @@ const PropertyResponseSchema = z.object({
   updatedAt: z.string(),
   // Additional details for single property view
   amenities: z.array(z.string()).optional(),
-  documents: z.array(z.object({
-    id: z.string(),
-    name: z.string(),
-    type: z.string(),
-    url: z.string(),
-  })).optional(),
-  investments: z.array(z.object({
-    date: z.string(),
-    amount: z.number(),
-  })).optional(),
-  analytics: z.object({
-    totalInvestors: z.number(),
-    averageInvestment: z.number(),
-    daysRemaining: z.number(),
-  }).optional(),
+  documents: z
+    .array(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        type: z.string(),
+        url: z.string(),
+      })
+    )
+    .optional(),
+  investments: z
+    .array(
+      z.object({
+        date: z.string(),
+        amount: z.number(),
+      })
+    )
+    .optional(),
+  analytics: z
+    .object({
+      totalInvestors: z.number(),
+      averageInvestment: z.number(),
+      daysRemaining: z.number(),
+    })
+    .optional(),
 })
 
 type PropertyResponse = z.infer<typeof PropertyResponseSchema>
@@ -104,26 +114,23 @@ export async function GET(
     // Rate limiting check
     const clientIp = request.headers.get('x-forwarded-for') || 'unknown'
     const rateLimitKey = `property-${params.id}-${clientIp}`
-    
+
     // You would implement proper rate limiting here
     // For now, we'll just continue with the request
-    
+
     // Read database
     const db = await readDB()
-    
+
     // Find the property
     const property = db.properties.find((p: any) => p.id === params.id)
-    
+
     if (!property) {
-      return NextResponse.json(
-        { error: 'Property not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Property not found' }, { status: 404 })
     }
 
     // Validate the base property data
     const validationResult = PropertyResponseSchema.safeParse(property)
-    
+
     if (!validationResult.success) {
       console.error('Property validation failed:', validationResult.error)
       return NextResponse.json(
@@ -141,9 +148,9 @@ export async function GET(
 
     return NextResponse.json(
       { property: enrichedProperty },
-      { 
+      {
         headers,
-        status: 200 
+        status: 200,
       }
     )
   } catch (error) {
@@ -163,23 +170,25 @@ export async function PATCH(
   try {
     const json = await request.json()
     const db = await readDB()
-    
+
     // Find the property
-    const propertyIndex = db.properties.findIndex((p: any) => p.id === params.id)
-    
+    const propertyIndex = db.properties.findIndex(
+      (p: any) => p.id === params.id
+    )
+
     if (propertyIndex === -1) {
-      return NextResponse.json(
-        { error: 'Property not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Property not found' }, { status: 404 })
     }
 
     // Validate the update data
     const validationResult = PropertyResponseSchema.partial().safeParse(json)
-    
+
     if (!validationResult.success) {
       return NextResponse.json(
-        { error: 'Invalid update data', details: validationResult.error.format() },
+        {
+          error: 'Invalid update data',
+          details: validationResult.error.format(),
+        },
         { status: 400 }
       )
     }
@@ -190,7 +199,7 @@ export async function PATCH(
       ...validationResult.data,
       updatedAt: new Date().toISOString(),
     }
-    
+
     // Write back to database
     await fs.writeFile(DB_PATH, JSON.stringify(db, null, 2))
 
@@ -214,27 +223,23 @@ export async function DELETE(
 ) {
   try {
     const db = await readDB()
-    
+
     // Find the property
-    const propertyIndex = db.properties.findIndex((p: any) => p.id === params.id)
-    
+    const propertyIndex = db.properties.findIndex(
+      (p: any) => p.id === params.id
+    )
+
     if (propertyIndex === -1) {
-      return NextResponse.json(
-        { error: 'Property not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Property not found' }, { status: 404 })
     }
 
     // Remove the property
     db.properties.splice(propertyIndex, 1)
-    
+
     // Write back to database
     await fs.writeFile(DB_PATH, JSON.stringify(db, null, 2))
 
-    return NextResponse.json(
-      { success: true },
-      { status: 200 }
-    )
+    return NextResponse.json({ success: true }, { status: 200 })
   } catch (error) {
     console.error('Property deletion error:', error)
     return NextResponse.json(

@@ -1,44 +1,44 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import { Moon, Sun } from "lucide-react"
-import { useTheme } from "next-themes"
-import { motion, AnimatePresence } from "framer-motion"
+import * as React from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
+import { Moon, Sun } from 'lucide-react'
+import { useTheme } from 'next-themes'
 
-import { Button } from "@/components/ui/button"
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from '@/components/ui/dropdown-menu'
 
 export function ThemeToggle() {
   const { setTheme, theme } = useTheme()
-  
+
   const iconVariants = {
     initial: { scale: 0, rotate: -180 },
     animate: { scale: 1, rotate: 0 },
-    exit: { scale: 0, rotate: 180 }
+    exit: { scale: 0, rotate: 180 },
   }
 
   const menuItemVariants = {
     initial: { opacity: 0, y: -10 },
     animate: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: 10 }
+    exit: { opacity: 0, y: 10 },
   }
 
   return (
     <React.Suspense fallback={null}>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             size="icon"
-            className="relative w-10 h-10 hover:bg-background"
+            className="relative h-10 w-10 hover:bg-background"
           >
             <AnimatePresence mode="wait">
-              {theme !== "dark" ? (
+              {theme !== 'dark' ? (
                 <motion.div
                   key="sun"
                   variants={iconVariants}
@@ -46,9 +46,9 @@ export function ThemeToggle() {
                   animate="animate"
                   exit="exit"
                   className="absolute inset-0 flex items-center justify-center"
-                  transition={{ duration: 0.3, ease: "anticipate" }}
+                  transition={{ duration: 0.3, ease: 'anticipate' }}
                 >
-                  <Sun className="w-5 h-5" />
+                  <Sun className="h-5 w-5" />
                 </motion.div>
               ) : (
                 <motion.div
@@ -58,9 +58,9 @@ export function ThemeToggle() {
                   animate="animate"
                   exit="exit"
                   className="absolute inset-0 flex items-center justify-center"
-                  transition={{ duration: 0.3, ease: "anticipate" }}
+                  transition={{ duration: 0.3, ease: 'anticipate' }}
                 >
-                  <Moon className="w-5 h-5" />
+                  <Moon className="h-5 w-5" />
                 </motion.div>
               )}
             </AnimatePresence>
@@ -68,7 +68,7 @@ export function ThemeToggle() {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <AnimatePresence>
-            {["light", "dark", "system"].map((t) => (
+            {['light', 'dark', 'system'].map((t) => (
               <motion.div
                 key={t}
                 variants={menuItemVariants}

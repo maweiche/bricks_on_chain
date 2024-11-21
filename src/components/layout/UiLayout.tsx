@@ -1,31 +1,42 @@
 'use client'
 
 import * as React from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
-import {ReactNode, useState, useEffect} from 'react'
-import { Toaster } from '../ui/toaster'
+import { ShoppingCart } from 'lucide-react'
+
+import { useStore } from '@/lib/store'
 import { useAuth } from '@/hooks/use-auth'
-import { ProfileDialog } from '../profile/ProfileDialog'
-import { useStore } from '@/lib/store';
-import { ShoppingCart } from 'lucide-react';
-import { Button } from '../ui/button'
+import { FooterSkeleton, NavbarSkeleton } from '@/components/loading'
 import { ErrorBoundary, SuspenseBoundary } from '@/components/providers'
-import { NavbarSkeleton, FooterSkeleton } from '@/components/loading'
 
-const Navbar = dynamic(() => import("@/components/layout").then((mod) => mod.Navbar), {
-  loading: () => <NavbarSkeleton />,
-  ssr: false,
-});
+import { ProfileDialog } from '../profile/ProfileDialog'
+import { Button } from '../ui/button'
+import { Toaster } from '../ui/toaster'
 
-const Footer = dynamic(() => import("@/components/layout").then((mod) => mod.Footer), {
-  loading: () => <FooterSkeleton />,
-  ssr: false,
-});
+const Navbar = dynamic(
+  () => import('@/components/layout').then((mod) => mod.Navbar),
+  {
+    loading: () => <NavbarSkeleton />,
+    ssr: false,
+  }
+)
 
-const Cart = dynamic(() => import('../purchasing/ShoppingCart').then(mod => mod.Cart), {
-  loading: () => null,
-  ssr: false,
-});
+const Footer = dynamic(
+  () => import('@/components/layout').then((mod) => mod.Footer),
+  {
+    loading: () => <FooterSkeleton />,
+    ssr: false,
+  }
+)
+
+const Cart = dynamic(
+  () => import('../purchasing/ShoppingCart').then((mod) => mod.Cart),
+  {
+    loading: () => null,
+    ssr: false,
+  }
+)
 
 export function UiLayout({ children }: { children: ReactNode }) {
   const { isAuthenticated, isLoading, walletConnected } = useAuth()
@@ -42,71 +53,70 @@ export function UiLayout({ children }: { children: ReactNode }) {
         console.error('Layout error:', error, info)
       }}
     >
-      <main className="h-full w-full flex flex-col">
+      <div className="relative flex min-h-screen flex-col">
         <Navbar />
-        
-        <div className="flex-grow">
-          <SuspenseBoundary 
-            fullScreen
-            onError={(error) => {
-              console.error('Suspense error:', error)
-            }}
-          >
-            {mounted ? children : null}
-          </SuspenseBoundary>
-          
-          <ErrorBoundary fallback={null}>
-            {mounted && walletConnected && !isLoading && !isAuthenticated && (
-              <ProfileDialog 
-                isOpen={showProfileModal}
-                onClose={() => setShowProfileModal(false)}
-              />
-            )}
-          </ErrorBoundary>
-          
-          <ErrorBoundary fallback={null}>
-            <Toaster />
-          </ErrorBoundary>
-          
-          <ErrorBoundary fallback={null}>
-            {mounted && <Cart />}
-          </ErrorBoundary>
-          
-          <ErrorBoundary fallback={null}>
-            {mounted && <CartButton />}
-          </ErrorBoundary>
-        </div>
+        <main className="flex flex-1 flex-col pb-[64px]">
+          <div className="flex flex-1 flex-col">
+            <SuspenseBoundary
+              fullScreen
+              onError={(error) => {
+                console.error('Suspense error:', error)
+              }}
+            >
+              {mounted ? children : null}
+            </SuspenseBoundary>
 
-        <Footer />
-      </main>
+            <ErrorBoundary fallback={null}>
+              {mounted && walletConnected && !isLoading && !isAuthenticated && (
+                <ProfileDialog
+                  isOpen={showProfileModal}
+                  onClose={() => setShowProfileModal(false)}
+                />
+              )}
+            </ErrorBoundary>
+
+            <ErrorBoundary fallback={null}>
+              <Toaster />
+            </ErrorBoundary>
+
+            <ErrorBoundary fallback={null}>{mounted && <Cart />}</ErrorBoundary>
+
+            <ErrorBoundary fallback={null}>
+              {mounted && <CartButton />}
+            </ErrorBoundary>
+          </div>
+        </main>
+        <div className="bg-background">
+          <Footer />
+        </div>
+      </div>
     </ErrorBoundary>
   )
 }
 
 function CartButton() {
-  const { items, setIsOpen, getTotalFractions } = useStore();
-  const [mounted, setMounted] = useState(false);
-  
+  const { items, setIsOpen, getTotalFractions } = useStore()
+  const [mounted, setMounted] = useState(false)
+
   useEffect(() => {
-    setMounted(true);
-  }, []);
-  
-  if (!mounted) return null;
-  
+    setMounted(true)
+  }, [])
+
+  if (!mounted) return null
+
   return (
     <Button
       variant="outline"
       size="icon"
-      className="fixed bottom-4 right-6 h-12 w-12 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 z-[100]"
+      className="fixed bottom-4 right-6 z-[100] h-12 w-12 rounded-full shadow-lg transition-all duration-200 hover:shadow-xl"
       onClick={() => setIsOpen(true)}
     >
-      <ShoppingCart className="w-5 h-5" />
+      <ShoppingCart className="h-5 w-5" />
       {items.length > 0 && (
-        <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground w-5 h-5 rounded-full text-xs flex items-center justify-center">
+        <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">
           {getTotalFractions()}
         </span>
       )}
     </Button>
-  );
+  )
 }
-

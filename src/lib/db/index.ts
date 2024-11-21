@@ -27,5 +27,5 @@ export const db = {
     const data = await res.json()
     if (!res.ok) throw new Error(data.error)
     return data.user
-  }
+  },
 }

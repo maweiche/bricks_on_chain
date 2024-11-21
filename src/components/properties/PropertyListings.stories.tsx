@@ -1,21 +1,22 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import PropertyListings from './PropertyListings';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ThemeProvider } from '../theme/ThemeProvider';
+import type { Meta, StoryObj } from '@storybook/react'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+
+import { ThemeProvider } from '../theme/ThemeProvider'
+import PropertyListings from './PropertyListings'
 
 // Create a QueryClient instance
 const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        // Disable retries for stories
-        retry: false,
-        // Disable refetching
-        refetchOnWindowFocus: false,
-        refetchOnMount: false,
-        refetchOnReconnect: false,
-      },
+  defaultOptions: {
+    queries: {
+      // Disable retries for stories
+      retry: false,
+      // Disable refetching
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
     },
-  });
+  },
+})
 
 // Mock data
 const mockProperties = [
@@ -56,7 +57,7 @@ const mockProperties = [
     images: ['/api/placeholder/800/600'],
   },
   // Add more mock properties to test pagination...
-];
+]
 
 const meta: Meta<typeof PropertyListings> = {
   title: 'Pages/PropertyListings',
@@ -90,13 +91,13 @@ const meta: Meta<typeof PropertyListings> = {
       </QueryClientProvider>
     ),
   ],
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof PropertyListings>;
+export default meta
+type Story = StoryObj<typeof PropertyListings>
 
 // Default state
-export const Default: Story = {};
+export const Default: Story = {}
 
 // Loading state
 export const Loading: Story = {
@@ -111,7 +112,7 @@ export const Loading: Story = {
       },
     ],
   },
-};
+}
 
 // Empty state
 export const NoResults: Story = {
@@ -125,7 +126,7 @@ export const NoResults: Story = {
       },
     ],
   },
-};
+}
 
 // Filtered results
 export const FilteredByType: Story = {
@@ -136,12 +137,12 @@ export const FilteredByType: Story = {
         method: 'GET',
         status: 200,
         response: {
-          properties: mockProperties.filter(p => p.type === 'apartment'),
+          properties: mockProperties.filter((p) => p.type === 'apartment'),
         },
       },
     ],
   },
-};
+}
 
 // Error state
 export const Error: Story = {
@@ -155,7 +156,7 @@ export const Error: Story = {
       },
     ],
   },
-};
+}
 
 // Add documentation
 export const Documentation: Story = {
@@ -196,4 +197,4 @@ export default function PropertiesPage() {
       },
     },
   },
-};
+}

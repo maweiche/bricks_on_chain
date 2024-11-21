@@ -1,3 +1,3 @@
-import { SolanaErrorBoundary } from "./SolanaErrorBoundary";
+import { SolanaErrorBoundary } from './SolanaErrorBoundary'
 
-export { SolanaErrorBoundary };
+export { SolanaErrorBoundary }

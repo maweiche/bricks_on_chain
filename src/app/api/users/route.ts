@@ -1,6 +1,7 @@
-import { NextResponse } from 'next/server'
 import { promises as fs } from 'fs'
 import path from 'path'
+import { NextResponse } from 'next/server'
+
 import { User } from '@/lib/store/types'
 
 const DB_PATH = path.join(process.cwd(), 'data')
@@ -26,14 +27,16 @@ initDB()
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const address = searchParams.get('address')
-  
+
   try {
     const data = await fs.readFile(USERS_FILE, 'utf-8')
     const users = JSON.parse(data) as User[]
 
     // If address is provided, return single user
     if (address) {
-      const user = users.find(u => u.address.toLowerCase() === address.toLowerCase())
+      const user = users.find(
+        (u) => u.address.toLowerCase() === address.toLowerCase()
+      )
       return NextResponse.json({ user })
     }
 
@@ -41,7 +44,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ users })
   } catch (error) {
     return NextResponse.json(
-      { error: 'Failed to fetch user(s)' }, 
+      { error: 'Failed to fetch user(s)' },
       { status: 500 }
     )
   }
@@ -52,19 +55,22 @@ export async function POST(request: Request) {
     const userData = await request.json()
     const data = await fs.readFile(USERS_FILE, 'utf-8')
     const users = JSON.parse(data) as User[]
-    
+
     const newUser: User = {
       ...userData,
       id: `user_${Date.now()}`,
       joinedAt: new Date(),
     }
-    
+
     users.push(newUser)
     await fs.writeFile(USERS_FILE, JSON.stringify(users, null, 2))
-    
+
     return NextResponse.json({ user: newUser })
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to create user' }, { status: 500 })
+    return NextResponse.json(
+      { error: 'Failed to create user' },
+      { status: 500 }
+    )
   }
 }
 
@@ -73,22 +79,25 @@ export async function PATCH(request: Request) {
     const { id, ...userData } = await request.json()
     const data = await fs.readFile(USERS_FILE, 'utf-8')
     const users = JSON.parse(data) as User[]
-    
-    const userIndex = users.findIndex(user => user.id === id)
+
+    const userIndex = users.findIndex((user) => user.id === id)
     if (userIndex === -1) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
-    
+
     const updatedUser = {
       ...users[userIndex],
       ...userData,
     }
-    
+
     users[userIndex] = updatedUser
     await fs.writeFile(USERS_FILE, JSON.stringify(users, null, 2))
-    
+
     return NextResponse.json({ user: updatedUser })
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to update user' }, { status: 500 })
+    return NextResponse.json(
+      { error: 'Failed to update user' },
+      { status: 500 }
+    )
   }
 }

@@ -1,40 +1,41 @@
-import { useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
-import { Button } from '@/components/ui/button';
+import { useState } from 'react'
+import { useMutation } from '@tanstack/react-query'
+import { Loader2 } from 'lucide-react'
+
+import { useStore } from '@/lib/store'
+import { useToast } from '@/hooks/use-toast'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { useToast } from '@/hooks/use-toast';
-import { useStore } from '@/lib/store';
-import { Loader2 } from 'lucide-react';
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
 
 interface PurchaseButtonProps {
   property: {
-    id: any;
-    title: string;
-    price: number;
-    fundingGoal: number;
-    currentFunding: number;
-    funded: boolean;
-  };
+    id: any
+    title: string
+    price: number
+    fundingGoal: number
+    currentFunding: number
+    funded: boolean
+  }
 }
 
 export function PurchaseButton({ property }: PurchaseButtonProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [fractionCount, setFractionCount] = useState(1);
-  const { toast } = useToast();
-  const user = useStore(state => state.user);
-  const FRACTION_PRICE = 100; // Price per fraction in USD
+  const [isOpen, setIsOpen] = useState(false)
+  const [fractionCount, setFractionCount] = useState(1)
+  const { toast } = useToast()
+  const user = useStore((state) => state.user)
+  const FRACTION_PRICE = 100 // Price per fraction in USD
 
   const purchaseMutation = useMutation({
     mutationFn: async () => {
       if (!user?.address) {
-        throw new Error('No wallet connected');
+        throw new Error('No wallet connected')
       }
 
       const response = await fetch(`/api/properties/${property.id}/purchase`, {
@@ -46,39 +47,39 @@ export function PurchaseButton({ property }: PurchaseButtonProps) {
           fractionCount,
           pricePerFraction: FRACTION_PRICE,
           totalAmount: fractionCount * FRACTION_PRICE,
-          wallet: user.address
+          wallet: user.address,
         }),
-      });
+      })
 
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Purchase failed');
+        const error = await response.json()
+        throw new Error(error.error || 'Purchase failed')
       }
 
-      return response.json();
+      return response.json()
     },
     onSuccess: (data) => {
       toast({
-        title: "Purchase Successful!",
+        title: 'Purchase Successful!',
         description: `Transaction ID: ${data.transactionId}`,
-      });
-      setIsOpen(false);
+      })
+      setIsOpen(false)
     },
     onError: (error: Error) => {
       toast({
-        title: "Purchase Failed",
+        title: 'Purchase Failed',
         description: error.message,
-        variant: "destructive",
-      });
+        variant: 'destructive',
+      })
     },
-  });
+  })
 
   return (
     <>
       <Button
         onClick={() => setIsOpen(true)}
         disabled={property.funded}
-        variant={property.funded ? "secondary" : "default"}
+        variant={property.funded ? 'secondary' : 'default'}
         className="w-full"
       >
         {property.funded ? 'Fully Funded' : 'Purchase Now'}
@@ -99,7 +100,10 @@ export function PurchaseButton({ property }: PurchaseButtonProps) {
               <Input
                 type="number"
                 min={1}
-                max={Math.floor((property.fundingGoal - property.currentFunding) / FRACTION_PRICE)}
+                max={Math.floor(
+                  (property.fundingGoal - property.currentFunding) /
+                    FRACTION_PRICE
+                )}
                 value={fractionCount}
                 onChange={(e) => setFractionCount(Number(e.target.value))}
                 className="mt-1"
@@ -114,10 +118,7 @@ export function PurchaseButton({ property }: PurchaseButtonProps) {
             </div>
 
             <div className="flex justify-end space-x-2">
-              <Button
-                variant="outline"
-                onClick={() => setIsOpen(false)}
-              >
+              <Button variant="outline" onClick={() => setIsOpen(false)}>
                 Cancel
               </Button>
               <Button
@@ -126,7 +127,7 @@ export function PurchaseButton({ property }: PurchaseButtonProps) {
               >
                 {purchaseMutation.isPending ? (
                   <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Processing...
                   </>
                 ) : (
@@ -138,5 +139,5 @@ export function PurchaseButton({ property }: PurchaseButtonProps) {
         </DialogContent>
       </Dialog>
     </>
-  );
+  )
 }

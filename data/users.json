@@ -46,14 +46,6 @@
         "wallet": "7wK3jPMYjpZHZAghjersW6hBNMgi9VAGr75AhYRqR2n"
       },
       {
-        "id": "inv_1732133577891",
-        "propertyId": "prop_1",
-        "fractionCount": 1,
-        "amount": 100,
-        "purchaseDate": "2024-11-20T20:12:57.891Z",
-        "status": "active"
-      },
-      {
         "id": "inv_1732134237398",
         "propertyId": "prop_1",
         "amount": 100,

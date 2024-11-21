@@ -1,11 +1,17 @@
 import { useWallet } from '@solana/wallet-adapter-react'
+import { motion } from 'framer-motion'
+import { useForm } from 'react-hook-form'
+
 import { useAuth } from '@/hooks/use-auth'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
-import { useForm } from 'react-hook-form'
-import { motion } from 'framer-motion'
 
 interface ProfileFormData {
   name: string
@@ -14,23 +20,27 @@ interface ProfileFormData {
 
 export function ProfileDialog({
   isOpen,
-  onClose
+  onClose,
 }: {
   isOpen: boolean
   onClose: () => void
 }) {
   const { publicKey } = useWallet()
   const { createProfile } = useAuth()
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<ProfileFormData>()
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<ProfileFormData>()
 
   const onSubmit = async (data: ProfileFormData) => {
     if (!publicKey) return
-    
+
     try {
       await createProfile({
         address: publicKey.toString(),
         role: 'user',
-        ...data
+        ...data,
       })
       onClose()
     } catch (error) {
@@ -45,7 +55,7 @@ export function ProfileDialog({
         <DialogHeader>
           <DialogTitle>Create Your Profile</DialogTitle>
         </DialogHeader>
-        
+
         <motion.form
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -57,8 +67,8 @@ export function ProfileDialog({
             <Label htmlFor="name">Name</Label>
             <Input
               id="name"
-              {...register("name", { required: "Name is required" })}
-              className={errors.name ? "border-red-500" : ""}
+              {...register('name', { required: 'Name is required' })}
+              className={errors.name ? 'border-red-500' : ''}
             />
             {errors.name && (
               <motion.p
@@ -76,13 +86,13 @@ export function ProfileDialog({
             <Input
               id="email"
               type="email"
-              {...register("email", {
+              {...register('email', {
                 pattern: {
                   value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: "Invalid email address"
-                }
+                  message: 'Invalid email address',
+                },
               })}
-              className={errors.email ? "border-red-500" : ""}
+              className={errors.email ? 'border-red-500' : ''}
             />
             {errors.email && (
               <motion.p
@@ -101,26 +111,18 @@ export function ProfileDialog({
             transition={{ delay: 0.2 }}
             className="flex justify-end space-x-4"
           >
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onClose}
-            >
+            <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="relative"
-            >
+            <Button type="submit" disabled={isSubmitting} className="relative">
               <motion.div
                 initial={false}
                 animate={isSubmitting ? { opacity: 1 } : { opacity: 0 }}
                 className="absolute inset-0 flex items-center justify-center"
               >
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
               </motion.div>
-              <span className={isSubmitting ? "opacity-0" : ""}>
+              <span className={isSubmitting ? 'opacity-0' : ''}>
                 Create Profile
               </span>
             </Button>

@@ -1,4 +1,5 @@
 import { StateCreator } from 'zustand'
+
 import { Property } from '../types'
 
 export interface PropertyFilters {
@@ -42,7 +43,8 @@ export const createPropertySlice: StateCreator<PropertySlice> = (set, get) => ({
     return properties.filter((property) => {
       if (filters.minPrice && property.price < filters.minPrice) return false
       if (filters.maxPrice && property.price > filters.maxPrice) return false
-      if (filters.location && !property.location.includes(filters.location)) return false
+      if (filters.location && !property.location.includes(filters.location))
+        return false
       if (filters.type && property.type !== filters.type) return false
       if (filters.status) {
         if (filters.status === 'available' && property.funded) return false

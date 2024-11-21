@@ -1,4 +1,5 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+
 import { User, UserSettings } from '@/lib/store'
 import { useToast } from '@/hooks/use-toast'
 
@@ -22,9 +23,9 @@ export function useUserManagement() {
       }
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to fetch users",
-        variant: "destructive"
+        title: 'Error',
+        description: 'Failed to fetch users',
+        variant: 'destructive',
       })
     } finally {
       setLoading(false)
@@ -35,56 +36,62 @@ export function useUserManagement() {
     fetchUsers()
   }, [fetchUsers])
 
-  const handleRoleChange = useCallback(async (userId: string, newRole: 'user' | 'admin') => {
-    try {
-      const res = await fetch(`/api/users/${userId}/role`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ role: newRole })
-      })
+  const handleRoleChange = useCallback(
+    async (userId: string, newRole: 'user' | 'admin') => {
+      try {
+        const res = await fetch(`/api/users/${userId}/role`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ role: newRole }),
+        })
 
-      if (!res.ok) throw new Error('Failed to update role')
+        if (!res.ok) throw new Error('Failed to update role')
 
-      toast({
-        title: "Success",
-        description: `User role updated to ${newRole}`,
-      })
+        toast({
+          title: 'Success',
+          description: `User role updated to ${newRole}`,
+        })
 
-      fetchUsers()
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to update user role",
-        variant: "destructive"
-      })
-    }
-  }, [fetchUsers, toast])
+        fetchUsers()
+      } catch (error) {
+        toast({
+          title: 'Error',
+          description: 'Failed to update user role',
+          variant: 'destructive',
+        })
+      }
+    },
+    [fetchUsers, toast]
+  )
 
-  const handleBulkDelete = useCallback(async (userIds: string[]) => {
-    try {
-      const res = await fetch('/api/users/bulk-delete', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userIds })
-      })
+  const handleBulkDelete = useCallback(
+    async (userIds: string[]) => {
+      try {
+        const res = await fetch('/api/users/bulk-delete', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userIds }),
+        })
 
-      if (!res.ok) throw new Error('Failed to delete users')
+        if (!res.ok) throw new Error('Failed to delete users')
 
-      toast({
-        title: "Success",
-        description: `Successfully deleted ${userIds.length} user(s)`,
-      })
+        toast({
+          title: 'Success',
+          description: `Successfully deleted ${userIds.length} user(s)`,
+        })
 
-      setSelectedUsers([])
-      fetchUsers()
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to delete users",
-        variant: "destructive"
-      })
-    }
-  }, [fetchUsers, toast])
+        setSelectedUsers([])
+        fetchUsers()
+      } catch (error) {
+        toast({
+          title: 'Error',
+          description: 'Failed to delete users',
+          variant: 'destructive',
+        })
+      }
+    },
+    [fetchUsers, toast]
+  )
 
   return {
     users,

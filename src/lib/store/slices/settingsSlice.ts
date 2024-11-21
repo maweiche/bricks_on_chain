@@ -1,5 +1,6 @@
 // lib/store/slices/settingsSlice.ts
 import { StateCreator } from 'zustand'
+
 import { AuthSlice } from './authSlice'
 
 export interface UserSettings {
@@ -29,13 +30,13 @@ const DEFAULT_SETTINGS: UserSettings = {
     email: true,
     push: true,
     investmentUpdates: true,
-    marketingUpdates: false
+    marketingUpdates: false,
   },
   display: {
     compactView: false,
     showProfitLoss: true,
-    currency: 'USD'
-  }
+    currency: 'USD',
+  },
 }
 
 // Add AuthSlice to the generic type to access user state
@@ -46,7 +47,7 @@ export const createSettingsSlice: StateCreator<
   SettingsSlice
 > = (set, get) => ({
   settings: DEFAULT_SETTINGS,
-  
+
   updateSettings: async (newSettings) => {
     const userId = get().user?.id
     if (!userId) throw new Error('No user logged in')
@@ -55,7 +56,7 @@ export const createSettingsSlice: StateCreator<
       const response = await fetch(`/api/users/${userId}/settings`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ settings: newSettings })
+        body: JSON.stringify({ settings: newSettings }),
       })
 
       if (!response.ok) {
@@ -63,11 +64,11 @@ export const createSettingsSlice: StateCreator<
       }
 
       const data = await response.json()
-      set(state => ({
+      set((state) => ({
         settings: {
           ...state.settings,
-          ...newSettings
-        }
+          ...newSettings,
+        },
       }))
 
       return data.settings
@@ -75,5 +76,5 @@ export const createSettingsSlice: StateCreator<
       console.error('Failed to update settings:', error)
       throw error
     }
-  }
+  },
 })

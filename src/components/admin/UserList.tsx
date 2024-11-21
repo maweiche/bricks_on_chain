@@ -1,24 +1,19 @@
-"use client"
-import { useState, useMemo, useEffect, useCallback } from 'react'
+'use client'
+
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import {
+  Download,
+  Filter,
+  MoreHorizontal,
+  RefreshCw,
+  Shield,
+  Users,
+  UserX,
+} from 'lucide-react'
+
 import { User, UserSettings } from '@/lib/store'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
-import { Checkbox } from '@/components/ui/checkbox'
 import { useToast } from '@/hooks/use-toast'
-import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableRow,
-  TableHead,
-  TableCell,
-} from '@/components/ui/table'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-} from '@/components/ui/dropdown-menu'
+import { useUserManagement } from '@/hooks/use-user-mgmt'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -30,10 +25,27 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
-import { Download, Filter, MoreHorizontal, RefreshCw, Shield, UserX, Users } from 'lucide-react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Checkbox } from '@/components/ui/checkbox'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+
 import { Badge } from '../ui/badge'
 import { Input } from '../ui/input'
-import { useUserManagement } from '@/hooks/use-user-mgmt'
+
 interface UserWithSettings extends User {
   settings?: UserSettings
 }
@@ -64,7 +76,7 @@ export function UserList() {
 
     // Apply search filter
     if (search) {
-      filtered = filtered.filter(user => {
+      filtered = filtered.filter((user) => {
         const searchLower = search.toLowerCase()
         return (
           user.name?.toLowerCase().includes(searchLower) ||
@@ -76,7 +88,7 @@ export function UserList() {
 
     // Apply role filter
     if (roleFilter !== 'all') {
-      filtered = filtered.filter(user => user.role === roleFilter)
+      filtered = filtered.filter((user) => user.role === roleFilter)
     }
 
     // Apply sorting
@@ -85,10 +97,11 @@ export function UserList() {
 
       switch (sortField) {
         case 'name':
-          return direction * ((a.name || '').localeCompare(b.name || ''))
+          return direction * (a.name || '').localeCompare(b.name || '')
         case 'joinedAt':
-          return direction * (
-            new Date(a.joinedAt).getTime() - new Date(b.joinedAt).getTime()
+          return (
+            direction *
+            (new Date(a.joinedAt).getTime() - new Date(b.joinedAt).getTime())
           )
         case 'role':
           return direction * a.role.localeCompare(b.role)
@@ -100,18 +113,24 @@ export function UserList() {
     return filtered
   }, [users, search, roleFilter, sortField, sortDirection])
 
-  const handleSelectAll = useCallback((checked: boolean) => {
-    setSelectedUsers(checked ? filteredUsers.map(user => user.id) : [])
-  }, [filteredUsers, setSelectedUsers])
+  const handleSelectAll = useCallback(
+    (checked: boolean) => {
+      setSelectedUsers(checked ? filteredUsers.map((user) => user.id) : [])
+    },
+    [filteredUsers, setSelectedUsers]
+  )
 
-  const handleSelectUser = useCallback((userId: string, checked: boolean) => {
-    setSelectedUsers(prev => 
-      checked ? [...prev, userId] : prev.filter(id => id !== userId)
-    )
-  }, [setSelectedUsers])
+  const handleSelectUser = useCallback(
+    (userId: string, checked: boolean) => {
+      setSelectedUsers((prev) =>
+        checked ? [...prev, userId] : prev.filter((id) => id !== userId)
+      )
+    },
+    [setSelectedUsers]
+  )
 
   const handleExportUsers = useCallback(() => {
-    const data = filteredUsers.map(user => ({
+    const data = filteredUsers.map((user) => ({
       id: user.id,
       name: user.name,
       email: user.email,
@@ -120,8 +139,8 @@ export function UserList() {
       joinedAt: user.joinedAt,
     }))
 
-    const blob = new Blob([JSON.stringify(data, null, 2)], { 
-      type: 'application/json' 
+    const blob = new Blob([JSON.stringify(data, null, 2)], {
+      type: 'application/json',
     })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -140,7 +159,7 @@ export function UserList() {
           <CardTitle>Registered Users ({users.length})</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-col sm:flex-row gap-4 mb-6">
+          <div className="mb-6 flex flex-col gap-4 sm:flex-row">
             <div className="flex flex-1 gap-4">
               <Input
                 placeholder="Search users..."
@@ -152,8 +171,10 @@ export function UserList() {
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline">
                     <Filter className="mr-2 h-4 w-4" />
-                    {roleFilter === 'all' ? 'All Roles' : 
-                      roleFilter.charAt(0).toUpperCase() + roleFilter.slice(1)}
+                    {roleFilter === 'all'
+                      ? 'All Roles'
+                      : roleFilter.charAt(0).toUpperCase() +
+                        roleFilter.slice(1)}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
@@ -171,17 +192,11 @@ export function UserList() {
             </div>
 
             <div className="flex gap-2">
-              <Button
-                variant="outline"
-                onClick={() => fetchUsers()}
-              >
+              <Button variant="outline" onClick={() => fetchUsers()}>
                 <RefreshCw className="mr-2 h-4 w-4" />
                 Refresh
               </Button>
-              <Button
-                variant="outline"
-                onClick={handleExportUsers}
-              >
+              <Button variant="outline" onClick={handleExportUsers}>
                 <Download className="mr-2 h-4 w-4" />
                 Export
               </Button>
@@ -210,7 +225,7 @@ export function UserList() {
                   <TableCell>
                     <Checkbox
                       checked={selectedUsers.includes(user.id)}
-                      onCheckedChange={(checked) => 
+                      onCheckedChange={(checked) =>
                         handleSelectUser(user.id, checked as boolean)
                       }
                       aria-label={`Select ${user.name}`}
@@ -241,10 +256,7 @@ export function UserList() {
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          className="h-8 w-8 p-0"
-                        >
+                        <Button variant="ghost" className="h-8 w-8 p-0">
                           <MoreHorizontal className="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
@@ -287,7 +299,7 @@ export function UserList() {
 
       {/* Bulk Actions */}
       {selectedUsers.length > 0 && (
-        <div className="fixed bottom-4 right-4 flex items-center gap-2 bg-background/80 backdrop-blur p-4 rounded-lg shadow-lg border">
+        <div className="fixed bottom-4 right-4 flex items-center gap-2 rounded-lg border bg-background/80 p-4 shadow-lg backdrop-blur">
           <span className="text-sm font-medium">
             {selectedUsers.length} selected
           </span>
@@ -302,10 +314,7 @@ export function UserList() {
       )}
 
       {/* Delete Confirmation Dialog */}
-      <AlertDialog 
-        open={showDeleteDialog} 
-        onOpenChange={setShowDeleteDialog}
-      >
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
@@ -314,15 +323,16 @@ export function UserList() {
             <AlertDialogDescription>
               {userToModify
                 ? 'Are you sure you want to delete this user? This action cannot be undone.'
-                : `Are you sure you want to delete ${selectedUsers.length} users? This action cannot be undone.`
-              }
+                : `Are you sure you want to delete ${selectedUsers.length} users? This action cannot be undone.`}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => {
-              setShowDeleteDialog(false)
-              setUserToModify(null)
-            }}>
+            <AlertDialogCancel
+              onClick={() => {
+                setShowDeleteDialog(false)
+                setUserToModify(null)
+              }}
+            >
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction

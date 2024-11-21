@@ -1,8 +1,9 @@
 // app/api/properties/route.ts
-import { NextRequest, NextResponse } from 'next/server'
-import { z } from 'zod'
 import fs from 'fs/promises'
 import path from 'path'
+import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
+
 import { useAuth } from '@/hooks/use-auth'
 
 // Path to our JSON file
@@ -57,7 +58,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const json = await request.json()
-    
+
     // Validate the input
     const result = PropertySchema.safeParse(json)
     if (!result.success) {
@@ -68,7 +69,7 @@ export async function POST(request: NextRequest) {
     }
 
     const property = result.data
-    
+
     // Generate missing fields
     const now = new Date().toISOString()
     const newProperty = {
@@ -81,7 +82,7 @@ export async function POST(request: NextRequest) {
     // Read current data and append new property
     const db = await readDB()
     db.properties.push(newProperty)
-    
+
     // Write back to database
     await writeDB(db)
 

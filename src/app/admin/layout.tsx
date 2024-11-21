@@ -6,9 +6,10 @@ export default function AdminLayout({
   children: React.ReactNode
 }) {
   return (
-  <ProtectedRoute 
-    requireAdmin // 👈 Uncomment to turn-on add requireAdmin prop
-  >
-    {children}
-  </ProtectedRoute>
-)}
+    <ProtectedRoute
+      requireAdmin // 👈 Uncomment to turn-on add requireAdmin prop
+    >
+      {children}
+    </ProtectedRoute>
+  )
+}

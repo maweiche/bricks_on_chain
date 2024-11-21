@@ -1,23 +1,20 @@
-import { 
-    WalletButton, 
-    useAnchorProvider, 
-    useSolanaTransaction, 
-    handleSolanaError,
-    SolanaErrorType,
-    SolanaProvider 
-} from "./SolanaProvider";
+import { ErrorBoundary, SuspenseBoundary } from './ErrorBoundary'
 import {
-    ErrorBoundary,
-    SuspenseBoundary
-} from "./ErrorBoundary";
+  handleSolanaError,
+  SolanaErrorType,
+  SolanaProvider,
+  useAnchorProvider,
+  useSolanaTransaction,
+  WalletButton,
+} from './SolanaProvider'
 
-export { 
-    WalletButton, 
-    useAnchorProvider, 
-    useSolanaTransaction, 
-    handleSolanaError,
-    SolanaErrorType,
-    SolanaProvider,
-    ErrorBoundary,
-    SuspenseBoundary
-};
+export {
+  WalletButton,
+  useAnchorProvider,
+  useSolanaTransaction,
+  handleSolanaError,
+  SolanaErrorType,
+  SolanaProvider,
+  ErrorBoundary,
+  SuspenseBoundary,
+}

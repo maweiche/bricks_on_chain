@@ -7,4 +7,3 @@ export default function DashboardLayout({
 }) {
   return <ProtectedRoute>{children}</ProtectedRoute>
 }
-

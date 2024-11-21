@@ -1,110 +1,131 @@
-"use client";
+'use client'
 
-import React from 'react';
-import dynamic from 'next/dynamic';
-import Image from 'next/image';
-import { motion, Variants, Transition } from 'framer-motion';
-import { WalletButton } from '../providers';
-import { Building2, Users, Coins, ChevronRight, BarChart3, LucideIcon } from 'lucide-react';
-import { Badge } from '../ui/badge';
+import React from 'react'
+import dynamic from 'next/dynamic'
+import Image from 'next/image'
+import { motion, Transition, Variants } from 'framer-motion'
+import {
+  BarChart3,
+  Building2,
+  ChevronRight,
+  Coins,
+  LucideIcon,
+  Users,
+} from 'lucide-react'
 
-const PropertiesFeatured = dynamic(() => import('../properties/PropertiesFeatured'));
+import { WalletButton } from '../providers'
+import { Badge } from '../ui/badge'
+
+const PropertiesFeatured = dynamic(
+  () => import('../properties/PropertiesFeatured')
+)
 
 interface FeatureItem {
-  icon: LucideIcon;
-  title: string;
-  description: string;
-  color: 'blue' | 'emerald' | 'purple' | 'rose';
+  icon: LucideIcon
+  title: string
+  description: string
+  color: 'blue' | 'emerald' | 'purple' | 'rose'
 }
 
 interface FeatureCardProps extends FeatureItem {
-  index: number;
+  index: number
 }
 
 const fadeIn: Variants = {
   initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 }
-};
+  animate: { opacity: 1, y: 0 },
+}
 
 const containerVariants: Variants = {
   initial: { opacity: 0 },
   animate: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.2
-    }
-  }
-};
+      staggerChildren: 0.2,
+    },
+  },
+}
 
 const springTransition: Transition = {
-  type: "spring",
+  type: 'spring',
   damping: 20,
-  stiffness: 300
-};
+  stiffness: 300,
+}
 
 const defaultTransition: Transition = {
-  duration: 0.5
-};
+  duration: 0.5,
+}
 
 const features: FeatureItem[] = [
   {
     icon: Building2,
-    title: "Fractional Ownership",
-    description: "Own a piece of premium real estate properties through tokenization",
-    color: "blue"
+    title: 'Fractional Ownership',
+    description:
+      'Own a piece of premium real estate properties through tokenization',
+    color: 'blue',
   },
   {
     icon: Coins,
-    title: "Low Entry Barrier",
-    description: "Start investing with any amount and grow your portfolio gradually",
-    color: "emerald"
+    title: 'Low Entry Barrier',
+    description:
+      'Start investing with any amount and grow your portfolio gradually',
+    color: 'emerald',
   },
   {
     icon: Users,
-    title: "Community Governance",
-    description: "Participate in property decisions through decentralized voting",
-    color: "purple"
+    title: 'Community Governance',
+    description:
+      'Participate in property decisions through decentralized voting',
+    color: 'purple',
   },
   {
     icon: BarChart3,
-    title: "Track Performance",
-    description: "Monitor your investments and returns in real-time",
-    color: "rose"
-  }
-];
+    title: 'Track Performance',
+    description: 'Monitor your investments and returns in real-time',
+    color: 'rose',
+  },
+]
 
-const FeatureCard: React.FC<FeatureCardProps> = ({ icon: Icon, title, description, color, index }) => (
+const FeatureCard: React.FC<FeatureCardProps> = ({
+  icon: Icon,
+  title,
+  description,
+  color,
+  index,
+}) => (
   <motion.div
     initial="initial"
     whileInView="animate"
     variants={fadeIn}
     transition={{
       ...defaultTransition,
-      delay: index * 0.1
+      delay: index * 0.1,
     }}
     viewport={{ once: true }}
     whileHover={{ scale: 1.02 }}
-    className="p-6 rounded-xl bg-slate-700/30 backdrop-blur hover:bg-slate-700/40 transition-colors"
+    className="rounded-xl bg-slate-700/30 p-6 backdrop-blur transition-colors hover:bg-slate-700/40"
   >
-    <div className={`w-12 h-12 mb-4 rounded-lg bg-${color}-500/20 flex items-center justify-center`}>
+    <div
+      className={`mb-4 h-12 w-12 rounded-lg bg-${color}-500/20 flex items-center justify-center`}
+    >
       <Icon className={`text-${color}-400`} />
     </div>
-    <h3 className="text-xl font-semibold mb-2">{title}</h3>
+    <h3 className="mb-2 text-xl font-semibold">{title}</h3>
     <p className="text-slate-300">{description}</p>
   </motion.div>
-);
+)
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen pt-20 bg-background">
+    <div className="min-h-screen bg-background pt-20">
       {/* Hero Section */}
-      <div className="container mx-auto px-4 pt-20 pb-32 h-[70vh]">
+      <div className="container mx-auto h-[70vh] px-4 pb-32 pt-20">
         <motion.div
           variants={fadeIn}
           initial="initial"
           animate="animate"
           transition={defaultTransition}
-          className="max-w-4xl mx-auto text-center items-center justify-center flex flex-col gap-8" 
+          className="mx-auto flex max-w-4xl flex-col items-center justify-center gap-8 text-center"
         >
           <motion.image
             variants={fadeIn}
@@ -112,15 +133,10 @@ export default function LandingPage() {
             animate="animate"
             transition={{
               ...defaultTransition,
-              delay: 0.2
+              delay: 0.2,
             }}
           >
-            <Image
-              src="/logo.svg"
-              alt="Logo"
-              width={360}
-              height={360}
-            />
+            <Image src="/logo.svg" alt="Logo" width={360} height={360} />
           </motion.image>
 
           <motion.p
@@ -129,20 +145,21 @@ export default function LandingPage() {
             animate="animate"
             transition={{
               ...defaultTransition,
-              delay: 0.4
+              delay: 0.4,
             }}
-            className="text-xl text-secondary mb-8"
+            className="mb-8 text-xl text-secondary"
           >
-            Start building your real estate portfolio through blockchain-powered fractional ownership.
+            Start building your real estate portfolio through blockchain-powered
+            fractional ownership.
           </motion.p>
-          
+
           <motion.div
             variants={fadeIn}
             initial="initial"
             animate="animate"
             transition={{
               ...defaultTransition,
-              delay: 0.6
+              delay: 0.6,
             }}
             className="flex justify-center gap-4"
           >
@@ -151,9 +168,11 @@ export default function LandingPage() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               transition={springTransition}
-              className="flex items-center gap-2 px-6 py-3 bg-primary text-muted rounded-lg hover:bg-slate-600 transition-colors"
+              className="flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-muted transition-colors hover:bg-slate-600"
               onClick={() => {
-                document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
+                document
+                  .getElementById('features')
+                  ?.scrollIntoView({ behavior: 'smooth' })
               }}
             >
               Learn More <ChevronRight size={20} />
@@ -167,8 +186,8 @@ export default function LandingPage() {
         whileInView="animate"
         viewport={{ once: true }}
         variants={containerVariants}
-        className="mt-12 py-24 flex flex-col items-center justify-center w-full"
-        id='properties'
+        className="mt-12 flex w-full flex-col items-center justify-center py-24"
+        id="properties"
       >
         <PropertiesFeatured />
       </motion.div>
@@ -179,25 +198,23 @@ export default function LandingPage() {
         whileInView="animate"
         viewport={{ once: true }}
         variants={containerVariants}
-        className="mt-12 py-24 flex flex-col items-center justify-center bg-slate-800/50"
-        id='features'
+        className="mt-12 flex flex-col items-center justify-center bg-slate-800/50 py-24"
+        id="features"
       >
         <Badge
-          className="text-secondary bg-muted text-3xl px-4 py-2 rounded-full"
+          className="rounded-full bg-muted px-4 py-2 text-3xl text-secondary"
           style={{ transform: 'translateY(-50%)' }}
         >
           How it Works
         </Badge>
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
             {features.map((feature, index) => (
               <FeatureCard key={feature.title} {...feature} index={index} />
             ))}
           </div>
         </div>
-
-        
       </motion.div>
     </div>
-  );
+  )
 }
