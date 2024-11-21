@@ -9,66 +9,75 @@ export interface AuthSlice {
   isLoading: boolean
   error: string | null
   isAdmin: boolean
+  isSimulated: boolean // Add this flag
+  createProfile: (user: User) => Promise<void>
+  updateProfile: (user: User) => Promise<void>
   checkAuth: (address: string) => Promise<void>
-  createProfile: (userData: Omit<User, 'id' | 'joinedAt'>) => Promise<void>
-  updateProfile: (userData: Partial<User>) => Promise<void>
   disconnect: () => void
+  simulateAuth: (user: User) => void // Add this method
 }
 
-export const createAuthSlice: StateCreator<AuthSlice> = (set, get) => ({
+export const createAuthSlice: StateCreator<AuthSlice> = (set) => ({
   user: null,
   isAdmin: false,
   isLoading: false,
   error: null,
+  isSimulated: false,
 
   checkAuth: async (address: string) => {
     try {
       const res = await fetch(`/api/users?address=${address}`)
       const data = await res.json()
-
+      
       if (!data.user) {
-        set({ user: null, isAdmin: false })
+        set({ user: null, isAdmin: false, isSimulated: false })
         return
       }
-
-      // Set both states together
+  
       set({
         user: data.user,
         isAdmin: data.user.role === 'admin',
+        isSimulated: false
       })
     } catch (error) {
       console.error('Auth check failed:', error)
-      set({ user: null, isAdmin: false })
+      set({ user: null, isAdmin: false, isSimulated: false })
     }
   },
 
-  createProfile: async (userData) => {
-    set({ isLoading: true, error: null })
-    try {
-      const user = await db.createUser(userData)
-      set({ user, isLoading: false })
-    } catch (error) {
-      set({ error: (error as Error).message, isLoading: false })
-    }
-  },
-
-  updateProfile: async (userData) => {
-    const currentUser = get().user
-    if (!currentUser) throw new Error('No user logged in')
-
-    set({ isLoading: true, error: null })
-    try {
-      const updatedUser = await db.updateUser(currentUser.id, userData)
-      set({ user: updatedUser, isLoading: false })
-    } catch (error) {
-      set({ error: (error as Error).message, isLoading: false })
-    }
-  },
-
-  disconnect: () =>
+  simulateAuth: (user: User) => {
     set({
-      user: null,
-      isAdmin: false,
-      error: null,
-    }),
+      user,
+      isAdmin: user.role === 'admin',
+      isSimulated: true,
+      error: null
+    })
+  },
+
+  createProfile: async (user: User) => {
+    try {
+      const res = await db.createUser(user)
+      set({ user, isAdmin: user.role === 'admin', error: null })
+    } catch (error) {
+      console.error('Failed to create profile:', error)
+      set({ user: null, isAdmin: false, error: 'Failed to create profile' })
+    }
+  },
+
+  updateProfile: async (user: User) => {
+    try {
+      const res = await db.updateUser(user.id, user)
+      set({ user, isAdmin: user.role === 'admin', error: null })
+    } catch (error) {
+      console.error('Failed to update profile:', error)
+      set({ user: null, isAdmin: false, error: 'Failed to update profile' })
+    }
+  },
+
+  disconnect: () => set({ 
+    user: null, 
+    isAdmin: false, 
+    error: null,
+    isSimulated: false 
+  })
 })

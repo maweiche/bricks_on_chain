@@ -14,6 +14,7 @@ import { ThemeToggle } from '@/components/theme'
 import UserDropdown from './UserDropdown'
 import { useAuth } from '@/hooks/use-auth'
 import { useWallet } from '@solana/wallet-adapter-react'
+import DevAuthButton from './DevAuthButton'
 
 const navItems = [
   { name: 'Explore Properties', path: '/properties' },
@@ -96,9 +97,9 @@ export function Navbar() {
             {user && isAuthenticated && (
               <UserDropdown user={user} userBalance={undefined} />
             )}
-            {!publicKey && (
+            {!publicKey && !isAuthenticated && (
               <motion.div variants={itemVariants}>
-                <WalletButton />
+                <DevAuthButton />
               </motion.div>
             )}
           </div>

@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { 
     Link,
@@ -126,6 +127,7 @@ function FeatureCard({ title, description, icon, gradient, index }: Feature & { 
 }
 
 export function FeaturesSection() {
+  const router = useRouter()
   return (
     <section className="relative overflow-hidden">
       {/* Background decorative elements */}
@@ -177,7 +179,7 @@ export function FeaturesSection() {
           viewport={{ once: true }}
           className="mt-16 text-center"
         >
-          <Button variant="default" size="lg">
+          <Button variant="default" size="lg" onClick={()=> router.push('/properties')}>
             Start Investing
           </Button>
         </motion.div>

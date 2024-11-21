@@ -7,6 +7,7 @@ export function useAuth() {
   const { connected, publicKey, disconnect: walletDisconnect } = useWallet()
   const user = useStore((state) => state.user)
   const isAdmin = useStore((state) => state.isAdmin)
+  const isSimulated = useStore((state) => state.isSimulated)
   const checkAuth = useStore((state) => state.checkAuth)
   const createProfile = useStore((state) => state.createProfile)
   const updateProfile = useStore((state) => state.updateProfile)
@@ -16,79 +17,46 @@ export function useAuth() {
     lastCheckedAddress: null as string | null,
   })
 
-  // Debug logging
-  // useEffect(() => {
-  //   console.log('Current State:', {
-  //     connected,
-  //     publicKey: publicKey?.toString(),
-  //     user,
-  //     isAdmin,
-  //     authState,
-  //   })
-  // }, [connected, publicKey, user, isAdmin, authState])
-
   useEffect(() => {
     let mounted = true
-    let timeoutId: NodeJS.Timeout
 
-    const checkUserAuth = async () => {
+    const initializeAuthState = () => {
+      if (isSimulated && user) {
+        // Handle simulated auth
+        setAuthState({
+          isLoading: false,
+          isInitialized: true,
+          lastCheckedAddress: user.address,
+        })
+        return
+      }
+
       if (!connected || !publicKey) {
-        if (mounted) {
-          setAuthState((prev) => ({
-            isLoading: false,
-            isInitialized: true,
-            lastCheckedAddress: null,
-          }))
-        }
+        setAuthState({
+          isLoading: false,
+          isInitialized: true,
+          lastCheckedAddress: null,
+        })
         return
       }
 
       const address = publicKey.toString()
-
-      // Don't recheck the same address
-      if (authState.lastCheckedAddress === address) {
-        return
-      }
-
-      try {
-        await checkAuth(address)
-        if (mounted) {
-          setAuthState({
-            isLoading: false,
-            isInitialized: true,
-            lastCheckedAddress: address,
-          })
-        }
-      } catch (error) {
-        console.error('Auth check failed:', error)
-        if (mounted) {
-          setAuthState({
-            isLoading: false,
-            isInitialized: true,
-            lastCheckedAddress: null,
-          })
-        }
+      if (authState.lastCheckedAddress !== address) {
+        checkAuth(address)
       }
     }
 
-    // Add a small delay to ensure wallet state is stable
-    timeoutId = setTimeout(() => {
-      checkUserAuth()
-    }, 100)
-
+    initializeAuthState()
     return () => {
       mounted = false
-      clearTimeout(timeoutId)
     }
-  }, [connected, publicKey, checkAuth, authState.lastCheckedAddress])
+  }, [connected, publicKey, user, isSimulated, checkAuth])
 
   const isAuthenticated = Boolean(
-    connected &&
-      publicKey &&
-      user &&
-      !authState.isLoading &&
-      authState.isInitialized &&
-      authState.lastCheckedAddress === publicKey.toString()
+    (isSimulated || (connected && publicKey)) &&
+    user &&
+    !authState.isLoading &&
+    authState.isInitialized
   )
 
   const isAdminUser = Boolean(isAuthenticated && isAdmin)
@@ -98,7 +66,7 @@ export function useAuth() {
     isAdmin: isAdminUser,
     isAuthenticated,
     isLoading: authState.isLoading || !authState.isInitialized,
-    walletConnected: connected && !!publicKey,
+    walletConnected: isSimulated || (connected && !!publicKey),
     createProfile,
     updateProfile,
   }
