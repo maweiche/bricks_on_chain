@@ -15,7 +15,7 @@ import { Label } from '@/components/ui/label'
 
 interface ProfileFormData {
   name: string
-  email?: string
+  email: string
 }
 
 export function ProfileDialog({
@@ -26,7 +26,7 @@ export function ProfileDialog({
   onClose: () => void
 }) {
   const { publicKey } = useWallet()
-  const { createProfile } = useAuth()
+  const { handleCreateProfile } = useAuth()
   const {
     register,
     handleSubmit,
@@ -37,13 +37,7 @@ export function ProfileDialog({
     if (!publicKey) return
 
     try {
-      await createProfile({
-        address: publicKey.toString(),
-        role: 'user',
-        ...data,
-        id: '',
-        joinedAt: new Date(),
-      })
+      await handleCreateProfile({...data})
       onClose()
     } catch (error) {
       console.error('Failed to create profile:', error)

@@ -5,6 +5,8 @@ import { UiLayout } from '@/components/layout'
 import { SolanaProvider } from '@/components/providers'
 import { ThemeProvider } from '@/components/theme'
 import { ReactQueryProvider } from './react-query-provider'
+import { FullScreenLoader } from '@/components/loading'
+import { Suspense } from 'react'
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -41,7 +43,9 @@ export default function RootLayout({
               enableSystem
               disableTransitionOnChange
             >
-              <UiLayout>{children}</UiLayout>
+              <Suspense fallback={<FullScreenLoader />}>
+                <UiLayout>{children}</UiLayout>
+              </Suspense>
             </ThemeProvider>
           </SolanaProvider>
         </ReactQueryProvider>
