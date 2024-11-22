@@ -1,5 +1,5 @@
 import React from 'react'
-import { Users } from 'lucide-react'
+import { Users, UserPlus } from 'lucide-react' // Added UserPlus icon
 import { useStore } from '@/lib/store'
 import {
   DropdownMenu,
@@ -11,14 +11,18 @@ import { Button } from '@/components/ui/button'
 import { WalletButton } from '@/components/providers'
 import { motion } from 'framer-motion'
 import { useToast } from '@/hooks/use-toast'
+import { useWallet } from '@solana/wallet-adapter-react' // Added
+import { useAuth } from '@/hooks/use-auth' // Added
 
 const DevAuthButton = () => {
   const simulateAuth = useStore((state) => state.simulateAuth)
+  const setShowProfileDialog = useStore((state) => state.setShowProfileDialog)
   const { toast } = useToast()
+  const { publicKey } = useWallet()
+  const { isAuthenticated } = useAuth()
 
   const simulateUser = async () => {
     try {
-      // Fetch first user from the database
       const response = await fetch('/api/users?limit=1')
       const data = await response.json()
 
@@ -26,7 +30,6 @@ const DevAuthButton = () => {
         throw new Error('No test user found')
       }
 
-      // Simulate auth with the fetched user
       simulateAuth(data.user)
 
       toast({
@@ -61,6 +64,17 @@ const DevAuthButton = () => {
         align="end"
         className="flex h-fit w-48 flex-col items-center justify-center gap-2 py-6"
       >
+        {/* Show Create Profile option when wallet is connected but user isn't authenticated */}
+        {publicKey && !isAuthenticated && (
+          <DropdownMenuItem
+            className="cursor-pointer text-sm"
+            onClick={() => setShowProfileDialog(true)}
+          >
+            <UserPlus className="mr-2 h-4 w-4" />
+            Create Profile
+          </DropdownMenuItem>
+        )}
+        
         <DropdownMenuItem
           className="cursor-pointer text-sm"
           onClick={simulateUser}
@@ -68,6 +82,7 @@ const DevAuthButton = () => {
           <Users className="mr-2 h-4 w-4" />
           Connect as Test User
         </DropdownMenuItem>
+        
         <DropdownMenuItem
           className="h-24 cursor-pointer overflow-hidden"
           asChild

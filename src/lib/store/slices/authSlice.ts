@@ -9,12 +9,14 @@ export interface AuthSlice {
   isLoading: boolean
   error: string | null
   isAdmin: boolean
-  isSimulated: boolean // Add this flag
+  isSimulated: boolean 
+  showProfileDialog: boolean
+  setShowProfileDialog: (show: boolean) => void
   createProfile: (user: User) => Promise<void>
   updateProfile: (user: User) => Promise<void>
   checkAuth: (address: string) => Promise<void>
   disconnect: () => void
-  simulateAuth: (user: User) => void // Add this method
+  simulateAuth: (user: User) => void 
 }
 
 export const createAuthSlice: StateCreator<AuthSlice> = (set) => ({
@@ -23,7 +25,8 @@ export const createAuthSlice: StateCreator<AuthSlice> = (set) => ({
   isLoading: false,
   error: null,
   isSimulated: false,
-
+  showProfileDialog: false,
+  setShowProfileDialog: (show) => set({ showProfileDialog: show }),
   checkAuth: async (address: string) => {
     try {
       const res = await fetch(`/api/users?address=${address}`)

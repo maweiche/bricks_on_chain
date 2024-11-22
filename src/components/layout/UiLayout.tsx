@@ -17,6 +17,7 @@ import { Toaster } from '../ui/toaster'
 
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
+import { useWallet } from '@solana/wallet-adapter-react'
 
 const Navbar = dynamic(
   () => import('@/components/layout').then((mod) => mod.Navbar),
@@ -44,8 +45,11 @@ const Cart = dynamic(
 
 export function UiLayout({ children }: { children: ReactNode }) {
   const { isAuthenticated, isLoading, walletConnected } = useAuth()
+  const { publicKey } = useWallet()
   const [mounted, setMounted] = useState(false)
   const [showProfileModal, setShowProfileModal] = useState(false)
+  const showProfileDialog = useStore((state) => state.showProfileDialog)
+  const setShowProfileDialog = useStore((state) => state.setShowProfileDialog)
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
@@ -61,6 +65,12 @@ export function UiLayout({ children }: { children: ReactNode }) {
       NProgress.remove()
     }
   }, [pathname, searchParams])
+
+  useEffect(() => {
+    if (walletConnected && !isAuthenticated && publicKey) {
+      setShowProfileDialog(true)
+    }
+  }, [walletConnected, isAuthenticated, publicKey, setShowProfileDialog])
 
   useEffect(() => {
     setMounted(true)
@@ -88,8 +98,8 @@ export function UiLayout({ children }: { children: ReactNode }) {
             <ErrorBoundary fallback={null}>
               {mounted && walletConnected && !isLoading && !isAuthenticated && (
                 <ProfileDialog
-                  isOpen={showProfileModal}
-                  onClose={() => setShowProfileModal(false)}
+                  isOpen={showProfileDialog}
+                  onClose={() => setShowProfileDialog(false)}
                 />
               )}
             </ErrorBoundary>
