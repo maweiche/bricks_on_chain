@@ -71,17 +71,17 @@
       },
       "status": "ACTIVE",
       "createdAt": "2024-11-21T16:21:29.508Z",
-      "updatedAt": "2024-11-21T16:21:40.850Z",
+      "updatedAt": "2024-11-22T10:53:47.001Z",
       "votingPower": {
         "for": 11,
-        "against": 0,
+        "against": 13,
         "total": 100
       },
       "votes": {
-        "for": [
+        "for": [],
+        "against": [
           "7wK3jPMYjpZHZAghjersW6hBNMgi9VAGr75AhYRqR2n"
-        ],
-        "against": []
+        ]
       }
     }
   ]
