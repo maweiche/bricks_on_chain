@@ -153,8 +153,7 @@ export default function LandingPage() {
             }}
             className="mb-8 text-xl text-secondary"
           >
-            Start building your real estate portfolio through blockchain-powered
-            fractional ownership.
+            Fractional real estate ownership on Solana
           </motion.p>
 
           <motion.div

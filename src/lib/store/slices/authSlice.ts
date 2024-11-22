@@ -46,10 +46,10 @@ export const createAuthSlice: StateCreator<AuthSlice> = (set) => ({
   },
 
   simulateAuth: (user: User) => {
-    set({
-      user,
+    set({ 
+      user, 
       isAdmin: user.role === 'admin',
-      isSimulated: true,
+      isLoading: false,
       error: null
     })
   },

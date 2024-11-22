@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-
 import { useAuth } from '@/hooks/use-auth'
 import { useToast } from '@/hooks/use-toast'
 import { FullScreenLoader } from '@/components/loading'
@@ -16,7 +15,7 @@ export function ProtectedRoute({
   children,
   requireAdmin = false,
 }: ProtectedRouteProps) {
-  const { isAuthenticated, isAdmin, isLoading, walletConnected } = useAuth()
+  const { isAuthenticated, isAdmin, isLoading, walletConnected, user } = useAuth()
   const { toast } = useToast()
   const router = useRouter()
   const hasAttemptedRedirect = useRef(false)
@@ -25,18 +24,14 @@ export function ProtectedRoute({
     if (isLoading) return
 
     if (!hasAttemptedRedirect.current) {
-      if (!walletConnected) {
+      // Allow access if user exists (test user) or wallet is connected
+      if (!user && !walletConnected) {
         hasAttemptedRedirect.current = true
         toast({
-          title: 'Please Connect',
-          description: 'Please connect your wallet to access this page.',
+          title: 'Authentication Required',
+          description: 'Please connect your wallet or login to access this page.',
         })
         router.replace('/')
-        return
-      }
-
-      if (!isAuthenticated) {
-        // Wait for authentication to complete
         return
       }
 
@@ -58,19 +53,20 @@ export function ProtectedRoute({
     requireAdmin,
     router,
     toast,
+    user,
   ])
 
-  // Always show loading when authenticating
+  // Show loading state while checking auth
   if (isLoading) {
     return <FullScreenLoader />
   }
 
-  // Show loading when wallet is connected but auth isn't complete
-  if (walletConnected && !isAuthenticated) {
+  // Show loading when authenticating
+  if ((walletConnected && !isAuthenticated) && !user) {
     return <FullScreenLoader />
   }
 
-  // Only render children when fully authenticated and authorized
+  // Allow access if authenticated (either via wallet or test user)
   if (isAuthenticated && (!requireAdmin || isAdmin)) {
     return <>{children}</>
   }

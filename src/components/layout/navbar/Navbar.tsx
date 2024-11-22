@@ -9,7 +9,6 @@ import { Menu, X } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import { WalletButton } from '@/components/providers'
 import { ThemeToggle } from '@/components/theme'
 import UserDropdown from './UserDropdown'
 import { useAuth } from '@/hooks/use-auth'
@@ -94,10 +93,9 @@ export function Navbar() {
               </motion.div>
             ))}
             <ThemeToggle />
-            {user && isAuthenticated && (
-              <UserDropdown user={user} userBalance={undefined} />
-            )}
-            {!publicKey && !isAuthenticated && (
+            {user  ? (
+              <UserDropdown user={user} />
+            ) : (
               <motion.div variants={itemVariants}>
                 <DevAuthButton />
               </motion.div>

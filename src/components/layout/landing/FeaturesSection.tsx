@@ -152,12 +152,14 @@ export function FeaturesSection() {
             viewport={{ once: true }}
             className="inline-block rounded-full bg-primary/10 px-4 py-1.5 mb-4"
           >
-            <span className="text-lg font-medium text-primary">
+            <span className="text-lg font-medium text-secondary dark:text-primary">
               How it Works
             </span>
           </motion.div>
           <h2 className="text-3xl font-bold sm:text-4xl">
-            Revolutionizing Real Estate Investment
+            Revolutionizing 
+            <br className='md:hidden' />
+            Real Estate Investment
           </h2>
         </div>
 

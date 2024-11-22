@@ -43,20 +43,22 @@ import { FullScreenLoader } from '@/components/loading'
 export default function Dashboard() {
   const { user, isAuthenticated } = useAuth()
   const { publicKey } = useWallet()
-  const settings = useStore((state) => state.settings)
 
-  // Fetch user's detailed data including investments using wallet address
+  // Fetch user's detailed data including investments
   const { data: userData, isLoading: isUserLoading } = useQuery({
-    queryKey: ['user', publicKey?.toString()],
+    queryKey: ['user', user?.address],
     queryFn: async () => {
-      const response = await fetch(
-        `/api/users?address=${publicKey?.toString()}`
-      )
+      if (!user?.address) return user // Return the existing user data if no address
+      
+      const response = await fetch(`/api/users?address=${user.address}`)
       if (!response.ok) throw new Error('Failed to fetch user data')
       const data = await response.json()
-      return data.user // Assuming the API returns { user: {...} }
+      return data.user
     },
-    enabled: !!publicKey,
+    // Enable query if we have either a web3 wallet or a test user
+    enabled: isAuthenticated,
+    // Initialize with existing user data
+    initialData: user
   })
 
   // Fetch properties data to get property details for investments
@@ -86,42 +88,53 @@ export default function Dashboard() {
     visible: { opacity: 1, y: 0 },
   }
 
+  // Show loader while checking authentication or loading data
   if (!isAuthenticated || isUserLoading || isPropertiesLoading) {
     return <FullScreenLoader />
   }
 
+  // If we have no user data at this point, show an error state
+  if (!userData) {
+    return (
+      <div className="container mx-auto py-20 text-center">
+        <AlertCircle className="mx-auto h-12 w-12 text-destructive" />
+        <h2 className="mt-4 text-xl font-semibold">No User Data Found</h2>
+        <p className="mt-2 text-muted-foreground">
+          There was an error loading your profile. Please try again later.
+        </p>
+      </div>
+    )
+  }
+
   // Calculate investment statistics
-  const totalInvested =
-    userData?.investments?.reduce(
-      (sum: any, inv: { amount: any }) => sum + inv.amount,
-      0
-    ) || 0
-  const activeInvestments =
-    userData?.investments?.filter(
-      (inv: { status: string }) => inv.status === 'active'
-    ) || []
+  const totalInvested = userData.investments?.reduce(
+    (sum: any, inv: { amount: any }) => sum + inv.amount,
+    0
+  ) || 0
+  
+  const activeInvestments = userData.investments?.filter(
+    (inv: { status: string }) => inv.status === 'active'
+  ) || []
+  
   const uniqueProperties = new Set(
     activeInvestments.map((inv: { propertyId: any }) => inv.propertyId)
   ).size
 
   // Get property details for investments
-  const investmentDetails = activeInvestments.map(
-    (investment: { propertyId: any }) => {
-      const property = propertiesData?.properties?.find(
-        (p: { id: any }) => p.id === investment.propertyId
-      )
-      return {
-        ...investment,
-        property,
-      }
+  const investmentDetails = activeInvestments.map((investment: { propertyId: any }) => {
+    const property = propertiesData?.properties?.find(
+      (p: { id: any }) => p.id === investment.propertyId
+    )
+    return {
+      ...investment,
+      property,
     }
-  )
+  })
 
   // Generate performance data based on investment dates
   const generatePerformanceData = () => {
     const sortedInvestments = [...activeInvestments].sort(
-      (a, b) =>
-        new Date(a.purchaseDate).getTime() - new Date(b.purchaseDate).getTime()
+      (a, b) => new Date(a.purchaseDate).getTime() - new Date(b.purchaseDate).getTime()
     )
 
     let runningTotal = 0

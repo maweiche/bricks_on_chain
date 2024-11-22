@@ -27,6 +27,7 @@ initDB()
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const address = searchParams.get('address')
+  const limit = searchParams.get('limit')
 
   try {
     const data = await fs.readFile(USERS_FILE, 'utf-8')
@@ -40,9 +41,15 @@ export async function GET(request: Request) {
       return NextResponse.json({ user })
     }
 
-    // If no address, return all users
+    // If limit=1 is provided, return first user
+    if (limit === '1' && users.length > 0) {
+      return NextResponse.json({ user: users[0] })
+    }
+
+    // If no specific query, return all users
     return NextResponse.json({ users })
   } catch (error) {
+    console.error('Users API Error:', error)
     return NextResponse.json(
       { error: 'Failed to fetch user(s)' },
       { status: 500 }

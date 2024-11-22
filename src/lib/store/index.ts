@@ -29,6 +29,7 @@ export const useStore = create<StoreState>()(
       name: 'real-estate-store',
       partialize: (state) => ({
         user: state.user,
+        isAdmin: state.isAdmin,
         investments: state.investments,
         votes: state.votes,
         filters: state.filters as PropertyFilters,
