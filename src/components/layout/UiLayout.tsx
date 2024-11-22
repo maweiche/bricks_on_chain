@@ -10,9 +10,13 @@ import { useAuth } from '@/hooks/use-auth'
 import { FooterSkeleton, NavbarSkeleton } from '@/components/loading'
 import { ErrorBoundary, SuspenseBoundary } from '@/components/providers'
 
+import { usePathname, useSearchParams } from 'next/navigation'
 import { ProfileDialog } from '../profile/ProfileDialog'
 import { Button } from '../ui/button'
 import { Toaster } from '../ui/toaster'
+
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
 
 const Navbar = dynamic(
   () => import('@/components/layout').then((mod) => mod.Navbar),
@@ -42,6 +46,21 @@ export function UiLayout({ children }: { children: ReactNode }) {
   const { isAuthenticated, isLoading, walletConnected } = useAuth()
   const [mounted, setMounted] = useState(false)
   const [showProfileModal, setShowProfileModal] = useState(false)
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    NProgress.configure({ showSpinner: false })
+    NProgress.start()
+    const timer = setTimeout(() => {
+      NProgress.done()
+    }, 200)
+
+    return () => {
+      clearTimeout(timer)
+      NProgress.remove()
+    }
+  }, [pathname, searchParams])
 
   useEffect(() => {
     setMounted(true)

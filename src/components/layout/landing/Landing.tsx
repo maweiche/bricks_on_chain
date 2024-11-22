@@ -121,7 +121,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-background pt-20">
-      <Cursor className="block" />
+      <Cursor className="hidden md:block" />
       {/* Hero Section */}
       <div className="container mx-auto h-[70vh] px-4 pb-32 pt-20">
         <motion.div

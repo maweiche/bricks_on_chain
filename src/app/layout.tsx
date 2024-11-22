@@ -1,11 +1,9 @@
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
 import './globals.css'
-
 import { UiLayout } from '@/components/layout'
 import { SolanaProvider } from '@/components/providers'
 import { ThemeProvider } from '@/components/theme'
-
 import { ReactQueryProvider } from './react-query-provider'
 
 const geistSans = localFont({
@@ -43,7 +41,9 @@ export default function RootLayout({
               enableSystem
               disableTransitionOnChange
             >
-              <UiLayout>{children}</UiLayout>
+              <UiLayout>
+                {children}
+              </UiLayout>
             </ThemeProvider>
           </SolanaProvider>
         </ReactQueryProvider>
