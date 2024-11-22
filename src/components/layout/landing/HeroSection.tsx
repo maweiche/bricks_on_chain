@@ -6,7 +6,7 @@ import { ArrowRight, Building2, TrendingUp, Shield } from "lucide-react";
 export default function HeroSection() {
     const router = useRouter()
     return (
-        <div className="relative h-[80vh] bg-background overflow-hidden">
+        <div className="relative h-[640px] bg-background overflow-hidden">
             {/* Background Image */}
             <div className="absolute inset-0"> {/* Adjusted height */}
                 <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent z-10" />
@@ -124,7 +124,7 @@ export default function HeroSection() {
             <div className="block md:hidden relative mt-24">
                 {/* Slanted Overlay */}
                 <div 
-                    className="absolute -bottom-[60px] left-0 right-0 h-[150px] bg-background z-[11]"
+                    className="absolute bottom-[10px] left-0 right-0 h-[150px] bg-background z-[11]"
                     style={{
                         transform: 'skewY(-6deg)',
                         transformOrigin: 'bottom left'
