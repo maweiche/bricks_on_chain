@@ -65,7 +65,7 @@ export function Navbar() {
             transition={{ duration: 0.5 }}
           >
             <Link href="/" className="flex items-center space-x-2">
-              <Image src="/logo.svg" alt="Logo" width={48} height={48} />
+              <Image src="/horizontal-logo.svg" alt="Logo" width={48} height={48} className="h-[68px] w-auto"/>
             </Link>
           </motion.div>
           {/* Desktop Navigation */}
@@ -163,17 +163,20 @@ export function Navbar() {
                     </Link>
                   </motion.div>
                 ))}
-                <motion.div
-                  variants={itemVariants}
-                  initial="hidden"
-                  animate="visible"
-                  exit="exit"
-                  className="pt-4"
-                >
-                  <Button className="w-full bg-primary hover:bg-primary/90">
-                    Connect Wallet
-                  </Button>
-                </motion.div>
+                {user ? (
+                  <div className="flex flex-row items-center gap-4">
+                    <p
+                      className='block py-2 text-base font-medium transition-colors hover:text-primary'
+                    >
+                      {`User Menu`}
+                    </p>
+                    <UserDropdown user={user} />
+                  </div>
+                ) : (
+                  <motion.div variants={itemVariants}>
+                    <DevAuthButton />
+                  </motion.div>
+                )}
               </div>
             </motion.div>
           )}

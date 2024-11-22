@@ -44,7 +44,7 @@ export default function Footer() {
     <Card className="flex w-full flex-row items-center rounded-none bg-slate-900 backdrop-blur">
       {/* Logo */}
       <CardContent className="w-1/2 py-8 md:w-1/4">
-        <Image src="/logo.svg" alt="Logo" width={120} height={120} />
+        <Image src="/horizontal-logo.svg" alt="Logo" width={120} height={120}  className="w-auto h-[120px]"/>
       </CardContent>
 
       {/* Mobile Links */}

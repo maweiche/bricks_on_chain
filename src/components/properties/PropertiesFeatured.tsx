@@ -12,6 +12,12 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { cn } from '@/lib/utils'
 
+interface PropertyCardProps {
+  property: Property;
+  isHovered: boolean;
+  onHover: (id: string | null) => void;
+}
+
 const LoadingFallback = () => (
   <div className="container mx-auto py-8 md:py-16">
     <div className="space-y-6 md:space-y-8">
@@ -42,17 +48,9 @@ const LoadingFallback = () => (
   </div>
 )
 
-const PropertyCard = ({
-  property,
-  isHovered,
-  onHover,
-}: {
-  property: Property
-  isHovered: boolean
-  onHover: (id: string | null) => void
-}) => {
-  const router = useRouter()
-  const fundingProgress = (property.currentFunding / property.fundingGoal) * 100
+function PropertyCard({ property, isHovered, onHover }: PropertyCardProps) {
+  const router = useRouter();
+  const fundingProgress = (property.currentFunding / property.fundingGoal) * 100;
 
   return (
     <motion.div
@@ -67,9 +65,11 @@ const PropertyCard = ({
     >
       <Card className="group h-full cursor-pointer overflow-hidden">
         <CardContent className="p-0">
+          {/* Image Container */}
           <div className="relative">
+            {/* Hover Overlay with View Details Button */}
             <motion.div
-              className="absolute inset-0 z-10 hidden items-center justify-center opacity-0 transition-opacity group-hover:opacity-100 md:flex"
+              className="absolute inset-0 z-10 hidden items-center justify-center bg-black/20 opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100 md:flex"
               initial={false}
               animate={isHovered ? { opacity: 1 } : { opacity: 0 }}
             >
@@ -81,6 +81,8 @@ const PropertyCard = ({
                 View Details <ArrowRight className="h-4 w-4" />
               </Button>
             </motion.div>
+
+            {/* Property Image */}
             <Image
               src={property.images[0]}
               alt={property.title}
@@ -88,25 +90,43 @@ const PropertyCard = ({
               height={200}
               width={300}
             />
-            <div className="absolute right-3 top-3 z-20 md:right-4 md:top-4">
-              <Badge
-                variant="secondary"
-                className="bg-brand-accent bg-white/50 text-xs font-semibold text-secondary md:text-sm"
-              >
-                {fundingProgress >= 90 ? 'Closing Soon!' : 'Hot Deal 🔥'}
-              </Badge>
+
+            {/* Status Badge */}
+            <div className="absolute left-3 top-3 z-20 flex gap-2 md:left-4 md:top-4">
+              {property.funded ? (
+                <Badge variant="secondary" className="bg-green-500/20 text-green-500">
+                  Fully Funded
+                </Badge>
+              ) : (
+                <>
+                  {fundingProgress >= 90 ? (
+                    <Badge variant="secondary" className="bg-brand-accent/20 text-brand-accent">
+                      Closing Soon!
+                    </Badge>
+                  ) : (
+                    <Badge variant="secondary" className="bg-brand-accent/20 text-brand-accent">
+                      Hot Deal 🔥
+                    </Badge>
+                  )}
+                </>
+              )}
             </div>
           </div>
 
+          {/* Content */}
           <div className="space-y-3 p-4 md:space-y-4 md:p-6">
-            <h3 className="line-clamp-1 text-base font-semibold md:text-lg">
-              {property.title}
-            </h3>
-            <div className="flex items-center gap-2 text-xs text-muted-foreground md:text-sm">
-              <MapPin className="h-3 w-3 md:h-4 md:w-4" />
-              <span>{property.location}</span>
+            {/* Title and Location */}
+            <div className="space-y-2">
+              <h3 className="line-clamp-1 text-base font-semibold md:text-lg">
+                {property.title}
+              </h3>
+              <div className="flex items-center gap-2 text-xs text-muted-foreground md:text-sm">
+                <MapPin className="h-3 w-3 md:h-4 md:w-4" />
+                <span>{property.location}</span>
+              </div>
             </div>
 
+            {/* Funding Progress */}
             <div className="space-y-2">
               <div className="flex justify-between text-xs md:text-sm">
                 <span className="text-muted-foreground">Funding Progress</span>
@@ -114,10 +134,14 @@ const PropertyCard = ({
                   {fundingProgress.toFixed(1)}%
                 </span>
               </div>
-              <Progress value={fundingProgress} />
+              <Progress 
+                value={fundingProgress} 
+                className="h-2"
+              />
             </div>
 
-            <div className="grid grid-cols-3 gap-2 text-xs md:text-sm">
+            {/* Stats Grid */}
+            <div className="grid grid-cols-3 gap-2 border-t pt-3 text-xs md:text-sm">
               <div className="flex items-center gap-1">
                 <TrendingUp className="h-3 w-3 text-green-600 md:h-4 md:w-4" />
                 <span>{property.roi}% ROI</span>
@@ -132,7 +156,8 @@ const PropertyCard = ({
               </div>
             </div>
 
-            <div className="flex items-center justify-between pt-2 md:pt-4">
+            {/* Investment Details */}
+            <div className="flex items-center justify-between border-t pt-3 md:pt-4">
               <div>
                 <div className="text-xs text-muted-foreground md:text-sm">
                   Minimum
@@ -154,7 +179,7 @@ const PropertyCard = ({
         </CardContent>
       </Card>
     </motion.div>
-  )
+  );
 }
 
 export function Featured() {
@@ -198,7 +223,7 @@ export function Featured() {
   }
 
   return (
-    <div className="container mx-auto py-8 md:py-16">
+    <div className="container mx-auto py-8">
       <div className="space-y-6 md:space-y-8">
         {/* Section header */}
         <div className="mb-16 text-center">
@@ -217,84 +242,102 @@ export function Featured() {
         <div className="relative">
           {/* Mobile View */}
           <div className="px-4 md:hidden">
-            <div className="scrollbar-hide flex gap-4 overflow-x-auto pb-4">
-              {properties.map((property: Property) => (
-                <div key={property.id} className="w-[280px] flex-shrink-0">
-                  <PropertyCard
-                    property={property}
-                    isHovered={hoveredId === property.id}
-                    onHover={setHoveredId}
-                  />
-                </div>
-              ))}
-            </div>
-            {/* Mobile Scroll Indicator */}
-            {/* <div className="mt-4 flex items-center justify-center gap-2">
-              <div className="h-1 w-16 rounded-full bg-secondary/20">
-                <div className="h-full w-1/3 rounded-full bg-secondary" />
+            <div className="flex flex-col w-full">
+              <div className="scrollbar-hide flex gap-4 overflow-x-auto pb-4">
+                {properties.map((property: Property) => (
+                  <div key={property.id} className="w-[280px] flex-shrink-0">
+                    <PropertyCard
+                      property={property}
+                      isHovered={hoveredId === property.id}
+                      onHover={setHoveredId}
+                    />
+                  </div>
+                ))}
               </div>
-            </div> */}
+              <div className="flex flex-col w-full max-w-[640px] mt-8">
+                <h1 className="text-3xl font-bold mb-8 tracking-tight">
+                  Bricks on Chain democratizes real estate through blockchain for as little as <span className="text-primary">$100</span>
+                </h1>
+                
+                <p className="text-lg leading-relaxed text-muted-foreground">
+                  Traditional real estate investing has been exclusive to the wealthy elite. Through tokenization on Solana, anyone can now own a piece of premium properties and earn passive income. Join the future of property investment today.
+                </p>
+              </div>
+            </div>
           </div>
 
           {/* Desktop View */}
           <div className="hidden md:block">
-            <div ref={containerRef} className="overflow-hidden">
-              <motion.div
-                drag="x"
-                dragConstraints={{
-                  left: -(
-                    (totalSlides - 1) *
-                    (containerRef.current?.offsetWidth || 0)
-                  ),
-                  right: 0,
-                }}
-                dragElastic={0.1}
-                dragMomentum={false}
-                animate={controls}
-                onDragEnd={handleDragEnd}
-                className="flex cursor-grab active:cursor-grabbing"
-              >
-                <div className="flex">
-                  {properties.map((property: Property) => (
-                    <div
-                      key={property.id}
-                      className="w-[calc(100vw/3.5)] flex-shrink-0 px-3"
-                    >
-                      <PropertyCard
-                        property={property}
-                        isHovered={hoveredId === property.id}
-                        onHover={setHoveredId}
-                      />
+            <div className="flex flex-col md:flex-row">
+              <div className="flex flex-col w-full lg:w-1/2 max-w-[640px]">
+                <h1 className="text-5xl md:text-5xl lg:text-5xl font-bold mb-8 tracking-tight">
+                  Bricks on Chain democratizes real estate through blockchain for as little as <span className="text-primary">$100</span>
+                </h1>
+                
+                <p className="text-xl md:text-2xl leading-relaxed text-muted-foreground">
+                  Traditional real estate investing has been exclusive to the wealthy elite. Through tokenization on Solana, anyone can now own a piece of premium properties and earn passive income. Join the future of property investment today.
+                </p>
+              </div>
+              <div className="flex flex-col w-1/2">
+                <div ref={containerRef} className="overflow-hidden">
+                  <motion.div
+                    drag="x"
+                    dragConstraints={{
+                      left: -(
+                        (totalSlides - 1) *
+                        (containerRef.current?.offsetWidth || 0)
+                      ),
+                      right: 0,
+                    }}
+                    dragElastic={0.1}
+                    dragMomentum={false}
+                    animate={controls}
+                    onDragEnd={handleDragEnd}
+                    className="flex cursor-grab active:cursor-grabbing"
+                  >
+                    <div className="flex">
+                      {properties.map((property: Property) => (
+                        <div
+                          key={property.id}
+                          className="w-[calc(100vw/3.5)] flex-shrink-0 px-3"
+                        >
+                          <PropertyCard
+                            property={property}
+                            isHovered={hoveredId === property.id}
+                            onHover={setHoveredId}
+                          />
+                        </div>
+                      ))}
                     </div>
+                  </motion.div>
+                </div>
+
+                {/* Desktop Progress Indicators */}
+                <div className="mt-6 flex items-center justify-center gap-2">
+                  {Array.from({ length: totalSlides }).map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => {
+                        setCurrentIndex(index)
+                        controls.start({
+                          x: -index * (containerRef.current?.offsetWidth || 0),
+                          transition: {
+                            type: 'spring',
+                            stiffness: 300,
+                            damping: 30,
+                          },
+                        })
+                      }}
+                      className={cn(
+                        'h-2 rounded-full transition-all',
+                        index === currentIndex
+                          ? 'w-6 bg-primary'
+                          : 'w-2 bg-primary/20'
+                      )}
+                    />
                   ))}
                 </div>
-              </motion.div>
-            </div>
-
-            {/* Desktop Progress Indicators */}
-            <div className="mt-6 flex items-center justify-center gap-2">
-              {Array.from({ length: totalSlides }).map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => {
-                    setCurrentIndex(index)
-                    controls.start({
-                      x: -index * (containerRef.current?.offsetWidth || 0),
-                      transition: {
-                        type: 'spring',
-                        stiffness: 300,
-                        damping: 30,
-                      },
-                    })
-                  }}
-                  className={cn(
-                    'h-2 rounded-full transition-all',
-                    index === currentIndex
-                      ? 'w-6 bg-primary'
-                      : 'w-2 bg-primary/20'
-                  )}
-                />
-              ))}
+              </div>
             </div>
           </div>
         </div>

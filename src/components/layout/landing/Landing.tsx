@@ -18,6 +18,7 @@ import { Badge } from '../../ui/badge'
 import Cursor from '../../ui/cursor'
 import { ModelLoader } from './ModelLoader'
 import { FeaturesSection } from './FeaturesSection'
+import HeroSection from './HeroSection'
 
 const PropertiesFeatured = dynamic(
   () => import('../../properties/PropertiesFeatured')
@@ -121,81 +122,25 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-background pt-20">
+      {/* Spotlight Effect for Cursor */}
       <Cursor className="hidden md:block" />
+
       {/* Hero Section */}
-      <div className="container mx-auto h-[70vh] px-4 pb-32 pt-20">
-        <motion.div
-          variants={fadeIn}
-          initial="initial"
-          animate="animate"
-          transition={defaultTransition}
-          className="mx-auto flex max-w-4xl flex-col items-center justify-center gap-8 text-center"
-        >
-          <motion.image
-            variants={fadeIn}
-            initial="initial"
-            animate="animate"
-            transition={{
-              ...defaultTransition,
-              delay: 0.2,
-            }}
-          >
-            <Image src="/logo.svg" alt="Logo" width={360} height={360} />
-          </motion.image>
+      <HeroSection />
 
-          <motion.p
-            variants={fadeIn}
-            initial="initial"
-            animate="animate"
-            transition={{
-              ...defaultTransition,
-              delay: 0.4,
-            }}
-            className="mb-8 text-xl text-secondary"
-          >
-            Fractional real estate ownership on Solana
-          </motion.p>
-
-          <motion.div
-            variants={fadeIn}
-            initial="initial"
-            animate="animate"
-            transition={{
-              ...defaultTransition,
-              delay: 0.6,
-            }}
-            className="flex justify-center gap-4"
-          >
-            <WalletButton />
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              transition={springTransition}
-              className="flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-muted transition-colors hover:bg-slate-600"
-              onClick={() => {
-                document
-                  .getElementById('features')
-                  ?.scrollIntoView({ behavior: 'smooth' })
-              }}
-            >
-              Learn More <ChevronRight size={20} />
-            </motion.button>
-          </motion.div>
-        </motion.div>
-      </div>
-
+      {/* Featured Properties */}
       <motion.div
         initial="initial"
         whileInView="animate"
         viewport={{ once: true }}
         variants={containerVariants}
-        className="mt-12 flex w-full flex-col items-center justify-center pb-2 pt-24"
+        className="flex w-full flex-col items-center justify-center pb-2"
         id="properties"
       >
         <PropertiesFeatured />
       </motion.div>
 
-      {/* Features Section */}
+      {/* How it Works Feature */}
       <motion.div
         initial="initial"
         whileInView="animate"
