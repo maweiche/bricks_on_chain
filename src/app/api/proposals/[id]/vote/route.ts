@@ -10,7 +10,7 @@ const voteSchema = z.object({
     voteType: z.enum(['for', 'against']),
     userAddress: z.string(),
     votingPower: z.number().min(0),
-  })
+  }),
 })
 
 export async function POST(
@@ -20,7 +20,7 @@ export async function POST(
   try {
     const body = await req.json()
     const { voteData } = voteSchema.parse(body)
-    
+
     // Read the proposals file
     const filePath = path.join(process.cwd(), 'data', 'proposals.json')
     const data = JSON.parse(await fs.readFile(filePath, 'utf-8'))
@@ -28,10 +28,7 @@ export async function POST(
 
     const proposalIndex = proposals.findIndex((p: any) => p.id === params.id)
     if (proposalIndex === -1) {
-      return NextResponse.json(
-        { error: 'Proposal not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Proposal not found' }, { status: 404 })
     }
 
     const proposal = proposals[proposalIndex]
@@ -43,9 +40,13 @@ export async function POST(
     }
 
     // Remove any existing votes by this user
-    proposal.votes.for = proposal.votes.for.filter((v: string) => v !== voteData.userAddress)
-    proposal.votes.against = proposal.votes.against.filter((v: string) => v !== voteData.userAddress)
-    
+    proposal.votes.for = proposal.votes.for.filter(
+      (v: string) => v !== voteData.userAddress
+    )
+    proposal.votes.against = proposal.votes.against.filter(
+      (v: string) => v !== voteData.userAddress
+    )
+
     // Add new vote
     proposal.votes[voteData.voteType].push(voteData.userAddress)
 
@@ -55,13 +56,14 @@ export async function POST(
     // Check if proposal should be closed based on quorum
     const totalVotes = proposal.votingPower.for + proposal.votingPower.against
     if (totalVotes >= proposal.votingPower.total) {
-      proposal.status = proposal.votingPower.for > proposal.votingPower.against
-        ? Status.PASSED
-        : Status.REJECTED
+      proposal.status =
+        proposal.votingPower.for > proposal.votingPower.against
+          ? Status.PASSED
+          : Status.REJECTED
     }
 
     proposal.updatedAt = new Date().toISOString()
-    
+
     // Save updated proposals
     await fs.writeFile(filePath, JSON.stringify({ proposals }, null, 2))
 
@@ -95,18 +97,19 @@ export async function DELETE(
 
     const proposalIndex = proposals.findIndex((p: any) => p.id === params.id)
     if (proposalIndex === -1) {
-      return NextResponse.json(
-        { error: 'Proposal not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Proposal not found' }, { status: 404 })
     }
 
     const proposal = proposals[proposalIndex]
-    
+
     // Remove votes
-    proposal.votes.for = proposal.votes.for.filter((v: string) => v !== userAddress)
-    proposal.votes.against = proposal.votes.against.filter((v: string) => v !== userAddress)
-    
+    proposal.votes.for = proposal.votes.for.filter(
+      (v: string) => v !== userAddress
+    )
+    proposal.votes.against = proposal.votes.against.filter(
+      (v: string) => v !== userAddress
+    )
+
     // Update voting power
     proposal.votingPower = {
       for: proposal.votes.for.length,

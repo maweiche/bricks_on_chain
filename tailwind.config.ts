@@ -89,7 +89,7 @@ const config: Config = {
       backgroundImage: {
         torch:
           'radial-gradient(525px at 50% 50%, var(--color-accent-torch), transparent 80%)',
-      }
+      },
     },
   },
   plugins: [require('tailwindcss-animate')],

@@ -9,19 +9,20 @@ function Rain() {
   const rainCount = 1000
   const positions = new Float32Array(rainCount * 3)
   const velocities = new Float32Array(rainCount)
-  
+
   for (let i = 0; i < rainCount; i++) {
     positions[i * 3] = (Math.random() - 0.5) * 50
     positions[i * 3 + 1] = Math.random() * 30
     positions[i * 3 + 2] = (Math.random() - 0.5) * 50
     velocities[i] = 0.1 + Math.random() * 0.1
   }
-  
+
   const rainRef = useRef<THREE.Points>(null)
-  
+
   useFrame(() => {
     if (rainRef.current) {
-      const positions = rainRef.current.geometry.attributes.position.array as Float32Array
+      const positions = rainRef.current.geometry.attributes.position
+        .array as Float32Array
       for (let i = 0; i < rainCount; i++) {
         positions[i * 3 + 1] -= velocities[i]
         if (positions[i * 3 + 1] < -10) {
@@ -77,11 +78,7 @@ export function DynamicEnvironment() {
         <>
           <color attach="background" args={['#87CEEB']} />
           <Sky sunPosition={[100, 10, 100]} />
-          <Cloud
-            opacity={0.5}
-            speed={0.4}
-            segments={20}
-          />
+          <Cloud opacity={0.5} speed={0.4} segments={20} />
           <ambientLight intensity={0.8} />
           <directionalLight
             position={[100, 10, 100]}

@@ -41,9 +41,7 @@ export default function RootLayout({
               enableSystem
               disableTransitionOnChange
             >
-              <UiLayout>
-                {children}
-              </UiLayout>
+              <UiLayout>{children}</UiLayout>
             </ThemeProvider>
           </SolanaProvider>
         </ReactQueryProvider>

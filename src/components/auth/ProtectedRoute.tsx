@@ -15,7 +15,8 @@ export function ProtectedRoute({
   children,
   requireAdmin = false,
 }: ProtectedRouteProps) {
-  const { isAuthenticated, isAdmin, isLoading, walletConnected, user } = useAuth()
+  const { isAuthenticated, isAdmin, isLoading, walletConnected, user } =
+    useAuth()
   const { toast } = useToast()
   const router = useRouter()
   const hasAttemptedRedirect = useRef(false)
@@ -29,7 +30,8 @@ export function ProtectedRoute({
         hasAttemptedRedirect.current = true
         toast({
           title: 'Authentication Required',
-          description: 'Please connect your wallet or login to access this page.',
+          description:
+            'Please connect your wallet or login to access this page.',
         })
         router.replace('/')
         return
@@ -62,7 +64,7 @@ export function ProtectedRoute({
   }
 
   // Show loading when authenticating
-  if ((walletConnected && !isAuthenticated) && !user) {
+  if (walletConnected && !isAuthenticated && !user) {
     return <FullScreenLoader />
   }
 

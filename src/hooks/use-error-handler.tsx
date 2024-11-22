@@ -1,15 +1,15 @@
 import { useToast } from '@/hooks/use-toast'
 
 interface ErrorHandlerOptions {
-  title: string;
-  defaultMessage: string;
-  knownErrors?: Record<string, string>;
+  title: string
+  defaultMessage: string
+  knownErrors?: Record<string, string>
 }
 
 interface ApiError extends Error {
-  code?: string;
-  status?: number;
-  data?: any;
+  code?: string
+  status?: number
+  data?: any
 }
 
 export function useErrorHandler() {
@@ -23,17 +23,22 @@ export function useErrorHandler() {
 
     if (error instanceof Error) {
       const apiError = error as ApiError
-      
+
       // Try to extract error code from various error formats
-      errorCode = 
-        apiError.code || 
-        (apiError.data?.code) ||
-        (apiError.message.includes(':') ? apiError.message.split(':')[0] : undefined)
+      errorCode =
+        apiError.code ||
+        apiError.data?.code ||
+        (apiError.message.includes(':')
+          ? apiError.message.split(':')[0]
+          : undefined)
 
       // Use specific message for known error codes
       if (errorCode && options.knownErrors?.[errorCode]) {
         errorMessage = options.knownErrors[errorCode]
-      } else if (apiError.message && !apiError.message.includes('fetch failed')) {
+      } else if (
+        apiError.message &&
+        !apiError.message.includes('fetch failed')
+      ) {
         // Use error message if it's not a generic fetch error
         errorMessage = apiError.message
       }
@@ -54,7 +59,8 @@ export function useErrorHandler() {
             errorMessage = 'Too many requests. Please try again later'
             break
           case 500:
-            errorMessage = 'An internal server error occurred. Please try again later'
+            errorMessage =
+              'An internal server error occurred. Please try again later'
             break
         }
       }
@@ -64,14 +70,17 @@ export function useErrorHandler() {
     toast({
       title: options.title,
       description: errorMessage,
-      variant: "destructive",
+      variant: 'destructive',
       duration: 5000, // Show longer for errors
     })
 
     // Log detailed error information
     if (process.env.NODE_ENV === 'development') {
       console.group('Error Details')
-      console.error('Error Type:', error instanceof Error ? error.constructor.name : typeof error)
+      console.error(
+        'Error Type:',
+        error instanceof Error ? error.constructor.name : typeof error
+      )
       console.error('Error Code:', errorCode)
       console.error('Original Error:', error)
       if (error instanceof Error) {
@@ -88,7 +97,7 @@ export function useErrorHandler() {
     }
   }
 
-  return { 
+  return {
     handleError,
   }
 }

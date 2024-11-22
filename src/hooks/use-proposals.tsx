@@ -20,13 +20,13 @@ export const proposalKeys = {
 async function fetchProposals() {
   const response = await fetch('/api/proposals')
   if (!response.ok) throw new Error('Failed to fetch proposals')
-  return response.json().then(data => data.proposals)
+  return response.json().then((data) => data.proposals)
 }
 
 async function fetchProposal(id: string) {
   const response = await fetch(`/api/proposals/${id}`)
   if (!response.ok) throw new Error('Failed to fetch proposal')
-  return response.json().then(data => data.proposal)
+  return response.json().then((data) => data.proposal)
 }
 
 async function submitVote(proposalId: string, voteData: any) {
@@ -41,7 +41,7 @@ async function submitVote(proposalId: string, voteData: any) {
 
 export function useProposals(options: UseProposalsOptions = {}) {
   const { toast } = useToast()
-  const setProposals = useStore(state => state.setProposals)
+  const setProposals = useStore((state) => state.setProposals)
   const queryClient = useQueryClient()
 
   const {
@@ -65,28 +65,43 @@ export function useProposals(options: UseProposalsOptions = {}) {
 
   // Mutation for voting with optimistic updates
   const voteMutation = useMutation({
-    mutationFn: ({ proposalId, voteData }: { proposalId: string; voteData: { voteType: 'for' | 'against'; userAddress: string; votingPower: number } }) => 
-      submitVote(proposalId, voteData),
+    mutationFn: ({
+      proposalId,
+      voteData,
+    }: {
+      proposalId: string
+      voteData: {
+        voteType: 'for' | 'against'
+        userAddress: string
+        votingPower: number
+      }
+    }) => submitVote(proposalId, voteData),
     onMutate: async ({ proposalId, voteData }) => {
       await queryClient.cancelQueries({ queryKey: proposalKeys.lists() })
-      const previousProposals = queryClient.getQueryData<Proposal[]>(proposalKeys.lists())
+      const previousProposals = queryClient.getQueryData<Proposal[]>(
+        proposalKeys.lists()
+      )
 
       queryClient.setQueryData<Proposal[]>(proposalKeys.lists(), (old = []) => {
-        return old.map(proposal => {
+        return old.map((proposal) => {
           if (proposal.id === proposalId) {
             return {
               ...proposal,
               votes: {
-                for: voteData.voteType === 'for' 
-                  ? [...proposal.votes.for, voteData.userAddress]
-                  : proposal.votes.for,
-                against: voteData.voteType === 'against'
-                  ? [...proposal.votes.against, voteData.userAddress]
-                  : proposal.votes.against,
+                for:
+                  voteData.voteType === 'for'
+                    ? [...proposal.votes.for, voteData.userAddress]
+                    : proposal.votes.for,
+                against:
+                  voteData.voteType === 'against'
+                    ? [...proposal.votes.against, voteData.userAddress]
+                    : proposal.votes.against,
               },
               votingPower: {
                 ...proposal.votingPower,
-                [voteData.voteType]: proposal.votingPower[voteData.voteType as 'for' | 'against'] + voteData.votingPower,
+                [voteData.voteType]:
+                  proposal.votingPower[voteData.voteType as 'for' | 'against'] +
+                  voteData.votingPower,
               },
             }
           }
@@ -98,12 +113,15 @@ export function useProposals(options: UseProposalsOptions = {}) {
     },
     onError: (err, { proposalId }, context) => {
       if (context?.previousProposals) {
-        queryClient.setQueryData(proposalKeys.lists(), context.previousProposals)
+        queryClient.setQueryData(
+          proposalKeys.lists(),
+          context.previousProposals
+        )
       }
       toast({
-        title: "Error",
-        description: "Failed to submit vote. Please try again.",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to submit vote. Please try again.',
+        variant: 'destructive',
       })
     },
     onSettled: () => {
@@ -114,9 +132,7 @@ export function useProposals(options: UseProposalsOptions = {}) {
   return {
     ...query,
     voteMutation,
-    error: query.error
-      ? (query.error as Error).message
-      : undefined,
+    error: query.error ? (query.error as Error).message : undefined,
   }
 }
 
@@ -129,10 +145,12 @@ export function useProposal(id: string) {
     queryFn: () => fetchProposal(id),
     staleTime: 1000 * 60 * 5,
     initialData: () => {
-      const proposals = queryClient.getQueryData<Proposal[]>(proposalKeys.lists())
-      return proposals?.find(p => p.id === id)
+      const proposals = queryClient.getQueryData<Proposal[]>(
+        proposalKeys.lists()
+      )
+      return proposals?.find((p) => p.id === id)
     },
-    initialDataUpdatedAt: () => 
+    initialDataUpdatedAt: () =>
       queryClient.getQueryState(proposalKeys.lists())?.dataUpdatedAt,
     retry: 3,
   })

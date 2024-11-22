@@ -6,11 +6,11 @@ import { useToast } from '@/hooks/use-toast'
 import { useErrorHandler } from '@/hooks/use-error-handler'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { format, addDays } from 'date-fns'
-import { Calendar as CalendarIcon, Edit, Loader2, Plus } from "lucide-react"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
-import { cn } from "@/lib/utils"
+import { Calendar as CalendarIcon, Edit, Loader2, Plus } from 'lucide-react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+import { cn } from '@/lib/utils'
 import {
   Dialog,
   DialogContent,
@@ -18,7 +18,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from "@/components/ui/dialog"
+} from '@/components/ui/dialog'
 import {
   Form,
   FormControl,
@@ -27,81 +27,97 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
+} from '@/components/ui/form'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Calendar } from "@/components/ui/calendar"
+} from '@/components/ui/select'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Calendar } from '@/components/ui/calendar'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
+} from '@/components/ui/popover'
 
 const proposalFormSchema = z.object({
-    title: z.string()
-      .min(5, "Title must be at least 5 characters")
-      .max(100, "Title must not exceed 100 characters"),
-    description: z.string()
-      .min(20, "Description must be at least 20 characters")
-      .max(1000, "Description must not exceed 1000 characters"),
-    type: z.enum(['PROPERTY_IMPROVEMENT', 'MAINTENANCE', 'POLICY_CHANGE', 'OTHER']),
-    endDate: z.date()
-      .min(new Date(), "End date must be in the future")
-      .max(addDays(new Date(), 30), "End date cannot be more than 30 days in the future"),
-    requiredQuorum: z.coerce.number() // Added coerce for number conversion
-      .min(1, "Quorum must be at least 1%")
-      .max(100, "Quorum cannot exceed 100%"),
-  })
-  
+  title: z
+    .string()
+    .min(5, 'Title must be at least 5 characters')
+    .max(100, 'Title must not exceed 100 characters'),
+  description: z
+    .string()
+    .min(20, 'Description must be at least 20 characters')
+    .max(1000, 'Description must not exceed 1000 characters'),
+  type: z.enum([
+    'PROPERTY_IMPROVEMENT',
+    'MAINTENANCE',
+    'POLICY_CHANGE',
+    'OTHER',
+  ]),
+  endDate: z
+    .date()
+    .min(new Date(), 'End date must be in the future')
+    .max(
+      addDays(new Date(), 30),
+      'End date cannot be more than 30 days in the future'
+    ),
+  requiredQuorum: z.coerce
+    .number() // Added coerce for number conversion
+    .min(1, 'Quorum must be at least 1%')
+    .max(100, 'Quorum cannot exceed 100%'),
+})
+
 type ProposalFormValues = z.infer<typeof proposalFormSchema> & {
   votes?: {
-    for: any[];
-    against: any[];
-  };
+    for: any[]
+    against: any[]
+  }
   votingPower?: {
-    for: number;
-    against: number;
-    total: number;
-  };
-  status?: string;
+    for: number
+    against: number
+    total: number
+  }
+  status?: string
 }
 
 interface CreateProposalFormProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  proposal?: Proposal | null 
-  onClose?: () => void 
+  proposal?: Proposal | null
+  onClose?: () => void
 }
 
-async function createOrUpdateProposal(data: ProposalFormValues & { id?: string, creator: any }) {
+async function createOrUpdateProposal(
+  data: ProposalFormValues & { id?: string; creator: any }
+) {
   const isEdit = !!data.id
   const response = await fetch(`/api/proposals${isEdit ? `/${data.id}` : ''}`, {
     method: isEdit ? 'PATCH' : 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
   })
-  
+
   if (!response.ok) {
     const error = await response.json()
-    throw new Error(error.message || `Failed to ${isEdit ? 'update' : 'create'} proposal`)
+    throw new Error(
+      error.message || `Failed to ${isEdit ? 'update' : 'create'} proposal`
+    )
   }
-  
+
   return response.json()
 }
 
-export function CreateProposalForm({ 
-  open, 
-  onOpenChange, 
+export function CreateProposalForm({
+  open,
+  onOpenChange,
   proposal = null,
-  onClose 
+  onClose,
 }: CreateProposalFormProps) {
   const { user } = useAuth()
   const { toast } = useToast()
@@ -138,7 +154,7 @@ export function CreateProposalForm({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['proposals'] })
       toast({
-        title: "Success",
+        title: 'Success',
         description: `Proposal ${proposal ? 'updated' : 'created'} successfully`,
       })
       form.reset()
@@ -159,9 +175,9 @@ export function CreateProposalForm({
   async function onSubmit(values: ProposalFormValues) {
     if (!user?.address) {
       toast({
-        title: "Authentication Required",
-        description: "Please connect your wallet to continue",
-        variant: "destructive",
+        title: 'Authentication Required',
+        description: 'Please connect your wallet to continue',
+        variant: 'destructive',
       })
       return
     }
@@ -178,7 +194,11 @@ export function CreateProposalForm({
         },
         // Preserve existing vote data if editing
         votes: proposal?.votes || { for: [], against: [] },
-        votingPower: proposal?.votingPower || { for: 0, against: 0, total: 100 },
+        votingPower: proposal?.votingPower || {
+          for: 0,
+          against: 0,
+          total: 100,
+        },
         status: proposal?.status || 'ACTIVE',
       })
     } catch (error) {
@@ -198,7 +218,7 @@ export function CreateProposalForm({
             {proposal ? 'Edit Proposal' : 'Create New Proposal'}
           </DialogTitle>
           <DialogDescription>
-            {proposal 
+            {proposal
               ? 'Edit the existing proposal details.'
               : 'Create a new proposal for the community to vote on.'}
           </DialogDescription>
@@ -230,10 +250,10 @@ export function CreateProposalForm({
                 <FormItem>
                   <FormLabel>Description</FormLabel>
                   <FormControl>
-                    <Textarea 
-                      placeholder="Describe your proposal in detail" 
+                    <Textarea
+                      placeholder="Describe your proposal in detail"
                       className="min-h-[120px]"
-                      {...field} 
+                      {...field}
                     />
                   </FormControl>
                   <FormDescription>
@@ -251,8 +271,8 @@ export function CreateProposalForm({
                 render={({ field }: { field: any }) => (
                   <FormItem>
                     <FormLabel>Type</FormLabel>
-                    <Select 
-                      onValueChange={field.onChange} 
+                    <Select
+                      onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
                       <FormControl>
@@ -264,15 +284,11 @@ export function CreateProposalForm({
                         <SelectItem value="PROPERTY_IMPROVEMENT">
                           Property Improvement
                         </SelectItem>
-                        <SelectItem value="MAINTENANCE">
-                          Maintenance
-                        </SelectItem>
+                        <SelectItem value="MAINTENANCE">Maintenance</SelectItem>
                         <SelectItem value="POLICY_CHANGE">
                           Policy Change
                         </SelectItem>
-                        <SelectItem value="OTHER">
-                          Other
-                        </SelectItem>
+                        <SelectItem value="OTHER">Other</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormDescription>
@@ -293,14 +309,14 @@ export function CreateProposalForm({
                       <PopoverTrigger asChild>
                         <FormControl>
                           <Button
-                            variant={"outline"}
+                            variant={'outline'}
                             className={cn(
-                              "pl-3 text-left font-normal",
-                              !field.value && "text-muted-foreground"
+                              'pl-3 text-left font-normal',
+                              !field.value && 'text-muted-foreground'
                             )}
                           >
                             {field.value ? (
-                              format(field.value, "PPP")
+                              format(field.value, 'PPP')
                             ) : (
                               <span>Pick a date</span>
                             )}
@@ -314,7 +330,8 @@ export function CreateProposalForm({
                           selected={field.value}
                           onSelect={field.onChange}
                           disabled={(date: Date) =>
-                            date.getTime() < new Date().getTime() || date.getTime() > addDays(new Date(), 30).getTime()
+                            date.getTime() < new Date().getTime() ||
+                            date.getTime() > addDays(new Date(), 30).getTime()
                           }
                           initialFocus
                         />
@@ -336,16 +353,17 @@ export function CreateProposalForm({
                 <FormItem>
                   <FormLabel>Required Quorum (%)</FormLabel>
                   <FormControl>
-                    <Input 
-                      type="number" 
-                      min={1} 
+                    <Input
+                      type="number"
+                      min={1}
                       max={100}
                       {...field}
-                      onChange={event => field.onChange(+event.target.value)}
+                      onChange={(event) => field.onChange(+event.target.value)}
                     />
                   </FormControl>
                   <FormDescription>
-                    Percentage of total voting power needed for the proposal to pass
+                    Percentage of total voting power needed for the proposal to
+                    pass
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -364,11 +382,7 @@ export function CreateProposalForm({
               >
                 Cancel
               </Button>
-              <Button 
-                type="submit" 
-                disabled={isSubmitting}
-                className="gap-2"
-              >
+              <Button type="submit" disabled={isSubmitting} className="gap-2">
                 {isSubmitting ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" />

@@ -12,13 +12,8 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs"
+} from '@/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   Form,
   FormControl,
@@ -27,19 +22,19 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
+} from '@/components/ui/form'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Input } from "@/components/ui/input"
-import { Switch } from "@/components/ui/switch"
-import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
-import { useToast } from "@/hooks/use-toast"
+} from '@/components/ui/select'
+import { Input } from '@/components/ui/input'
+import { Switch } from '@/components/ui/switch'
+import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
+import { useToast } from '@/hooks/use-toast'
 import {
   Settings,
   Shield,
@@ -58,22 +53,22 @@ const platformSettingsSchema = z.object({
   platformName: z.string().min(2).max(50),
   supportEmail: z.string().email(),
   maintenanceMode: z.boolean(),
-  
+
   // Investment Settings
   minimumInvestment: z.number().min(0),
   maximumInvestment: z.number().min(0),
   platformFee: z.number().min(0).max(100),
-  
+
   // Governance Settings
   proposalDuration: z.number().min(1).max(30),
   minimumQuorum: z.number().min(1).max(100),
   votingDelay: z.number().min(0),
-  
+
   // Security Settings
   twoFactorRequired: z.boolean(),
   passwordExpiration: z.number().min(0),
   sessionTimeout: z.number().min(5).max(1440),
-  
+
   // Notification Settings
   emailNotifications: z.boolean(),
   investmentAlerts: z.boolean(),
@@ -90,22 +85,23 @@ interface SettingsSectionProps {
   children: React.ReactNode
 }
 
-function SettingsSection({ title, description, icon, children }: SettingsSectionProps) {
+function SettingsSection({
+  title,
+  description,
+  icon,
+  children,
+}: SettingsSectionProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-2">
-        <div className="rounded-lg bg-primary/10 p-2 text-primary">
-          {icon}
-        </div>
+        <div className="rounded-lg bg-primary/10 p-2 text-primary">{icon}</div>
         <div>
           <h3 className="text-lg font-medium">{title}</h3>
           <p className="text-sm text-muted-foreground">{description}</p>
         </div>
       </div>
       <Separator />
-      <div className="space-y-4">
-        {children}
-      </div>
+      <div className="space-y-4">{children}</div>
     </div>
   )
 }
@@ -117,8 +113,8 @@ export default function AdminSettings() {
   const form = useForm<PlatformSettings>({
     resolver: zodResolver(platformSettingsSchema),
     defaultValues: {
-      platformName: "RWA Platform",
-      supportEmail: "support@example.com",
+      platformName: 'RWA Platform',
+      supportEmail: 'support@example.com',
       maintenanceMode: false,
       minimumInvestment: 100,
       maximumInvestment: 10000,
@@ -140,20 +136,20 @@ export default function AdminSettings() {
     setIsSubmitting(true)
     try {
       // API call to save settings
-      await new Promise(resolve => setTimeout(resolve, 1000)) // Simulated API call
+      await new Promise((resolve) => setTimeout(resolve, 1000)) // Simulated API call
       toast({
-        title: "Settings Updated",
-        description: "Platform settings have been saved successfully.",
+        title: 'Settings Updated',
+        description: 'Platform settings have been saved successfully.',
       })
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to update settings. Please try again.",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to update settings. Please try again.',
+        variant: 'destructive',
       })
     } finally {
-        form.reset(data)
-        setIsSubmitting(false)
+      form.reset(data)
+      setIsSubmitting(false)
     }
   }
 
@@ -241,10 +237,10 @@ export default function AdminSettings() {
                       <FormItem>
                         <FormLabel>Minimum Investment ($)</FormLabel>
                         <FormControl>
-                          <Input 
-                            type="number" 
-                            {...field} 
-                            onChange={e => field.onChange(+e.target.value)}
+                          <Input
+                            type="number"
+                            {...field}
+                            onChange={(e) => field.onChange(+e.target.value)}
                           />
                         </FormControl>
                         <FormMessage />
@@ -258,10 +254,10 @@ export default function AdminSettings() {
                       <FormItem>
                         <FormLabel>Maximum Investment ($)</FormLabel>
                         <FormControl>
-                          <Input 
-                            type="number" 
-                            {...field} 
-                            onChange={e => field.onChange(+e.target.value)}
+                          <Input
+                            type="number"
+                            {...field}
+                            onChange={(e) => field.onChange(+e.target.value)}
                           />
                         </FormControl>
                         <FormMessage />
@@ -275,10 +271,10 @@ export default function AdminSettings() {
                       <FormItem>
                         <FormLabel>Platform Fee (%)</FormLabel>
                         <FormControl>
-                          <Input 
-                            type="number" 
-                            {...field} 
-                            onChange={e => field.onChange(+e.target.value)}
+                          <Input
+                            type="number"
+                            {...field}
+                            onChange={(e) => field.onChange(+e.target.value)}
                           />
                         </FormControl>
                         <FormMessage />
@@ -301,10 +297,10 @@ export default function AdminSettings() {
                       <FormItem>
                         <FormLabel>Proposal Duration (days)</FormLabel>
                         <FormControl>
-                          <Input 
-                            type="number" 
-                            {...field} 
-                            onChange={e => field.onChange(+e.target.value)}
+                          <Input
+                            type="number"
+                            {...field}
+                            onChange={(e) => field.onChange(+e.target.value)}
                           />
                         </FormControl>
                         <FormMessage />
@@ -318,10 +314,10 @@ export default function AdminSettings() {
                       <FormItem>
                         <FormLabel>Minimum Quorum (%)</FormLabel>
                         <FormControl>
-                          <Input 
-                            type="number" 
-                            {...field} 
-                            onChange={e => field.onChange(+e.target.value)}
+                          <Input
+                            type="number"
+                            {...field}
+                            onChange={(e) => field.onChange(+e.target.value)}
                           />
                         </FormControl>
                         <FormMessage />
@@ -335,10 +331,10 @@ export default function AdminSettings() {
                       <FormItem>
                         <FormLabel>Voting Delay (hours)</FormLabel>
                         <FormControl>
-                          <Input 
-                            type="number" 
-                            {...field} 
-                            onChange={e => field.onChange(+e.target.value)}
+                          <Input
+                            type="number"
+                            {...field}
+                            onChange={(e) => field.onChange(+e.target.value)}
                           />
                         </FormControl>
                         <FormMessage />
@@ -385,10 +381,10 @@ export default function AdminSettings() {
                         <FormItem>
                           <FormLabel>Password Expiration (days)</FormLabel>
                           <FormControl>
-                            <Input 
-                              type="number" 
-                              {...field} 
-                              onChange={e => field.onChange(+e.target.value)}
+                            <Input
+                              type="number"
+                              {...field}
+                              onChange={(e) => field.onChange(+e.target.value)}
                             />
                           </FormControl>
                           <FormMessage />
@@ -402,10 +398,10 @@ export default function AdminSettings() {
                         <FormItem>
                           <FormLabel>Session Timeout (minutes)</FormLabel>
                           <FormControl>
-                            <Input 
-                              type="number" 
-                              {...field} 
-                              onChange={e => field.onChange(+e.target.value)}
+                            <Input
+                              type="number"
+                              {...field}
+                              onChange={(e) => field.onChange(+e.target.value)}
                             />
                           </FormControl>
                           <FormMessage />
@@ -489,99 +485,102 @@ export default function AdminSettings() {
                         </FormControl>
                         <FormMessage />
                       </FormItem>
-                      )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="maintenanceAlerts"
-                        render={({ field }) => (
-                          <FormItem className="flex items-center justify-between rounded-lg border p-4">
-                            <div className="space-y-0.5">
-                              <FormLabel className="text-base">
-                                Maintenance Alerts
-                              </FormLabel>
-                              <FormDescription>
-                                Notify users about platform maintenance
-                              </FormDescription>
-                            </div>
-                            <FormControl>
-                              <Switch
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </SettingsSection>
-                </CardContent>
-              </Card>
-    
-              {/* Action Buttons */}
-              <div className="flex items-center justify-end space-x-4">
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="maintenanceAlerts"
+                    render={({ field }) => (
+                      <FormItem className="flex items-center justify-between rounded-lg border p-4">
+                        <div className="space-y-0.5">
+                          <FormLabel className="text-base">
+                            Maintenance Alerts
+                          </FormLabel>
+                          <FormDescription>
+                            Notify users about platform maintenance
+                          </FormDescription>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </SettingsSection>
+            </CardContent>
+          </Card>
+
+          {/* Action Buttons */}
+          <div className="flex items-center justify-end space-x-4">
+            <Button
+              variant="outline"
+              onClick={() => form.reset()}
+              disabled={isSubmitting}
+            >
+              Reset
+            </Button>
+            <Button
+              type="submit"
+              disabled={isSubmitting || !form.formState.isDirty}
+              className="gap-2"
+            >
+              {isSubmitting ? (
+                <>
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{
+                      duration: 1,
+                      repeat: Infinity,
+                      ease: 'linear',
+                    }}
+                  >
+                    <Settings className="h-4 w-4" />
+                  </motion.div>
+                  Saving Changes...
+                </>
+              ) : (
+                <>
+                  <Settings className="h-4 w-4" />
+                  Save Changes
+                </>
+              )}
+            </Button>
+          </div>
+        </div>
+      </form>
+
+      {/* Settings Changed Alert */}
+      <AnimatePresence>
+        {form.formState.isDirty && (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            className="fixed bottom-4 right-4 z-50"
+          >
+            <Card className="bg-primary text-primary-foreground">
+              <CardContent className="flex items-center gap-4 p-4">
+                <div className="text-sm">You have unsaved changes</div>
                 <Button
-                  variant="outline"
-                  onClick={() => form.reset()}
+                  size="sm"
+                  variant="secondary"
+                  onClick={() => {
+                    form.handleSubmit(onSubmit)()
+                  }}
                   disabled={isSubmitting}
                 >
-                  Reset
+                  Save Now
                 </Button>
-                <Button 
-                  type="submit" 
-                  disabled={isSubmitting || !form.formState.isDirty}
-                  className="gap-2"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <motion.div
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                      >
-                        <Settings className="h-4 w-4" />
-                      </motion.div>
-                      Saving Changes...
-                    </>
-                  ) : (
-                    <>
-                      <Settings className="h-4 w-4" />
-                      Save Changes
-                    </>
-                  )}
-                </Button>
-              </div>
-            </div>
-          </form>
-    
-          {/* Settings Changed Alert */}
-          <AnimatePresence>
-            {form.formState.isDirty && (
-              <motion.div
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 50 }}
-                className="fixed bottom-4 right-4 z-50"
-              >
-                <Card className="bg-primary text-primary-foreground">
-                  <CardContent className="flex items-center gap-4 p-4">
-                    <div className="text-sm">
-                      You have unsaved changes
-                    </div>
-                    <Button 
-                      size="sm" 
-                      variant="secondary"
-                      onClick={() => {form.handleSubmit(onSubmit)()}}
-                      disabled={isSubmitting}
-                    >
-                      Save Now
-                    </Button>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </Form>
-      )
-    }
-   
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </Form>
+  )
+}

@@ -1,12 +1,12 @@
-import { Input } from "@/components/ui/input"
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Status } from "@/lib/store/slices/proposalSlice"
+} from '@/components/ui/select'
+import { Status } from '@/lib/store/slices/proposalSlice'
 
 interface ProposalsFiltersProps {
   filters: {
@@ -19,9 +19,12 @@ interface ProposalsFiltersProps {
   onFilterChange: (key: string, value: string) => void
 }
 
-export function ProposalsFilters({ filters, onFilterChange }: ProposalsFiltersProps) {
+export function ProposalsFilters({
+  filters,
+  onFilterChange,
+}: ProposalsFiltersProps) {
   return (
-    <div className="flex flex-col sm:flex-row gap-4 mb-6">
+    <div className="mb-6 flex flex-col gap-4 sm:flex-row">
       <Input
         placeholder="Search proposals..."
         value={filters.search}
@@ -54,7 +57,9 @@ export function ProposalsFilters({ filters, onFilterChange }: ProposalsFiltersPr
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">All Types</SelectItem>
-          <SelectItem value="PROPERTY_IMPROVEMENT">Property Improvement</SelectItem>
+          <SelectItem value="PROPERTY_IMPROVEMENT">
+            Property Improvement
+          </SelectItem>
           <SelectItem value="MAINTENANCE">Maintenance</SelectItem>
           <SelectItem value="POLICY_CHANGE">Policy Change</SelectItem>
           <SelectItem value="OTHER">Other</SelectItem>
@@ -78,7 +83,9 @@ export function ProposalsFilters({ filters, onFilterChange }: ProposalsFiltersPr
 
       <Select
         value={filters.sortOrder}
-        onValueChange={(value: 'asc' | 'desc') => onFilterChange('sortOrder', value)}
+        onValueChange={(value: 'asc' | 'desc') =>
+          onFilterChange('sortOrder', value)
+        }
       >
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="Sort order" />

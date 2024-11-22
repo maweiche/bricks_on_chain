@@ -23,7 +23,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet"
+} from '@/components/ui/sheet'
 import {
   Table,
   TableBody,
@@ -44,14 +44,16 @@ export default function ProposalsAdmin() {
   const { user } = useAuth()
   const { toast } = useToast()
   const queryClient = useQueryClient()
-  
+
   // State
   const [selectedProposals, setSelectedProposals] = useState<string[]>([])
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [showAnalytics, setShowAnalytics] = useState(false)
   const [showHistory, setShowHistory] = useState(false)
-  const [selectedProposal, setSelectedProposal] = useState<Proposal | null>(null)
+  const [selectedProposal, setSelectedProposal] = useState<Proposal | null>(
+    null
+  )
   const [filters, setFilters] = useState({
     search: '',
     status: 'all',
@@ -100,22 +102,34 @@ export default function ProposalsAdmin() {
   // Filter and sort proposals
   const filteredProposals = useMemo(() => {
     if (!proposals?.proposals) return []
-    
+
     return proposals.proposals
       .filter((proposal: Proposal) => {
-        const matchesSearch = proposal.title.toLowerCase().includes(filters.search.toLowerCase()) ||
-          proposal.description.toLowerCase().includes(filters.search.toLowerCase())
-        const matchesStatus = filters.status === 'all' || proposal.status === filters.status
-        const matchesType = filters.type === 'all' || proposal.type === filters.type
+        const matchesSearch =
+          proposal.title.toLowerCase().includes(filters.search.toLowerCase()) ||
+          proposal.description
+            .toLowerCase()
+            .includes(filters.search.toLowerCase())
+        const matchesStatus =
+          filters.status === 'all' || proposal.status === filters.status
+        const matchesType =
+          filters.type === 'all' || proposal.type === filters.type
         return matchesSearch && matchesStatus && matchesType
       })
       .sort((a: Proposal, b: Proposal) => {
         const order = filters.sortOrder === 'asc' ? 1 : -1
         switch (filters.sortBy) {
           case 'createdAt':
-            return order * (new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+            return (
+              order *
+              (new Date(b.createdAt).getTime() -
+                new Date(a.createdAt).getTime())
+            )
           case 'endDate':
-            return order * (new Date(b.endDate).getTime() - new Date(a.endDate).getTime())
+            return (
+              order *
+              (new Date(b.endDate).getTime() - new Date(a.endDate).getTime())
+            )
           case 'votingPower':
             const powerA = a.votingPower.for + a.votingPower.against
             const powerB = b.votingPower.for + b.votingPower.against
@@ -129,7 +143,7 @@ export default function ProposalsAdmin() {
   }, [proposals, filters])
 
   const handleFilterChange = (key: string, value: string) => {
-    setFilters(prev => ({ ...prev, [key]: value }))
+    setFilters((prev) => ({ ...prev, [key]: value }))
   }
 
   const handleDeleteSelected = () => {
@@ -161,14 +175,14 @@ export default function ProposalsAdmin() {
     <div className="container mx-auto py-8">
       {/* Header and Actions */}
       <div className="mb-6">
-        <div className="flex items-center justify-between mb-4">
+        <div className="mb-4 flex items-center justify-between">
           <h1 className="text-2xl font-bold">Proposal Management</h1>
           <div className="space-x-2">
             <Button onClick={() => setIsAddDialogOpen(true)}>
               <Plus className="mr-2 h-4 w-4" />
               Add Proposal
             </Button>
-            
+
             {selectedProposals.length > 0 && (
               <Button
                 variant="destructive"
@@ -187,7 +201,7 @@ export default function ProposalsAdmin() {
         </div>
 
         {/* Filters */}
-        <ProposalsFilters 
+        <ProposalsFilters
           filters={filters}
           onFilterChange={handleFilterChange}
         />
@@ -201,10 +215,14 @@ export default function ProposalsAdmin() {
               <TableHead className="w-12">
                 <input
                   type="checkbox"
-                  checked={selectedProposals.length === filteredProposals.length}
+                  checked={
+                    selectedProposals.length === filteredProposals.length
+                  }
                   onChange={(e) => {
                     if (e.target.checked) {
-                      setSelectedProposals(filteredProposals.map((p: Proposal) => p.id))
+                      setSelectedProposals(
+                        filteredProposals.map((p: Proposal) => p.id)
+                      )
                     } else {
                       setSelectedProposals([])
                     }
@@ -328,7 +346,7 @@ export default function ProposalsAdmin() {
       </div>
 
       {/* Create/Edit Proposal Dialog */}
-      <CreateProposalForm 
+      <CreateProposalForm
         open={isAddDialogOpen}
         onOpenChange={setIsAddDialogOpen}
         proposal={selectedProposal}
@@ -352,25 +370,21 @@ export default function ProposalsAdmin() {
 
       {/* Analytics Sheet */}
       <Sheet open={showAnalytics} onOpenChange={setShowAnalytics}>
-        <SheetContent side="right" className="w-full sm:w-[600px] z-[101]">
+        <SheetContent side="right" className="z-[101] w-full sm:w-[600px]">
           <SheetHeader>
             <SheetTitle>Proposal Analytics</SheetTitle>
           </SheetHeader>
-          {selectedProposal && (
-            <VoteAnalytics proposal={selectedProposal} />
-          )}
+          {selectedProposal && <VoteAnalytics proposal={selectedProposal} />}
         </SheetContent>
       </Sheet>
 
       {/* History Sheet */}
       <Sheet open={showHistory} onOpenChange={setShowHistory}>
-        <SheetContent side="right" className="w-full sm:w-[600px] z-[101]">
+        <SheetContent side="right" className="z-[101] w-full sm:w-[600px]">
           <SheetHeader>
             <SheetTitle>Proposal History</SheetTitle>
           </SheetHeader>
-          {selectedProposal && (
-            <ProposalHistory proposal={selectedProposal} />
-          )}
+          {selectedProposal && <ProposalHistory proposal={selectedProposal} />}
         </SheetContent>
       </Sheet>
     </div>

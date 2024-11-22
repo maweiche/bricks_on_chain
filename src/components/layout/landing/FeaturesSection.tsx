@@ -1,12 +1,7 @@
 import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { 
-    Link,
-  Replace,
-  UsersIcon, 
-  VoteIcon, 
-} from 'lucide-react'
+import { Link, Replace, UsersIcon, VoteIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 interface Feature {
@@ -18,58 +13,67 @@ interface Feature {
 
 const features: Feature[] = [
   {
-    title: "Property Tokenization",
-    description: "Real estate assets are converted into digital tokens on the blockchain",
+    title: 'Property Tokenization',
+    description:
+      'Real estate assets are converted into digital tokens on the blockchain',
     icon: <Link className="h-6 w-6" />,
-    gradient: "from-purple-500 to-indigo-500"
+    gradient: 'from-purple-500 to-indigo-500',
   },
   {
-    title: "Fractional Ownership",
-    description: "Invest in properties with minimal capital through token ownership",
+    title: 'Fractional Ownership',
+    description:
+      'Invest in properties with minimal capital through token ownership',
     icon: <UsersIcon className="h-6 w-6" />,
-    gradient: "from-blue-500 to-cyan-500"
+    gradient: 'from-blue-500 to-cyan-500',
   },
   {
-    title: "Governance Rights",
-    description: "Token holders participate in property decisions through voting",
+    title: 'Governance Rights',
+    description:
+      'Token holders participate in property decisions through voting',
     icon: <VoteIcon className="h-6 w-6" />,
-    gradient: "from-emerald-500 to-green-500"
+    gradient: 'from-emerald-500 to-green-500',
   },
   {
-    title: "Liquidity",
-    description: "Trade property tokens easily on our platform",
+    title: 'Liquidity',
+    description: 'Trade property tokens easily on our platform',
     icon: <Replace className="h-6 w-6" />,
-    gradient: "from-orange-500 to-yellow-500"
-  }
+    gradient: 'from-orange-500 to-yellow-500',
+  },
 ]
 
 const containerVariants = {
   initial: {},
   animate: {
     transition: {
-      staggerChildren: 0.1
-    }
-  }
+      staggerChildren: 0.1,
+    },
+  },
 }
 
 const featureVariants = {
-  initial: { 
-    opacity: 0, 
+  initial: {
+    opacity: 0,
     y: 20,
-    scale: 0.95
+    scale: 0.95,
   },
-  animate: { 
-    opacity: 1, 
+  animate: {
+    opacity: 1,
     y: 0,
     scale: 1,
     transition: {
-      type: "spring",
-      duration: 0.8
-    }
-  }
+      type: 'spring',
+      duration: 0.8,
+    },
+  },
 }
 
-function FeatureCard({ title, description, icon, gradient, index }: Feature & { index: number }) {
+function FeatureCard({
+  title,
+  description,
+  icon,
+  gradient,
+  index,
+}: Feature & { index: number }) {
   return (
     <motion.div
       variants={featureVariants}
@@ -78,11 +82,11 @@ function FeatureCard({ title, description, icon, gradient, index }: Feature & { 
       className="group relative"
     >
       {/* Animated background gradient */}
-      <div 
+      <div
         className={cn(
-          "absolute inset-0 rounded-2xl bg-gradient-to-r opacity-0 blur-xl transition-opacity duration-500",
+          'absolute inset-0 rounded-2xl bg-gradient-to-r opacity-0 blur-xl transition-opacity duration-500',
           gradient,
-          "group-hover:opacity-30"
+          'group-hover:opacity-30'
         )}
       />
 
@@ -90,11 +94,13 @@ function FeatureCard({ title, description, icon, gradient, index }: Feature & { 
       <div className="relative rounded-2xl border bg-card p-6 shadow-lg transition-shadow hover:shadow-xl">
         {/* Icon with animated background */}
         <div className="mb-4">
-          <div className={cn(
-            "inline-flex rounded-lg p-3 bg-gradient-to-br",
-            gradient,
-            "ring-2 ring-white/20"
-          )}>
+          <div
+            className={cn(
+              'inline-flex rounded-lg bg-gradient-to-br p-3',
+              gradient,
+              'ring-2 ring-white/20'
+            )}
+          >
             {icon}
           </div>
         </div>
@@ -105,12 +111,8 @@ function FeatureCard({ title, description, icon, gradient, index }: Feature & { 
         </div>
 
         {/* Text content */}
-        <h3 className="mb-2 font-semibold tracking-tight">
-          {title}
-        </h3>
-        <p className="text-sm text-muted-foreground">
-          {description}
-        </p>
+        <h3 className="mb-2 font-semibold tracking-tight">{title}</h3>
+        <p className="text-sm text-muted-foreground">{description}</p>
 
         {/* Connecting lines between cards */}
         {index < features.length - 1 && (
@@ -132,9 +134,9 @@ export function FeaturesSection() {
     <section className="relative overflow-hidden">
       {/* Background decorative elements */}
       <div className="absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-grid-white/10" />
-        <div className="absolute left-0 top-1/2 -translate-y-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-purple-500 opacity-20 blur-3xl" />
-        <div className="absolute right-0 bottom-0 h-96 w-96 translate-x-1/2 rounded-full bg-blue-500 opacity-20 blur-3xl" />
+        <div className="bg-grid-white/10 absolute inset-0" />
+        <div className="absolute left-0 top-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-purple-500 opacity-20 blur-3xl" />
+        <div className="absolute bottom-0 right-0 h-96 w-96 translate-x-1/2 rounded-full bg-blue-500 opacity-20 blur-3xl" />
       </div>
 
       <motion.div
@@ -142,7 +144,7 @@ export function FeaturesSection() {
         whileInView="animate"
         viewport={{ once: true }}
         variants={containerVariants}
-        className="container px-4 mx-auto"
+        className="container mx-auto px-4"
       >
         {/* Section header */}
         <div className="mb-16 text-center">
@@ -150,15 +152,15 @@ export function FeaturesSection() {
             initial={{ opacity: 0, y: -20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-block rounded-full bg-primary/10 px-4 py-1.5 mb-4"
+            className="mb-4 inline-block rounded-full bg-primary/10 px-4 py-1.5"
           >
             <span className="text-lg font-medium text-secondary dark:text-primary">
               How it Works
             </span>
           </motion.div>
           <h2 className="text-3xl font-bold sm:text-4xl">
-            Revolutionizing 
-            <br className='md:hidden' />
+            Revolutionizing
+            <br className="md:hidden" />
             Real Estate Investment
           </h2>
         </div>
@@ -166,11 +168,7 @@ export function FeaturesSection() {
         {/* Features grid */}
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           {features.map((feature, index) => (
-            <FeatureCard 
-              key={feature.title} 
-              {...feature} 
-              index={index} 
-            />
+            <FeatureCard key={feature.title} {...feature} index={index} />
           ))}
         </div>
 
@@ -181,7 +179,11 @@ export function FeaturesSection() {
           viewport={{ once: true }}
           className="mt-16 text-center"
         >
-          <Button variant="default" size="lg" onClick={()=> router.push('/properties')}>
+          <Button
+            variant="default"
+            size="lg"
+            onClick={() => router.push('/properties')}
+          >
             Start Investing
           </Button>
         </motion.div>

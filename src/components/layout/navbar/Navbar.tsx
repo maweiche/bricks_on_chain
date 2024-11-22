@@ -15,9 +15,7 @@ import { useAuth } from '@/hooks/use-auth'
 import { useWallet } from '@solana/wallet-adapter-react'
 import DevAuthButton from './DevAuthButton'
 
-const navItems = [
-  { name: 'Explore Properties', path: '/properties' },
-]
+const navItems = [{ name: 'Explore Properties', path: '/properties' }]
 
 export function Navbar() {
   const [isOpen, setIsOpen] = React.useState(false)
@@ -82,7 +80,7 @@ export function Navbar() {
                 <Link
                   href={item.path}
                   className={cn(
-                    'text-sm font-medium transition-colors hover:font-semibold hover:text-primary hover:border-2 border-primary px-4 py-2 bg-white rounded-full ',
+                    'rounded-full border-primary bg-white px-4 py-2 text-sm font-medium transition-colors hover:border-2 hover:font-semibold hover:text-primary',
                     pathname === item.path
                       ? 'text-primary'
                       : 'text-muted-foreground'
@@ -93,7 +91,7 @@ export function Navbar() {
               </motion.div>
             ))}
             <ThemeToggle />
-            {user  ? (
+            {user ? (
               <UserDropdown user={user} />
             ) : (
               <motion.div variants={itemVariants}>

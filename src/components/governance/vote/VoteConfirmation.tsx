@@ -7,8 +7,8 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogFooter,
-} from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
 import { ThumbsUp, ThumbsDown } from 'lucide-react'
 
 interface VoteConfirmationDialogProps {
@@ -37,30 +37,27 @@ export function VoteConfirmationDialog({
             You are about to cast your vote with {votingPower} voting power
           </DialogDescription>
         </DialogHeader>
-        
+
         <div className="flex items-center justify-center py-6">
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className={`p-6 rounded-full ${
-              voteType === 'for' 
-                ? 'bg-green-500/10 text-green-500' 
+            className={`rounded-full p-6 ${
+              voteType === 'for'
+                ? 'bg-green-500/10 text-green-500'
                 : 'bg-red-500/10 text-red-500'
             }`}
           >
             {voteType === 'for' ? (
-              <ThumbsUp className="w-12 h-12" />
+              <ThumbsUp className="h-12 w-12" />
             ) : (
-              <ThumbsDown className="w-12 h-12" />
+              <ThumbsDown className="h-12 w-12" />
             )}
           </motion.div>
         </div>
 
         <DialogFooter className="gap-2 sm:gap-0">
-          <Button
-            variant="outline"
-            onClick={onCancel}
-          >
+          <Button variant="outline" onClick={onCancel}>
             Cancel
           </Button>
           <Button
@@ -69,9 +66,9 @@ export function VoteConfirmationDialog({
             className="gap-2"
           >
             {voteType === 'for' ? (
-              <ThumbsUp className="w-4 h-4" />
+              <ThumbsUp className="h-4 w-4" />
             ) : (
-              <ThumbsDown className="w-4 h-4" />
+              <ThumbsDown className="h-4 w-4" />
             )}
             Confirm Vote
           </Button>

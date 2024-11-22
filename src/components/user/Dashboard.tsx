@@ -49,7 +49,7 @@ export default function Dashboard() {
     queryKey: ['user', user?.address],
     queryFn: async () => {
       if (!user?.address) return user // Return the existing user data if no address
-      
+
       const response = await fetch(`/api/users?address=${user.address}`)
       if (!response.ok) throw new Error('Failed to fetch user data')
       const data = await response.json()
@@ -58,7 +58,7 @@ export default function Dashboard() {
     // Enable query if we have either a web3 wallet or a test user
     enabled: isAuthenticated,
     // Initialize with existing user data
-    initialData: user
+    initialData: user,
   })
 
   // Fetch properties data to get property details for investments
@@ -107,34 +107,39 @@ export default function Dashboard() {
   }
 
   // Calculate investment statistics
-  const totalInvested = userData.investments?.reduce(
-    (sum: any, inv: { amount: any }) => sum + inv.amount,
-    0
-  ) || 0
-  
-  const activeInvestments = userData.investments?.filter(
-    (inv: { status: string }) => inv.status === 'active'
-  ) || []
-  
+  const totalInvested =
+    userData.investments?.reduce(
+      (sum: any, inv: { amount: any }) => sum + inv.amount,
+      0
+    ) || 0
+
+  const activeInvestments =
+    userData.investments?.filter(
+      (inv: { status: string }) => inv.status === 'active'
+    ) || []
+
   const uniqueProperties = new Set(
     activeInvestments.map((inv: { propertyId: any }) => inv.propertyId)
   ).size
 
   // Get property details for investments
-  const investmentDetails = activeInvestments.map((investment: { propertyId: any }) => {
-    const property = propertiesData?.properties?.find(
-      (p: { id: any }) => p.id === investment.propertyId
-    )
-    return {
-      ...investment,
-      property,
+  const investmentDetails = activeInvestments.map(
+    (investment: { propertyId: any }) => {
+      const property = propertiesData?.properties?.find(
+        (p: { id: any }) => p.id === investment.propertyId
+      )
+      return {
+        ...investment,
+        property,
+      }
     }
-  })
+  )
 
   // Generate performance data based on investment dates
   const generatePerformanceData = () => {
     const sortedInvestments = [...activeInvestments].sort(
-      (a, b) => new Date(a.purchaseDate).getTime() - new Date(b.purchaseDate).getTime()
+      (a, b) =>
+        new Date(a.purchaseDate).getTime() - new Date(b.purchaseDate).getTime()
     )
 
     let runningTotal = 0

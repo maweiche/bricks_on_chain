@@ -2,17 +2,8 @@ import { Suspense, useRef, useState } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
-import {
-  motion,
-  useAnimationControls,
-} from 'framer-motion'
-import {
-  ArrowRight,
-  Clock,
-  MapPin,
-  TrendingUp,
-  Users,
-} from 'lucide-react'
+import { motion, useAnimationControls } from 'framer-motion'
+import { ArrowRight, Clock, MapPin, TrendingUp, Users } from 'lucide-react'
 
 import { Property } from '@/lib/store'
 import { Badge } from '@/components/ui/badge'
@@ -25,15 +16,18 @@ const LoadingFallback = () => (
   <div className="container mx-auto py-8 md:py-16">
     <div className="space-y-6 md:space-y-8">
       <div className="space-y-4 text-center">
-        <div className="mx-auto h-6 w-64 md:h-8 md:w-96 rounded bg-secondary/20" />
-        <div className="mx-auto h-4 w-48 md:w-64 rounded bg-secondary/20" />
+        <div className="mx-auto h-6 w-64 rounded bg-secondary/20 md:h-8 md:w-96" />
+        <div className="mx-auto h-4 w-48 rounded bg-secondary/20 md:w-64" />
       </div>
       <div className="px-4 md:px-0">
         <div className="flex gap-4 overflow-x-auto md:grid md:grid-cols-3 md:gap-6">
           {[1, 2, 3].map((i) => (
-            <Card key={i} className="relative w-[280px] md:w-full flex-shrink-0 overflow-hidden">
+            <Card
+              key={i}
+              className="relative w-[280px] flex-shrink-0 overflow-hidden md:w-full"
+            >
               <CardContent className="p-0">
-                <div className="h-40 md:h-48 animate-pulse bg-secondary/20" />
+                <div className="h-40 animate-pulse bg-secondary/20 md:h-48" />
                 <div className="space-y-4 p-4 md:p-6">
                   <div className="h-6 w-3/4 animate-pulse rounded bg-secondary/20" />
                   <div className="h-4 w-1/2 animate-pulse rounded bg-secondary/20" />
@@ -75,36 +69,40 @@ const PropertyCard = ({
         <CardContent className="p-0">
           <div className="relative">
             <motion.div
-              className="absolute inset-0 z-10 hidden md:flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100"
+              className="absolute inset-0 z-10 hidden items-center justify-center opacity-0 transition-opacity group-hover:opacity-100 md:flex"
               initial={false}
               animate={isHovered ? { opacity: 1 } : { opacity: 0 }}
             >
-              <Button variant="secondary" className="gap-2" onClick={() => router.push(`/properties/${property.id}`)}>
+              <Button
+                variant="secondary"
+                className="gap-2"
+                onClick={() => router.push(`/properties/${property.id}`)}
+              >
                 View Details <ArrowRight className="h-4 w-4" />
               </Button>
             </motion.div>
             <Image
               src={property.images[0]}
               alt={property.title}
-              className="h-40 md:h-48 w-full object-cover transition-transform duration-300 group-hover:scale-110"
+              className="h-40 w-full object-cover transition-transform duration-300 group-hover:scale-110 md:h-48"
               height={200}
               width={300}
             />
-            <div className="absolute right-3 top-3 md:right-4 md:top-4 z-20">
+            <div className="absolute right-3 top-3 z-20 md:right-4 md:top-4">
               <Badge
                 variant="secondary"
-                className="bg-brand-accent bg-white/50 text-xs md:text-sm font-semibold text-secondary"
+                className="bg-brand-accent bg-white/50 text-xs font-semibold text-secondary md:text-sm"
               >
                 {fundingProgress >= 90 ? 'Closing Soon!' : 'Hot Deal 🔥'}
               </Badge>
             </div>
           </div>
 
-          <div className="space-y-3 md:space-y-4 p-4 md:p-6">
-            <h3 className="line-clamp-1 text-base md:text-lg font-semibold">
+          <div className="space-y-3 p-4 md:space-y-4 md:p-6">
+            <h3 className="line-clamp-1 text-base font-semibold md:text-lg">
               {property.title}
             </h3>
-            <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground md:text-sm">
               <MapPin className="h-3 w-3 md:h-4 md:w-4" />
               <span>{property.location}</span>
             </div>
@@ -121,27 +119,33 @@ const PropertyCard = ({
 
             <div className="grid grid-cols-3 gap-2 text-xs md:text-sm">
               <div className="flex items-center gap-1">
-                <TrendingUp className="h-3 w-3 md:h-4 md:w-4 text-green-600" />
+                <TrendingUp className="h-3 w-3 text-green-600 md:h-4 md:w-4" />
                 <span>{property.roi}% ROI</span>
               </div>
               <div className="flex items-center gap-1">
-                <Users className="h-3 w-3 md:h-4 md:w-4 text-blue-600" />
+                <Users className="h-3 w-3 text-blue-600 md:h-4 md:w-4" />
                 <span>{Math.floor(Math.random() * 50) + 20}</span>
               </div>
               <div className="flex items-center gap-1">
-                <Clock className="h-3 w-3 md:h-4 md:w-4 text-orange-600" />
+                <Clock className="h-3 w-3 text-orange-600 md:h-4 md:w-4" />
                 <span>14d left</span>
               </div>
             </div>
 
             <div className="flex items-center justify-between pt-2 md:pt-4">
               <div>
-                <div className="text-xs md:text-sm text-muted-foreground">Minimum</div>
-                <div className="text-sm md:text-base font-semibold">${(5000).toLocaleString()}</div>
+                <div className="text-xs text-muted-foreground md:text-sm">
+                  Minimum
+                </div>
+                <div className="text-sm font-semibold md:text-base">
+                  ${(5000).toLocaleString()}
+                </div>
               </div>
               <div className="text-right">
-                <div className="text-xs md:text-sm text-muted-foreground">Target</div>
-                <div className="text-sm md:text-base font-semibold">
+                <div className="text-xs text-muted-foreground md:text-sm">
+                  Target
+                </div>
+                <div className="text-sm font-semibold md:text-base">
                   ${property.fundingGoal.toLocaleString()}
                 </div>
               </div>
@@ -202,7 +206,7 @@ export function Featured() {
             initial={{ opacity: 0, y: -20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-block rounded-full bg-primary/10 px-4 py-1.5 mb-4"
+            className="mb-4 inline-block rounded-full bg-primary/10 px-4 py-1.5"
           >
             <span className="text-lg font-medium text-secondary dark:text-primary">
               Featured Properties
@@ -212,13 +216,10 @@ export function Featured() {
 
         <div className="relative">
           {/* Mobile View */}
-          <div className="md:hidden px-4">
-            <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+          <div className="px-4 md:hidden">
+            <div className="scrollbar-hide flex gap-4 overflow-x-auto pb-4">
               {properties.map((property: Property) => (
-                <div
-                  key={property.id}
-                  className="w-[280px] flex-shrink-0"
-                >
+                <div key={property.id} className="w-[280px] flex-shrink-0">
                   <PropertyCard
                     property={property}
                     isHovered={hoveredId === property.id}
@@ -241,7 +242,10 @@ export function Featured() {
               <motion.div
                 drag="x"
                 dragConstraints={{
-                  left: -((totalSlides - 1) * (containerRef.current?.offsetWidth || 0)),
+                  left: -(
+                    (totalSlides - 1) *
+                    (containerRef.current?.offsetWidth || 0)
+                  ),
                   right: 0,
                 }}
                 dragElastic={0.1}
@@ -276,12 +280,18 @@ export function Featured() {
                     setCurrentIndex(index)
                     controls.start({
                       x: -index * (containerRef.current?.offsetWidth || 0),
-                      transition: { type: 'spring', stiffness: 300, damping: 30 },
+                      transition: {
+                        type: 'spring',
+                        stiffness: 300,
+                        damping: 30,
+                      },
                     })
                   }}
                   className={cn(
-                    "h-2 rounded-full transition-all",
-                    index === currentIndex ? "w-6 bg-primary" : "w-2 bg-primary/20"
+                    'h-2 rounded-full transition-all',
+                    index === currentIndex
+                      ? 'w-6 bg-primary'
+                      : 'w-2 bg-primary/20'
                   )}
                 />
               ))}

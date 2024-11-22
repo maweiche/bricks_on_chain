@@ -28,16 +28,16 @@ export const createAuthSlice: StateCreator<AuthSlice> = (set) => ({
     try {
       const res = await fetch(`/api/users?address=${address}`)
       const data = await res.json()
-      
+
       if (!data.user) {
         set({ user: null, isAdmin: false, isSimulated: false })
         return
       }
-  
+
       set({
         user: data.user,
         isAdmin: data.user.role === 'admin',
-        isSimulated: false
+        isSimulated: false,
       })
     } catch (error) {
       console.error('Auth check failed:', error)
@@ -46,11 +46,11 @@ export const createAuthSlice: StateCreator<AuthSlice> = (set) => ({
   },
 
   simulateAuth: (user: User) => {
-    set({ 
-      user, 
+    set({
+      user,
       isAdmin: user.role === 'admin',
       isLoading: false,
-      error: null
+      error: null,
     })
   },
 
@@ -74,10 +74,11 @@ export const createAuthSlice: StateCreator<AuthSlice> = (set) => ({
     }
   },
 
-  disconnect: () => set({ 
-    user: null, 
-    isAdmin: false, 
-    error: null,
-    isSimulated: false 
-  })
+  disconnect: () =>
+    set({
+      user: null,
+      isAdmin: false,
+      error: null,
+      isSimulated: false,
+    }),
 })

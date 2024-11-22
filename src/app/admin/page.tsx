@@ -3,13 +3,13 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { 
+import {
   Users,
   Building,
   Vote,
   LayoutDashboard,
   Settings,
-  ChevronRight
+  ChevronRight,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { UserList } from '@/components/admin/UserList'
@@ -21,8 +21,8 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
+} from '@/components/ui/card'
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import AdminSettings from '@/components/admin/AdminSettings'
 
 type Tab = {
@@ -78,7 +78,7 @@ export default function AdminPage() {
   return (
     <div className="min-h-screen bg-background pt-16">
       {/* Header */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         className="border-b"
@@ -103,10 +103,10 @@ export default function AdminPage() {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={cn(
-                  "inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                  'inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                   activeTab === tab.id
-                    ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                    : "bg-muted hover:bg-muted/80"
+                    ? 'bg-primary text-primary-foreground hover:bg-primary/90'
+                    : 'bg-muted hover:bg-muted/80'
                 )}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -130,7 +130,7 @@ export default function AdminPage() {
           animate={{ opacity: 1 }}
           className="mt-4 flex items-center text-sm text-muted-foreground"
         >
-          {tabs.find(tab => tab.id === activeTab)?.description}
+          {tabs.find((tab) => tab.id === activeTab)?.description}
         </motion.div>
       </div>
 
@@ -144,7 +144,7 @@ export default function AdminPage() {
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.2 }}
           >
-            {tabs.find(tab => tab.id === activeTab)?.component}
+            {tabs.find((tab) => tab.id === activeTab)?.component}
           </motion.div>
         </AnimatePresence>
       </div>
@@ -155,9 +155,24 @@ export default function AdminPage() {
 // New Overview component
 function AdminOverview() {
   const stats = [
-    { label: 'Total Users', value: '2,847', change: '+12%', icon: <Users className="h-4 w-4" /> },
-    { label: 'Properties', value: '156', change: '+3%', icon: <Building className="h-4 w-4" /> },
-    { label: 'Active Proposals', value: '24', change: '+8%', icon: <Vote className="h-4 w-4" /> },
+    {
+      label: 'Total Users',
+      value: '2,847',
+      change: '+12%',
+      icon: <Users className="h-4 w-4" />,
+    },
+    {
+      label: 'Properties',
+      value: '156',
+      change: '+3%',
+      icon: <Building className="h-4 w-4" />,
+    },
+    {
+      label: 'Active Proposals',
+      value: '24',
+      change: '+8%',
+      icon: <Vote className="h-4 w-4" />,
+    },
   ]
 
   return (
@@ -185,16 +200,20 @@ function AdminOverview() {
                     </p>
                     <p className="text-2xl font-bold">{stat.value}</p>
                   </div>
-                  <div className={cn(
-                    "rounded-full p-2",
-                    "bg-primary/10 text-primary"
-                  )}>
+                  <div
+                    className={cn(
+                      'rounded-full p-2',
+                      'bg-primary/10 text-primary'
+                    )}
+                  >
                     {stat.icon}
                   </div>
                 </div>
                 <div className="mt-4 flex items-center text-sm">
                   <span className="text-green-600">{stat.change}</span>
-                  <span className="ml-2 text-muted-foreground">from last month</span>
+                  <span className="ml-2 text-muted-foreground">
+                    from last month
+                  </span>
                 </div>
               </CardContent>
             </Card>
@@ -208,9 +227,7 @@ function AdminOverview() {
           <CardTitle>Recent Activity</CardTitle>
           <CardDescription>Latest actions across the platform</CardDescription>
         </CardHeader>
-        <CardContent>
-          {/* Add activity list here */}
-        </CardContent>
+        <CardContent>{/* Add activity list here */}</CardContent>
       </Card>
     </motion.div>
   )

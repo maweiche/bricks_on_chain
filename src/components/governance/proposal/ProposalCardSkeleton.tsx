@@ -1,5 +1,5 @@
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
-import { Skeleton } from "@/components/ui/skeleton"
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
 
 export function ProposalCardSkeleton() {
   return (
@@ -12,7 +12,7 @@ export function ProposalCardSkeleton() {
           </div>
           <Skeleton className="h-6 w-[80px]" />
         </div>
-        
+
         <div className="flex flex-wrap gap-2">
           <Skeleton className="h-6 w-[120px]" />
           <Skeleton className="h-6 w-[160px]" />
@@ -23,7 +23,7 @@ export function ProposalCardSkeleton() {
       <CardContent className="space-y-4">
         <Skeleton className="h-4 w-full" />
         <Skeleton className="h-4 w-[90%]" />
-        
+
         <div className="space-y-4">
           <div className="space-y-2">
             <div className="flex justify-between">

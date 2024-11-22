@@ -189,7 +189,7 @@ export default function LandingPage() {
         whileInView="animate"
         viewport={{ once: true }}
         variants={containerVariants}
-        className="mt-12 flex w-full flex-col items-center justify-center pt-24 pb-2"
+        className="mt-12 flex w-full flex-col items-center justify-center pb-2 pt-24"
         id="properties"
       >
         <PropertiesFeatured />

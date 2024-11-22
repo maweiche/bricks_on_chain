@@ -1,4 +1,4 @@
-import UnionHall from "@/components/governance/UnionHall";
+import UnionHall from '@/components/governance/UnionHall'
 export default function UnionHallPage() {
-    return <UnionHall />;
+  return <UnionHall />
 }

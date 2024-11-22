@@ -12,35 +12,35 @@ export function VoteAnimation({ isVisible, voteType }: VoteAnimationProps) {
     <AnimatePresence>
       {isVisible && (
         <motion.div
-          initial={{ opacity: 0, y: 0, x: "-50%" }}
-          animate={{ 
+          initial={{ opacity: 0, y: 0, x: '-50%' }}
+          animate={{
             opacity: [0, 1, 1, 0],
             y: [-20, -40, -60, -80],
-            x: ["-50%", "-45%", "-55%", "-50%"],
+            x: ['-50%', '-45%', '-55%', '-50%'],
           }}
-          transition={{ 
+          transition={{
             duration: 2,
             times: [0, 0.2, 0.8, 1],
-            ease: "easeOut",
+            ease: 'easeOut',
           }}
-          className="fixed left-1/2 top-1/2 z-50 pointer-events-none"
+          className="pointer-events-none fixed left-1/2 top-1/2 z-50"
         >
           <motion.div
-            animate={{ 
+            animate={{
               rotate: [-5, 5, -5, 5, 0],
             }}
-            transition={{ 
+            transition={{
               duration: 2,
               times: [0, 0.25, 0.5, 0.75, 1],
-              ease: "easeInOut",
+              ease: 'easeInOut',
             }}
-            className={`p-6 rounded-lg shadow-lg backdrop-blur-sm ${
+            className={`rounded-lg p-6 shadow-lg backdrop-blur-sm ${
               voteType === 'for'
                 ? 'bg-green-500/90 text-white'
                 : 'bg-red-500/90 text-white'
             }`}
           >
-            <FileCheck className="w-8 h-8" />
+            <FileCheck className="h-8 w-8" />
           </motion.div>
         </motion.div>
       )}

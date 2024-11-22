@@ -9,7 +9,7 @@ export enum Status {
   EXPIRED = 'EXPIRED',
   AVAILABLE = 'available',
   FUNDED = 'funded',
-  ALL = 'all'
+  ALL = 'all',
 }
 
 export interface PropertyFilters {

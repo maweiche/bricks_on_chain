@@ -3,10 +3,19 @@ import { persist } from 'zustand/middleware'
 
 import { AuthSlice, createAuthSlice } from './slices/authSlice'
 import { CartItem, CartSlice, createCartSlice } from './slices/cartSlice'
-import { createPropertySlice, PropertyFilters, PropertySlice } from './slices/propertySlice'
+import {
+  createPropertySlice,
+  PropertyFilters,
+  PropertySlice,
+} from './slices/propertySlice'
 import { createSettingsSlice, SettingsSlice } from './slices/settingsSlice'
 import { createUserSlice, UserSlice } from './slices/userSlice'
-import { createProposalSlice, ProposalSlice, Proposal, ProposalFilters } from './slices/proposalSlice'
+import {
+  createProposalSlice,
+  ProposalSlice,
+  Proposal,
+  ProposalFilters,
+} from './slices/proposalSlice'
 
 type StoreState = PropertySlice &
   UserSlice &
@@ -35,7 +44,7 @@ export const useStore = create<StoreState>()(
         filters: state.filters as PropertyFilters,
         settings: state.settings,
         items: state.items,
-        proposals: state.proposals, 
+        proposals: state.proposals,
         selectedProposal: state.selectedProposal,
       }),
     }
@@ -46,4 +55,4 @@ export type { Property, User, Investment, Vote } from './types'
 export type { PropertyFilters } from './slices/propertySlice'
 export type { UserSettings } from './slices/settingsSlice'
 export type { CartItem } from './slices/cartSlice'
-export type { Proposal } from './slices/proposalSlice' 
+export type { Proposal } from './slices/proposalSlice'

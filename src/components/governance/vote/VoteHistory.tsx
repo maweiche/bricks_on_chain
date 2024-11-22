@@ -8,9 +8,9 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Button } from "@/components/ui/button"
+} from '@/components/ui/sheet'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Button } from '@/components/ui/button'
 import { ThumbsUp, ThumbsDown, History } from 'lucide-react'
 
 interface VoteHistoryEntry {
@@ -30,7 +30,7 @@ export function VoteHistory({ history }: VoteHistoryProps) {
     <Sheet>
       <SheetTrigger asChild>
         <Button variant="outline" size="sm" className="gap-2">
-          <History className="w-4 h-4" />
+          <History className="h-4 w-4" />
           Vote History
         </Button>
       </SheetTrigger>
@@ -41,7 +41,7 @@ export function VoteHistory({ history }: VoteHistoryProps) {
             A record of all your votes across proposals
           </SheetDescription>
         </SheetHeader>
-        <ScrollArea className="h-[calc(100vh-200px)] mt-6">
+        <ScrollArea className="mt-6 h-[calc(100vh-200px)]">
           <div className="space-y-4">
             {history.map((entry, index) => (
               <motion.div
@@ -49,7 +49,7 @@ export function VoteHistory({ history }: VoteHistoryProps) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="p-4 rounded-lg border bg-card"
+                className="rounded-lg border bg-card p-4"
               >
                 <div className="flex items-start justify-between">
                   <div className="space-y-1">
@@ -58,15 +58,17 @@ export function VoteHistory({ history }: VoteHistoryProps) {
                       {format(new Date(entry.timestamp), 'PPp')}
                     </p>
                   </div>
-                  <div className={`p-2 rounded-full ${
-                    entry.voteType === 'for'
-                      ? 'bg-green-500/10 text-green-500'
-                      : 'bg-red-500/10 text-red-500'
-                  }`}>
+                  <div
+                    className={`rounded-full p-2 ${
+                      entry.voteType === 'for'
+                        ? 'bg-green-500/10 text-green-500'
+                        : 'bg-red-500/10 text-red-500'
+                    }`}
+                  >
                     {entry.voteType === 'for' ? (
-                      <ThumbsUp className="w-4 h-4" />
+                      <ThumbsUp className="h-4 w-4" />
                     ) : (
-                      <ThumbsDown className="w-4 h-4" />
+                      <ThumbsDown className="h-4 w-4" />
                     )}
                   </div>
                 </div>

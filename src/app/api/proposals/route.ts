@@ -7,7 +7,8 @@ import path from 'path'
 import { Status } from '@/lib/store/slices/proposalSlice'
 
 // Helper to read/write to our JSON file
-const getProposalsPath = () => path.join(process.cwd(), 'data', 'proposals.json')
+const getProposalsPath = () =>
+  path.join(process.cwd(), 'data', 'proposals.json')
 
 async function getProposals() {
   try {
@@ -32,7 +33,12 @@ async function saveProposals(proposals: any[]) {
 const proposalSchema = z.object({
   title: z.string().min(5).max(100),
   description: z.string().min(20).max(1000),
-  type: z.enum(['PROPERTY_IMPROVEMENT', 'MAINTENANCE', 'POLICY_CHANGE', 'OTHER']),
+  type: z.enum([
+    'PROPERTY_IMPROVEMENT',
+    'MAINTENANCE',
+    'POLICY_CHANGE',
+    'OTHER',
+  ]),
   propertyId: z.string().optional(),
   requiredQuorum: z.number().min(0).max(100),
   endDate: z.string().datetime(),
@@ -64,7 +70,7 @@ export async function POST(req: Request) {
     const validatedData = proposalSchema.parse(json)
 
     const proposals = await getProposals()
-    
+
     const newProposal = {
       id: `prop_${Date.now()}`,
       ...validatedData,

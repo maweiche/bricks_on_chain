@@ -1,12 +1,7 @@
 // components/proposals/proposal-history.tsx
 import { format } from 'date-fns'
 import { motion } from 'framer-motion'
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Timeline,
   TimelineItem,
@@ -14,8 +9,8 @@ import {
   TimelineHeader,
   TimelineIcon,
   TimelineBody,
-} from "@/components/ui/timeline"
-import { Badge } from "@/components/ui/badge"
+} from '@/components/ui/timeline'
+import { Badge } from '@/components/ui/badge'
 
 interface ProposalHistoryProps {
   proposal: any // Replace with proper type

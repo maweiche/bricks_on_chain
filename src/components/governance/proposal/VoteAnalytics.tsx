@@ -1,5 +1,12 @@
-import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip, Legend } from 'recharts'
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  Legend,
+} from 'recharts'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { motion } from 'framer-motion'
 import { ThumbsUp, ThumbsDown, Users } from 'lucide-react'
 import { Proposal } from '@/lib/store'
@@ -23,7 +30,7 @@ export function VoteAnalytics({ proposal }: VoteAnalyticsProps) {
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium">For Votes</CardTitle>
@@ -34,8 +41,12 @@ export function VoteAnalytics({ proposal }: VoteAnalyticsProps) {
               <span className="text-2xl font-bold text-green-500">
                 {proposal.votes.for.length}
               </span>
-              <span className="text-muted-foreground text-sm">
-                ({((proposal.votingPower.for / totalVotingPower) * 100).toFixed(1)}%)
+              <span className="text-sm text-muted-foreground">
+                (
+                {((proposal.votingPower.for / totalVotingPower) * 100).toFixed(
+                  1
+                )}
+                %)
               </span>
             </div>
           </CardContent>
@@ -51,8 +62,13 @@ export function VoteAnalytics({ proposal }: VoteAnalyticsProps) {
               <span className="text-2xl font-bold text-red-500">
                 {proposal.votes.against.length}
               </span>
-              <span className="text-muted-foreground text-sm">
-                ({((proposal.votingPower.against / totalVotingPower) * 100).toFixed(1)}%)
+              <span className="text-sm text-muted-foreground">
+                (
+                {(
+                  (proposal.votingPower.against / totalVotingPower) *
+                  100
+                ).toFixed(1)}
+                %)
               </span>
             </div>
           </CardContent>
@@ -68,7 +84,7 @@ export function VoteAnalytics({ proposal }: VoteAnalyticsProps) {
               <span className="text-2xl font-bold text-blue-500">
                 {participation.toFixed(1)}%
               </span>
-              <span className="text-muted-foreground text-sm">
+              <span className="text-sm text-muted-foreground">
                 of total power
               </span>
             </div>

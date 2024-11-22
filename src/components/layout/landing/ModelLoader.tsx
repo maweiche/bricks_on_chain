@@ -16,7 +16,7 @@ export function ModelLoader() {
   if (!show) return null
 
   return (
-    <div className="h-full w-full z-50 flex items-center justify-center bg-background">
+    <div className="z-50 flex h-full w-full items-center justify-center bg-background">
       <div className="text-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -24,7 +24,7 @@ export function ModelLoader() {
           className="space-y-4"
         >
           <div className="text-4xl font-bold">Loading Experience</div>
-          <div className="w-48 h-2 bg-muted rounded-full overflow-hidden">
+          <div className="h-2 w-48 overflow-hidden rounded-full bg-muted">
             <motion.div
               className="h-full bg-primary"
               initial={{ width: 0 }}
