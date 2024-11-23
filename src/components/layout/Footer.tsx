@@ -141,15 +141,9 @@ export default function Footer() {
         <div>
           <h2 className="mb-4 font-bold text-white">Connect</h2>
           <div className="flex flex-col gap-2">
-            <FooterLink href="#">
-              Twitter
-            </FooterLink>
-            <FooterLink href="#">
-              Discord
-            </FooterLink>
-            <FooterLink href="#">
-              Documentation
-            </FooterLink>
+            <FooterLink href="#">Twitter</FooterLink>
+            <FooterLink href="#">Discord</FooterLink>
+            <FooterLink href="#">Documentation</FooterLink>
           </div>
         </div>
 

@@ -3,13 +3,7 @@
 import React, { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { AnimatePresence, motion } from 'framer-motion'
-import {
-  Building,
-  Building2,
-  ChevronLeft,
-  ChevronRight,
-  Home,
-} from 'lucide-react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
@@ -113,27 +107,12 @@ export default function PropertyListings() {
     show: { opacity: 1, y: 0 },
   }
 
-  const getPropertyIcon = (type: any) => {
-    switch (type) {
-      case 'house':
-        return <Home className="h-5 w-5" />
-      case 'apartment':
-        return <Building2 className="h-5 w-5" />
-      case 'commercial':
-        return <Building className="h-5 w-5" />
-      default:
-        return <Home className="h-5 w-5" />
-    }
-  }
-
   return (
     <div className="container mx-auto py-20">
       {/* Filters */}
       <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
         <div className="flex flex-col gap-2">
-          <span className="text-sm font-medium text-black">
-            Property Type
-          </span>
+          <span className="text-sm font-medium text-black">Property Type</span>
           <Select
             value={filters.type}
             onValueChange={(value) => setFilters({ ...filters, type: value })}

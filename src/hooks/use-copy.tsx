@@ -13,6 +13,7 @@ export function useCopy(text: string) {
         description: `${text.slice(0, 120)} ${text.length > 120 ? '...' : ''}`,
       })
     } catch (err) {
+      console.error('Failed to copy text to clipboard:', err)
       setIsCopied(false)
       toast({
         title: 'Error',

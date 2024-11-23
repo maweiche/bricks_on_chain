@@ -279,7 +279,7 @@ export function Featured() {
 
           {/* Desktop View */}
           <div className="hidden md:block">
-            <div className="flex flex-col md:flex-row">
+            <div className="flex flex-col md:flex-row md:gap-12">
               <div className="flex w-full max-w-[640px] flex-col lg:w-1/2">
                 <h1 className="mb-8 text-5xl font-bold tracking-tight md:text-5xl lg:text-5xl">
                   <span className="text-secondary">Bricks on Chain</span>{' '}

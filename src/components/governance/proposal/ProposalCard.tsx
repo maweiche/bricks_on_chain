@@ -357,7 +357,7 @@ export function ProposalCard({ proposal }: ProposalCardProps) {
             <div className="flex items-center text-sm text-muted-foreground">
               {proposal.status === 'ACTIVE' && (
                 <>
-                  <Clock className="mr-1 h-4 w-4 ml-2 md:ml-0" />
+                  <Clock className="ml-2 mr-1 h-4 w-4 md:ml-0" />
                   <span className="hidden md:block">
                     {format(new Date(proposal.endDate), 'dd MMM yyyy')}
                   </span>

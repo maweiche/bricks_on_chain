@@ -224,7 +224,7 @@ const AdminActivityFeed: React.FC<AdminActivityFeedProps> = ({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.05 }}
-            className="flex items-start gap-4 rounded-lg border p-2 md:p-4 w-full"
+            className="flex w-full items-start gap-4 rounded-lg border p-2 md:p-4"
           >
             <div className="rounded-full bg-muted p-2">
               {getActivityIcon(activity.type)}
@@ -249,8 +249,9 @@ const AdminActivityFeed: React.FC<AdminActivityFeedProps> = ({
                       </>
                     )}
                     <br />
-                    <time className="md:hidden text-right text-xs text-muted-foreground">
-                      <span className="font-bold">Date:</span> {format(parseISO(activity.timestamp), 'MMM dd, HH:mm')}
+                    <time className="text-right text-xs text-muted-foreground md:hidden">
+                      <span className="font-bold">Date:</span>{' '}
+                      {format(parseISO(activity.timestamp), 'MMM dd, HH:mm')}
                     </time>
                   </p>
                   {'transactionSignature' in activity.details &&
@@ -258,7 +259,7 @@ const AdminActivityFeed: React.FC<AdminActivityFeedProps> = ({
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="w-full justify-between md:justify-start h-8 gap-2 p-0 text-xs text-muted-foreground hover:text-primary"
+                        className="h-8 w-full justify-between gap-2 p-0 text-xs text-muted-foreground hover:text-primary md:justify-start"
                         asChild
                       >
                         <a
@@ -294,7 +295,7 @@ const AdminActivityFeed: React.FC<AdminActivityFeedProps> = ({
               )}
             </div>
 
-            <time className="hidden md:block text-right text-xs text-muted-foreground">
+            <time className="hidden text-right text-xs text-muted-foreground md:block">
               {format(parseISO(activity.timestamp), 'MMM dd, HH:mm')}
             </time>
           </motion.div>

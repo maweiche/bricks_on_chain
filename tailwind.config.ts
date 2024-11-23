@@ -70,7 +70,9 @@ const config: Config = {
         sm: 'calc(var(--radius) - 4px)',
       },
       fontFamily: {
-        sans: ['var(--font-sans)', ...fontFamily.sans],
+        sans: ['var(--font-raleway)', ...fontFamily.sans],
+        serif: ['var(--font-cormorant)', ...fontFamily.serif],
+        display: ['var(--font-syne)', ...fontFamily.sans],
       },
       keyframes: {
         'accordion-down': {

@@ -1,6 +1,7 @@
 import React from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import {
   Building,
   Building2,
@@ -18,7 +19,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { Progress } from '@/components/ui/progress'
 import { PurchaseButton } from '../purchasing/PurchaseButton'
 
 export interface Property {
@@ -84,10 +84,12 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, index }) => {
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.4, ease: 'easeOut' }}
             >
-              <img
+              <Image
                 src={property.images[0]}
                 alt={property.title?.toString()}
                 className="h-full w-full object-cover brightness-90 transition-all duration-500 group-hover:brightness-100"
+                width={200}
+                height={200}
               />
             </motion.div>
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />

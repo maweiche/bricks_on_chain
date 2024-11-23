@@ -38,10 +38,10 @@ export default function HeroSection() {
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="mb-8 max-w-lg rounded-2xl bg-white/10 px-2 text-lg text-black backdrop-blur-sm dark:text-white"
+            className="mb-8 max-w-lg text-pretty rounded-2xl bg-white/10 px-2 text-lg text-black backdrop-blur-sm dark:text-white"
           >
-            Invest in properties starting from $100. <br />
-            Earn passive income with rental yields and property appreciation.
+            Invest in properties starting from $100. Earn passive income with
+            rental yields and property appreciation.
           </motion.p>
 
           <motion.div

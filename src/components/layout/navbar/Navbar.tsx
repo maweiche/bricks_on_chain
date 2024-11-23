@@ -5,15 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { AnimatePresence, motion } from 'framer-motion'
-import {
-  Menu,
-  X,
-  Home,
-  Settings,
-  Vote,
-  LogOut,
-  LockKeyhole,
-} from 'lucide-react'
+import { Menu, X, Settings, Vote, LogOut, LockKeyhole } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -185,7 +177,7 @@ export function Navbar() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="fixed left-0 right-0 top-[64px] z-50 border-t bg-zinc-200/90 backdrop-blur-lg"
+              className="fixed left-0 right-0 top-[64px] z-50 border-t bg-violet-400/[97%] bg-gradient-to-t from-black/50 to-transparent opacity-0 backdrop-blur-lg transition-opacity duration-300"
             >
               <div className="container py-4">
                 {user && (
@@ -264,7 +256,7 @@ export function Navbar() {
                       href={item.path}
                       className={cn(
                         'flex items-center space-x-2 rounded-lg p-2 text-sm font-medium transition-colors hover:bg-accent',
-                        pathname === item.path ? 'bg-accent' : 'text-black'
+                        pathname === item.path ? 'bg-accent' : 'text-white'
                       )}
                       onClick={() => setIsOpen(false)}
                     >
@@ -283,7 +275,7 @@ export function Navbar() {
                       <Link
                         href="/dashboard"
                         onClick={() => setIsOpen(false)}
-                        className="flex items-center space-x-2 rounded-lg p-2 text-sm font-medium transition-colors hover:bg-accent"
+                        className="flex items-center space-x-2 rounded-lg p-2 text-sm font-medium text-white transition-colors hover:bg-accent"
                       >
                         <IconDashboard className="h-4 w-4" />
                         <span>Dashboard</span>
@@ -291,7 +283,7 @@ export function Navbar() {
                       <Link
                         href="/dashboard/settings"
                         onClick={() => setIsOpen(false)}
-                        className="flex items-center space-x-2 rounded-lg p-2 text-sm font-medium transition-colors hover:bg-accent"
+                        className="flex items-center space-x-2 rounded-lg p-2 text-sm font-medium text-white transition-colors hover:bg-accent"
                       >
                         <Settings className="h-4 w-4" />
                         <span>Settings</span>
@@ -299,7 +291,7 @@ export function Navbar() {
                       <Link
                         href="/union"
                         onClick={() => setIsOpen(false)}
-                        className="flex items-center space-x-2 rounded-lg p-2 text-sm font-medium transition-colors hover:bg-accent"
+                        className="flex items-center space-x-2 rounded-lg p-2 text-sm font-medium text-white transition-colors hover:bg-accent"
                       >
                         <Vote className="h-4 w-4" />
                         <span>Governance</span>
@@ -308,7 +300,7 @@ export function Navbar() {
                         <Link
                           href="/admin"
                           onClick={() => setIsOpen(false)}
-                          className="flex items-center space-x-2 rounded-lg p-2 text-sm font-medium transition-colors hover:bg-accent"
+                          className="flex items-center space-x-2 rounded-lg p-2 text-sm font-medium text-white transition-colors hover:bg-accent"
                         >
                           <LockKeyhole className="h-4 w-4" />
                           <span>Admin</span>

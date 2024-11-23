@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import localFont from 'next/font/local'
+import { Raleway, Cormorant_Infant, Syne } from 'next/font/google'
 import './globals.css'
 import { UiLayout } from '@/components/layout'
 import { SolanaProvider } from '@/components/providers'
@@ -8,15 +8,21 @@ import { ReactQueryProvider } from './react-query-provider'
 import { FullScreenLoader } from '@/components/loading'
 import { Suspense } from 'react'
 
-const geistSans = localFont({
-  src: './fonts/GeistVF.woff',
-  variable: '--font-geist-sans',
-  weight: '100 900',
+// Initialize fonts
+const raleway = Raleway({
+  subsets: ['latin'],
+  variable: '--font-raleway',
 })
-const geistMono = localFont({
-  src: './fonts/GeistMonoVF.woff',
-  variable: '--font-geist-mono',
-  weight: '100 900',
+
+const cormorant = Cormorant_Infant({
+  subsets: ['latin'],
+  variable: '--font-cormorant',
+  weight: ['300', '400', '500', '600', '700'],
+})
+
+const syne = Syne({
+  subsets: ['latin'],
+  variable: '--font-syne',
 })
 
 export const metadata: Metadata = {
@@ -32,8 +38,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning
+        className={`${raleway.variable} ${cormorant.variable} ${syne.variable}`}
       >
         <ReactQueryProvider>
           <SolanaProvider>
