@@ -1,10 +1,7 @@
-// app/api/properties/route.ts
 import fs from 'fs/promises'
 import path from 'path'
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-
-import { useAuth } from '@/hooks/use-auth'
 
 // Path to our JSON file
 const DB_PATH = path.join(process.cwd(), 'data', 'properties.json')
@@ -32,6 +29,7 @@ async function readDB() {
     const data = await fs.readFile(DB_PATH, 'utf-8')
     return JSON.parse(data)
   } catch (error) {
+    console.error('Failed to create user:', error)
     return { properties: [] }
   }
 }
@@ -47,6 +45,7 @@ export async function GET() {
     const data = await readDB()
     return NextResponse.json(data)
   } catch (error) {
+    console.error('Failed to create user:', error)
     return NextResponse.json(
       { error: 'Failed to fetch properties' },
       { status: 500 }
@@ -88,6 +87,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(newProperty, { status: 201 })
   } catch (error) {
+    console.error('Failed to create user:', error)
     return NextResponse.json(
       { error: 'Failed to create property' },
       { status: 500 }

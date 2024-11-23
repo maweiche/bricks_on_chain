@@ -11,6 +11,7 @@ async function readDB() {
     const data = await fs.readFile(DB_PATH, 'utf-8')
     return JSON.parse(data)
   } catch (error) {
+    console.error('Failed to create user:', error)
     return { properties: [] }
   }
 }
@@ -41,6 +42,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true })
   } catch (error) {
+    console.error('Failed to create user:', error)
     return NextResponse.json(
       { error: 'Failed to delete properties' },
       { status: 500 }

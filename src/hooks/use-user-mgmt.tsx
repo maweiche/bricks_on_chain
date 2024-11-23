@@ -22,6 +22,7 @@ export function useUserManagement() {
         setUsers(data.users)
       }
     } catch (error) {
+      console.error('Failed to fetch users:', error)
       toast({
         title: 'Error',
         description: 'Failed to fetch users',
@@ -54,6 +55,7 @@ export function useUserManagement() {
 
         fetchUsers()
       } catch (error) {
+        console.error('Failed to update user role:', error)
         toast({
           title: 'Error',
           description: 'Failed to update user role',
@@ -83,6 +85,7 @@ export function useUserManagement() {
         setSelectedUsers([])
         fetchUsers()
       } catch (error) {
+        console.error('Failed to delete users:', error)
         toast({
           title: 'Error',
           description: 'Failed to delete users',

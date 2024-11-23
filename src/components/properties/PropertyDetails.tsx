@@ -1,21 +1,19 @@
 'use client'
 
+import Image from 'next/image'
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import {
-  BarChart3,
   Building,
   Building2,
   Calendar,
   ChevronLeft,
   ChevronRight,
-  DollarSign,
   FileText,
   Home,
   MapPin,
   Share2,
-  TrendingUp,
   Users,
 } from 'lucide-react'
 import {
@@ -67,7 +65,7 @@ const investorDistribution = [
 export default function PropertyDetails({ id }: { id: string }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [isPurchaseDialogOpen, setIsPurchaseDialogOpen] = useState(false)
-  const { isAuthenticated, walletConnected } = useAuth()
+  const { isAuthenticated } = useAuth()
   const { toast } = useToast()
 
   // Fetch property details
@@ -80,17 +78,17 @@ export default function PropertyDetails({ id }: { id: string }) {
     },
   })
 
-  const handleInvest = () => {
-    if (!isAuthenticated) {
-      toast({
-        title: 'Authentication Required',
-        description: 'Please connect your wallet to invest',
-        variant: 'destructive',
-      })
-      return
-    }
-    // Implement investment logic
-  }
+  // const handleInvest = () => {
+  //   if (!isAuthenticated) {
+  //     toast({
+  //       title: 'Authentication Required',
+  //       description: 'Please connect your wallet to invest',
+  //       variant: 'destructive',
+  //     })
+  //     return
+  //   }
+  //   // Implement investment logic
+  // }
 
   const getPropertyIcon = (type?: string) => {
     switch (type) {
@@ -130,10 +128,12 @@ export default function PropertyDetails({ id }: { id: string }) {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
         >
-          <img
+          <Image
             src={data.property?.images[currentImageIndex]}
             alt={data.property?.title}
             className="h-full w-full object-cover"
+            width={1920}
+            height={1080}
           />
         </motion.div>
 

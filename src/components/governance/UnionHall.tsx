@@ -17,7 +17,7 @@ import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ProposalCard } from './proposal/ProposalCard'
 import { ProposalCardSkeleton } from './proposal/ProposalCardSkeleton'
-import { Users, Vote, History, TrendingUp, Clock, FileText } from 'lucide-react'
+import { Users, Vote, TrendingUp, Clock } from 'lucide-react'
 import { Status, Proposal } from '@/lib/store/slices/proposalSlice'
 import { CreateProposalForm } from './proposal/CreateProposalForm'
 
@@ -33,7 +33,6 @@ export default function UnionHall() {
     data: proposals = [],
     isLoading,
     error,
-    voteMutation,
   } = useProposals({
     refetchInterval: 30000,
     staleTime: 1000 * 60 * 5,

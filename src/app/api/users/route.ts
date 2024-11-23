@@ -74,6 +74,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ user: newUser })
   } catch (error) {
+    console.error('Failed to create user:', error)
     return NextResponse.json(
       { error: 'Failed to create user' },
       { status: 500 }
@@ -102,6 +103,7 @@ export async function PATCH(request: Request) {
 
     return NextResponse.json({ user: updatedUser })
   } catch (error) {
+    console.error('Failed to update user:', error)
     return NextResponse.json(
       { error: 'Failed to update user' },
       { status: 500 }

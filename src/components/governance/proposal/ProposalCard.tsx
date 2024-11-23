@@ -39,7 +39,7 @@ import {
 import type { Proposal } from '@/lib/store'
 import { VoteConfirmationDialog } from '../vote/VoteConfirmation'
 import { VoteAnimation } from '../vote/VoteAnimation'
-import { VoteHistory } from '../vote/VoteHistory'
+// import { VoteHistory } from '../vote/VoteHistory'
 import { useErrorHandler } from '@/hooks/use-error-handler'
 
 interface ProposalCardProps {
@@ -160,17 +160,6 @@ export function ProposalCard({ proposal }: ProposalCardProps) {
       setPendingVoteType(null)
     }
   }
-
-  // Mock vote history (replace with real data)
-  const voteHistory = [
-    {
-      proposalId: proposal.id,
-      proposalTitle: proposal.title,
-      voteType: currentVote as 'for' | 'against',
-      votingPower: userVotingPower,
-      timestamp: new Date().toISOString(),
-    },
-  ]
 
   const getStatusColor = (status: Proposal['status']) => {
     switch (status) {

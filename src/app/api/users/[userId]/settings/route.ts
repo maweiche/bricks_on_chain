@@ -33,6 +33,7 @@ export async function PATCH(
 
     return NextResponse.json({ settings: users[userIndex].settings })
   } catch (error) {
+    console.error('Failed to create user:', error)
     return NextResponse.json(
       { error: 'Failed to update settings' },
       { status: 500 }

@@ -34,6 +34,7 @@ export async function PATCH(
 
     return NextResponse.json({ user: users[userIndex] })
   } catch (error) {
+    console.error('Failed to create user:', error)
     return NextResponse.json(
       { error: 'Failed to update user role' },
       { status: 500 }

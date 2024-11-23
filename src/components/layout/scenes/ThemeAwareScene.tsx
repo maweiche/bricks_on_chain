@@ -1,9 +1,8 @@
-// components/3d/ThemeAwareScene.tsx
 import { useTheme } from 'next-themes'
 import * as THREE from 'three'
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { Stars, Cloud, Sky, useHelper } from '@react-three/drei'
+import { Stars, Cloud, Sky } from '@react-three/drei'
 
 function LightMode() {
   const directionalLightRef = useRef<THREE.DirectionalLight>(null)

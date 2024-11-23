@@ -1,19 +1,16 @@
 'use client'
 
 import React from 'react'
-import { useWallet } from '@solana/wallet-adapter-react'
 import { useQuery } from '@tanstack/react-query'
 import { format } from 'date-fns'
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import {
   Activity,
   AlertCircle,
   Building,
-  Calendar,
   ChevronRight,
   DollarSign,
   RefreshCcw,
-  TrendingUp,
   Wallet,
 } from 'lucide-react'
 import {
@@ -26,7 +23,6 @@ import {
   YAxis,
 } from 'recharts'
 
-import { useStore } from '@/lib/store'
 import { useAuth } from '@/hooks/use-auth'
 import { Button } from '@/components/ui/button'
 import {
@@ -42,7 +38,6 @@ import { FullScreenLoader } from '@/components/loading'
 
 export default function Dashboard() {
   const { user, isAuthenticated } = useAuth()
-  const { publicKey } = useWallet()
 
   // Fetch user's detailed data including investments
   const { data: userData, isLoading: isUserLoading } = useQuery({

@@ -1,6 +1,5 @@
 // app/api/proposals/route.ts
 import { NextResponse } from 'next/server'
-import { headers } from 'next/headers'
 import { z } from 'zod'
 import fs from 'fs/promises'
 import path from 'path'

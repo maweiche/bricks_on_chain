@@ -37,7 +37,7 @@ export function ProfileDialog({
     if (!publicKey) return
 
     try {
-      await handleCreateProfile({...data})
+      await handleCreateProfile({ ...data })
       onClose()
     } catch (error) {
       console.error('Failed to create profile:', error)

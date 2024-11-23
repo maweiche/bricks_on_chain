@@ -9,14 +9,14 @@ export interface AuthSlice {
   isLoading: boolean
   error: string | null
   isAdmin: boolean
-  isSimulated: boolean 
+  isSimulated: boolean
   showProfileDialog: boolean
   setShowProfileDialog: (show: boolean) => void
   createProfile: (user: User) => Promise<void>
   updateProfile: (user: User) => Promise<void>
   checkAuth: (address: string) => Promise<void>
   disconnect: () => void
-  simulateAuth: (user: User) => void 
+  simulateAuth: (user: User) => void
 }
 
 export const createAuthSlice: StateCreator<AuthSlice> = (set) => ({
@@ -59,7 +59,7 @@ export const createAuthSlice: StateCreator<AuthSlice> = (set) => ({
 
   createProfile: async (user: User) => {
     try {
-      const res = await db.createUser(user)
+      await db.createUser(user)
       set({ user, isAdmin: user.role === 'admin', error: null })
     } catch (error) {
       console.error('Failed to create profile:', error)
@@ -69,7 +69,7 @@ export const createAuthSlice: StateCreator<AuthSlice> = (set) => ({
 
   updateProfile: async (user: User) => {
     try {
-      const res = await db.updateUser(user.id, user)
+      await db.updateUser(user.id, user)
       set({ user, isAdmin: user.role === 'admin', error: null })
     } catch (error) {
       console.error('Failed to update profile:', error)

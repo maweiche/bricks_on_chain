@@ -1,4 +1,3 @@
-// components/admin/settings/AdminSettings.tsx
 'use client'
 
 import { useState } from 'react'
@@ -13,7 +12,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   Form,
   FormControl,
@@ -23,30 +21,12 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { useToast } from '@/hooks/use-toast'
-import {
-  Settings,
-  Shield,
-  DollarSign,
-  BarChart,
-  Bell,
-  Mail,
-  Key,
-  Lock,
-  Percent,
-  Clock,
-} from 'lucide-react'
+import { Settings, Shield, DollarSign, BarChart, Bell } from 'lucide-react'
 
 const platformSettingsSchema = z.object({
   // General Settings
@@ -142,6 +122,7 @@ export default function AdminSettings() {
         description: 'Platform settings have been saved successfully.',
       })
     } catch (error) {
+      console.error('Failed to update settings:', error)
       toast({
         title: 'Error',
         description: 'Failed to update settings. Please try again.',

@@ -9,20 +9,17 @@ import {
   Plus,
   Trash2,
   Edit,
-  SlidersHorizontal,
   FileBarChart,
   History as HistoryIcon,
 } from 'lucide-react'
 
 import { useToast } from '@/hooks/use-toast'
-import { useAuth } from '@/hooks/use-auth'
 import { Button } from '@/components/ui/button'
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from '@/components/ui/sheet'
 import {
   Table,
@@ -41,7 +38,6 @@ import { VoteAnalytics } from '../governance/proposal/VoteAnalytics'
 import { ProposalHistory } from '../governance/proposal/ProposalHistory'
 
 export default function ProposalsAdmin() {
-  const { user } = useAuth()
   const { toast } = useToast()
   const queryClient = useQueryClient()
 

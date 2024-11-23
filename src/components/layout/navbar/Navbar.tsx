@@ -12,7 +12,6 @@ import { Button } from '@/components/ui/button'
 import { ThemeToggle } from '@/components/theme'
 import UserDropdown from './UserDropdown'
 import { useAuth } from '@/hooks/use-auth'
-import { useWallet } from '@solana/wallet-adapter-react'
 import DevAuthButton from './DevAuthButton'
 
 const navItems = [{ name: 'Explore Properties', path: '/properties' }]
@@ -20,8 +19,7 @@ const navItems = [{ name: 'Explore Properties', path: '/properties' }]
 export function Navbar() {
   const [isOpen, setIsOpen] = React.useState(false)
   const pathname = usePathname()
-  const { user, isAuthenticated } = useAuth()
-  const { publicKey } = useWallet()
+  const { user } = useAuth()
   const toggleMenu = () => setIsOpen(!isOpen)
 
   const navVariants = {
@@ -65,7 +63,13 @@ export function Navbar() {
             transition={{ duration: 0.5 }}
           >
             <Link href="/" className="flex items-center space-x-2">
-              <Image src="/horizontal-logo.svg" alt="Logo" width={48} height={48} className="h-[68px] w-auto"/>
+              <Image
+                src="/horizontal-logo.svg"
+                alt="Logo"
+                width={48}
+                height={48}
+                className="h-[68px] w-auto"
+              />
             </Link>
           </motion.div>
           {/* Desktop Navigation */}
@@ -165,9 +169,7 @@ export function Navbar() {
                 ))}
                 {user ? (
                   <div className="flex flex-row items-center gap-4">
-                    <p
-                      className='block py-2 text-base font-medium transition-colors hover:text-primary'
-                    >
+                    <p className="block py-2 text-base font-medium transition-colors hover:text-primary">
                       {`User Menu`}
                     </p>
                     <UserDropdown user={user} />

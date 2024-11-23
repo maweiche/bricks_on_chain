@@ -1,16 +1,8 @@
-// pages/admin/index.tsx
 'use client'
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import {
-  Users,
-  Building,
-  Vote,
-  LayoutDashboard,
-  Settings,
-  ChevronRight,
-} from 'lucide-react'
+import { Users, Building, Vote, LayoutDashboard, Settings } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { UserList } from '@/components/admin/UserList'
 import PropertyAdmin from '@/components/admin/PropertyAdmin'

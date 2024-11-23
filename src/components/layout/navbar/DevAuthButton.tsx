@@ -74,7 +74,7 @@ const DevAuthButton = () => {
             Create Profile
           </DropdownMenuItem>
         )}
-        
+
         <DropdownMenuItem
           className="cursor-pointer text-sm"
           onClick={simulateUser}
@@ -82,7 +82,7 @@ const DevAuthButton = () => {
           <Users className="mr-2 h-4 w-4" />
           Connect as Test User
         </DropdownMenuItem>
-        
+
         <DropdownMenuItem
           className="h-24 cursor-pointer overflow-hidden"
           asChild

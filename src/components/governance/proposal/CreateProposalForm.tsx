@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth } from '@/hooks/use-auth'
-import { Proposal, useStore } from '@/lib/store'
+import { Proposal } from '@/lib/store'
 import { useToast } from '@/hooks/use-toast'
 import { useErrorHandler } from '@/hooks/use-error-handler'
 import { useMutation, useQueryClient } from '@tanstack/react-query'

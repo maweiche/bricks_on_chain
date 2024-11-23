@@ -21,18 +21,6 @@ const itemVariants = {
   visible: { opacity: 1, y: 0 },
 }
 
-const pulseVariants = {
-  initial: { opacity: 0.5 },
-  animate: {
-    opacity: [0.5, 1, 0.5],
-    transition: {
-      duration: 2,
-      repeat: Infinity,
-      ease: 'easeInOut',
-    },
-  },
-}
-
 export function NavbarSkeleton() {
   return (
     <motion.div
@@ -163,7 +151,7 @@ export function FullScreenLoader() {
           transition={{ delay: 0.2 }}
           className="text-sm text-muted-foreground"
         >
-          Loading your dashboard...
+          Loading the new home buying experience...
         </motion.p>
       </motion.div>
     </motion.div>

@@ -17,19 +17,13 @@ const DB_PATH = path.join(process.cwd(), 'data', 'properties.json')
 const USERS_DB_PATH = path.join(process.cwd(), 'data', 'users.json')
 
 export async function POST(
-  request: NextRequest,
-  { params }: { params: { id: string } }
+  request: NextRequest
+  // { params }: { params: { id: string } }
 ) {
   try {
     const json = await request.json()
-    const {
-      propertyId,
-      propertyTitle,
-      fractionCount,
-      pricePerFraction,
-      totalAmount,
-      wallet,
-    } = PurchaseSchema.parse(json)
+    const { propertyId, fractionCount, totalAmount, wallet } =
+      PurchaseSchema.parse(json)
 
     // Validate Solana address
     try {

@@ -13,9 +13,9 @@ import { Progress } from '@/components/ui/progress'
 import { cn } from '@/lib/utils'
 
 interface PropertyCardProps {
-  property: Property;
-  isHovered: boolean;
-  onHover: (id: string | null) => void;
+  property: Property
+  isHovered: boolean
+  onHover: (id: string | null) => void
 }
 
 const LoadingFallback = () => (
@@ -49,8 +49,8 @@ const LoadingFallback = () => (
 )
 
 function PropertyCard({ property, isHovered, onHover }: PropertyCardProps) {
-  const router = useRouter();
-  const fundingProgress = (property.currentFunding / property.fundingGoal) * 100;
+  const router = useRouter()
+  const fundingProgress = (property.currentFunding / property.fundingGoal) * 100
 
   return (
     <motion.div
@@ -94,17 +94,26 @@ function PropertyCard({ property, isHovered, onHover }: PropertyCardProps) {
             {/* Status Badge */}
             <div className="absolute left-3 top-3 z-20 flex gap-2 md:left-4 md:top-4">
               {property.funded ? (
-                <Badge variant="secondary" className="bg-green-500/20 text-green-500">
+                <Badge
+                  variant="secondary"
+                  className="bg-green-500/20 text-green-500"
+                >
                   Fully Funded
                 </Badge>
               ) : (
                 <>
                   {fundingProgress >= 90 ? (
-                    <Badge variant="secondary" className="bg-brand-accent/20 text-brand-accent">
+                    <Badge
+                      variant="secondary"
+                      className="bg-brand-accent/20 text-brand-accent"
+                    >
                       Closing Soon!
                     </Badge>
                   ) : (
-                    <Badge variant="secondary" className="bg-brand-accent/20 text-brand-accent">
+                    <Badge
+                      variant="secondary"
+                      className="bg-brand-accent/20 text-brand-accent"
+                    >
                       Hot Deal 🔥
                     </Badge>
                   )}
@@ -134,10 +143,7 @@ function PropertyCard({ property, isHovered, onHover }: PropertyCardProps) {
                   {fundingProgress.toFixed(1)}%
                 </span>
               </div>
-              <Progress 
-                value={fundingProgress} 
-                className="h-2"
-              />
+              <Progress value={fundingProgress} className="h-2" />
             </div>
 
             {/* Stats Grid */}
@@ -179,7 +185,7 @@ function PropertyCard({ property, isHovered, onHover }: PropertyCardProps) {
         </CardContent>
       </Card>
     </motion.div>
-  );
+  )
 }
 
 export function Featured() {
@@ -242,7 +248,7 @@ export function Featured() {
         <div className="relative">
           {/* Mobile View */}
           <div className="px-4 md:hidden">
-            <div className="flex flex-col w-full">
+            <div className="flex w-full flex-col">
               <div className="scrollbar-hide flex gap-4 overflow-x-auto pb-4">
                 {properties.map((property: Property) => (
                   <div key={property.id} className="w-[280px] flex-shrink-0">
@@ -254,13 +260,18 @@ export function Featured() {
                   </div>
                 ))}
               </div>
-              <div className="flex flex-col w-full max-w-[640px] mt-8">
-                <h1 className="text-3xl font-bold mb-8 tracking-tight">
-                  Bricks on Chain democratizes real estate through blockchain for as little as <span className="text-primary">$100</span>
+              <div className="mt-8 flex w-full max-w-[640px] flex-col">
+                <h1 className="mb-8 text-3xl font-bold tracking-tight">
+                  <span className="text-secondary">Bricks on Chain</span>{' '}
+                  democratizes real estate through blockchain for as little as{' '}
+                  <span className="text-primary">$100</span>
                 </h1>
-                
+
                 <p className="text-lg leading-relaxed text-muted-foreground">
-                  Traditional real estate investing has been exclusive to the wealthy elite. Through tokenization on Solana, anyone can now own a piece of premium properties and earn passive income. Join the future of property investment today.
+                  Traditional real estate investing has been exclusive to the
+                  wealthy elite. Through tokenization on Solana, anyone can now
+                  own a piece of premium properties and earn passive income.
+                  Join the future of property investment today.
                 </p>
               </div>
             </div>
@@ -269,16 +280,21 @@ export function Featured() {
           {/* Desktop View */}
           <div className="hidden md:block">
             <div className="flex flex-col md:flex-row">
-              <div className="flex flex-col w-full lg:w-1/2 max-w-[640px]">
-                <h1 className="text-5xl md:text-5xl lg:text-5xl font-bold mb-8 tracking-tight">
-                  Bricks on Chain democratizes real estate through blockchain for as little as <span className="text-primary">$100</span>
+              <div className="flex w-full max-w-[640px] flex-col lg:w-1/2">
+                <h1 className="mb-8 text-5xl font-bold tracking-tight md:text-5xl lg:text-5xl">
+                  <span className="text-secondary">Bricks on Chain</span>{' '}
+                  democratizes real estate through blockchain for as little as{' '}
+                  <span className="text-primary">$100</span>
                 </h1>
-                
-                <p className="text-xl md:text-2xl leading-relaxed text-muted-foreground">
-                  Traditional real estate investing has been exclusive to the wealthy elite. Through tokenization on Solana, anyone can now own a piece of premium properties and earn passive income. Join the future of property investment today.
+
+                <p className="text-xl leading-relaxed text-muted-foreground md:text-2xl">
+                  Traditional real estate investing has been exclusive to the
+                  wealthy elite. Through tokenization on Solana, anyone can now
+                  own a piece of premium properties and earn passive income.
+                  Join the future of property investment today.
                 </p>
               </div>
-              <div className="flex flex-col w-1/2">
+              <div className="flex w-1/2 flex-col">
                 <div ref={containerRef} className="overflow-hidden">
                   <motion.div
                     drag="x"

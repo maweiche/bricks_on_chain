@@ -47,7 +47,6 @@ export function UiLayout({ children }: { children: ReactNode }) {
   const { isAuthenticated, isLoading, walletConnected } = useAuth()
   const { publicKey } = useWallet()
   const [mounted, setMounted] = useState(false)
-  const [showProfileModal, setShowProfileModal] = useState(false)
   const showProfileDialog = useStore((state) => state.showProfileDialog)
   const setShowProfileDialog = useStore((state) => state.setShowProfileDialog)
   const pathname = usePathname()
@@ -135,7 +134,7 @@ function CartButton() {
 
   return (
     <Button
-      variant="outline"
+      variant="secondary"
       size="icon"
       className="fixed bottom-4 left-6 z-[100] h-12 w-12 rounded-full shadow-lg transition-all duration-200 hover:shadow-xl"
       onClick={() => setIsOpen(true)}

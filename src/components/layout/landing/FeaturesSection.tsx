@@ -1,8 +1,6 @@
 import { motion } from 'framer-motion'
-import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { Link, Replace, UsersIcon, VoteIcon } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 
 interface Feature {
   title: string
@@ -129,7 +127,6 @@ function FeatureCard({
 }
 
 export function FeaturesSection() {
-  const router = useRouter()
   return (
     <section className="relative overflow-hidden">
       {/* Background decorative elements */}
@@ -173,7 +170,7 @@ export function FeaturesSection() {
         </div>
 
         {/* Optional: Add a CTA button */}
-        <motion.div
+        {/* <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -186,7 +183,7 @@ export function FeaturesSection() {
           >
             Start Investing
           </Button>
-        </motion.div>
+        </motion.div> */}
       </motion.div>
     </section>
   )

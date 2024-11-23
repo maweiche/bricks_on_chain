@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import {
   Download,
   Filter,
@@ -10,9 +10,6 @@ import {
   Users,
   UserX,
 } from 'lucide-react'
-
-import { User, UserSettings } from '@/lib/store'
-import { useToast } from '@/hooks/use-toast'
 import { useUserManagement } from '@/hooks/use-user-mgmt'
 import {
   AlertDialog,
@@ -46,16 +43,12 @@ import {
 import { Badge } from '../ui/badge'
 import { Input } from '../ui/input'
 
-interface UserWithSettings extends User {
-  settings?: UserSettings
-}
 type SortField = 'name' | 'joinedAt' | 'role'
 type SortDirection = 'asc' | 'desc'
 
 export function UserList() {
   const {
     users,
-    loading,
     selectedUsers,
     setSelectedUsers,
     handleRoleChange,
@@ -68,7 +61,6 @@ export function UserList() {
   const [roleFilter, setRoleFilter] = useState<'all' | 'admin' | 'user'>('all')
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const [userToModify, setUserToModify] = useState<string | null>(null)
-  const { toast } = useToast()
 
   // Filter and sort users
   const filteredUsers = useMemo(() => {

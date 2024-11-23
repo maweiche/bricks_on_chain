@@ -1,9 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
-import {
-  PriceServiceConnection,
-  PriceFeed,
-} from '@pythnetwork/price-service-client'
-import { LAMPORTS_PER_SOL } from '@solana/web3.js'
+import { PriceServiceConnection } from '@pythnetwork/price-service-client'
 interface PriceHistory {
   timestamp: number
   price: number

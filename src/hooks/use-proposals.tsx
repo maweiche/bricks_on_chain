@@ -111,7 +111,7 @@ export function useProposals(options: UseProposalsOptions = {}) {
 
       return { previousProposals }
     },
-    onError: (err, { proposalId }, context) => {
+    onError: (context: { previousProposals?: Proposal[] }) => {
       if (context?.previousProposals) {
         queryClient.setQueryData(
           proposalKeys.lists(),
@@ -137,7 +137,6 @@ export function useProposals(options: UseProposalsOptions = {}) {
 }
 
 export function useProposal(id: string) {
-  const { toast } = useToast()
   const queryClient = useQueryClient()
 
   return useQuery({

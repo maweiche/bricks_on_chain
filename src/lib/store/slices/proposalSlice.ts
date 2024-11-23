@@ -1,5 +1,4 @@
 import { StateCreator } from 'zustand'
-import { Property, User } from '../types'
 
 export enum Status {
   ACTIVE = 'ACTIVE',

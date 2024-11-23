@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
 import { AuthSlice, createAuthSlice } from './slices/authSlice'
-import { CartItem, CartSlice, createCartSlice } from './slices/cartSlice'
+import { CartSlice, createCartSlice } from './slices/cartSlice'
 import {
   createPropertySlice,
   PropertyFilters,
@@ -10,12 +10,7 @@ import {
 } from './slices/propertySlice'
 import { createSettingsSlice, SettingsSlice } from './slices/settingsSlice'
 import { createUserSlice, UserSlice } from './slices/userSlice'
-import {
-  createProposalSlice,
-  ProposalSlice,
-  Proposal,
-  ProposalFilters,
-} from './slices/proposalSlice'
+import { createProposalSlice, ProposalSlice } from './slices/proposalSlice'
 
 type StoreState = PropertySlice &
   UserSlice &

@@ -19,7 +19,7 @@ import { IconCurrencyDollar, IconCurrencySolana } from '@tabler/icons-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { useSolanaPrice } from '@/hooks/use-solana-price'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { WalletButton } from '@/components/providers'
@@ -34,7 +34,7 @@ const UserDropdown = ({ user }: { user: User }) => {
   const [userBalance, setUserBalance] = useState({ sol: 0, usdc: 0 })
   const router = useRouter()
   const logout = useStore((state) => state.disconnect)
-  const { solToUsd, formatUsd, formatSol } = useSolanaPrice()
+  const { solToUsd } = useSolanaPrice()
 
   useEffect(() => {
     const getBalances = async (pubKey: PublicKey) => {

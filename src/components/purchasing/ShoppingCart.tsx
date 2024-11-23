@@ -1,7 +1,7 @@
 import React from 'react'
 import { useMutation } from '@tanstack/react-query'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Check, Loader2, Minus, Plus, ShoppingCart, Trash2 } from 'lucide-react'
+import { Loader2, Minus, Plus, ShoppingCart, Trash2 } from 'lucide-react'
 
 import { useStore } from '@/lib/store'
 import { useAuth } from '@/hooks/use-auth'

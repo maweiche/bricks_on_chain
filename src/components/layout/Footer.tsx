@@ -44,7 +44,13 @@ export default function Footer() {
     <Card className="flex w-full flex-row items-center rounded-none bg-slate-900 backdrop-blur">
       {/* Logo */}
       <CardContent className="w-1/2 py-8 md:w-1/4">
-        <Image src="/horizontal-logo.svg" alt="Logo" width={120} height={120}  className="w-auto h-[120px]"/>
+        <Image
+          src="/horizontal-logo.svg"
+          alt="Logo"
+          width={120}
+          height={120}
+          className="h-[120px] w-auto"
+        />
       </CardContent>
 
       {/* Mobile Links */}
@@ -63,7 +69,7 @@ export default function Footer() {
           </Button>
           {openSection === 'platform' && (
             <div className="bg-slate-800 p-4">
-              <FooterLink href="/marketplace">Browse Properties</FooterLink>
+              <FooterLink href="/properties">Browse Properties</FooterLink>
               <FooterLink href="/dashboard">My Investments</FooterLink>
               <FooterLink href="/governance">Governance</FooterLink>
               <FooterLink href="/about">About Us</FooterLink>
@@ -126,7 +132,7 @@ export default function Footer() {
         <div>
           <h2 className="mb-4 font-bold text-white">Platform</h2>
           <div className="flex flex-col gap-2">
-            <FooterLink href="/marketplace">Browse Properties</FooterLink>
+            <FooterLink href="/properties">Browse Properties</FooterLink>
             <FooterLink href="/dashboard">My Investments</FooterLink>
             <FooterLink href="/governance">Governance</FooterLink>
             <FooterLink href="/about">About Us</FooterLink>

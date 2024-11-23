@@ -51,6 +51,7 @@ export default function SettingsPage() {
         description: 'Your profile has been successfully updated.',
       })
     } catch (error) {
+      console.error('Failed to update profile:', error)
       toast({
         title: 'Error',
         description: 'Failed to update profile.',
@@ -77,6 +78,7 @@ export default function SettingsPage() {
           description: 'Your notification preferences have been saved.',
         })
       } catch (error) {
+        console.error('Failed to update notifications:', error)
         toast({
           title: 'Error',
           description: 'Failed to update preferences.',
@@ -84,7 +86,7 @@ export default function SettingsPage() {
         })
       }
     },
-    [settings.notifications, updateSettings, toast]
+    [settings, updateSettings, toast]
   )
 
   const handleUpdateDisplay = useCallback(
@@ -102,6 +104,7 @@ export default function SettingsPage() {
           description: 'Your display preferences have been saved.',
         })
       } catch (error) {
+        console.error('Failed to update display settings:', error)
         toast({
           title: 'Error',
           description: 'Failed to update display settings.',
@@ -109,7 +112,7 @@ export default function SettingsPage() {
         })
       }
     },
-    [settings.display, updateSettings, toast]
+    [settings, updateSettings, toast]
   )
 
   if (!isAuthenticated) {

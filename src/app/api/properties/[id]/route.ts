@@ -58,6 +58,7 @@ async function readDB() {
     const data = await fs.readFile(DB_PATH, 'utf-8')
     return JSON.parse(data)
   } catch (error) {
+    console.error('Failed to create user:', error)
     throw new Error('Failed to read database')
   }
 }
@@ -112,8 +113,8 @@ export async function GET(
 ) {
   try {
     // Rate limiting check
-    const clientIp = request.headers.get('x-forwarded-for') || 'unknown'
-    const rateLimitKey = `property-${params.id}-${clientIp}`
+    // const clientIp = request.headers.get('x-forwarded-for') || 'unknown'
+    // const rateLimitKey = `property-${params.id}-${clientIp}`
 
     // You would implement proper rate limiting here
     // For now, we'll just continue with the request

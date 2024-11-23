@@ -7,7 +7,6 @@ import {
   Legend,
 } from 'recharts'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { motion } from 'framer-motion'
 import { ThumbsUp, ThumbsDown, Users } from 'lucide-react'
 import { Proposal } from '@/lib/store'
 

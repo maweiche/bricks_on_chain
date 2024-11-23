@@ -325,7 +325,6 @@ import { useState, useRef, useEffect, useMemo } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { useSpring, animated } from '@react-spring/three'
 import {
-  Environment,
   Float,
   OrbitControls,
   Html,
@@ -337,7 +336,7 @@ import {
 import { motion } from 'framer-motion-3d'
 import { useTheme } from 'next-themes'
 
-function ModernBuilding({ position, scale, rotation }: any) {
+function ModernBuilding({ position, rotation }: any) {
   const [hovered, setHovered] = useState(false)
   const meshRef = useRef<THREE.Group>(null)
 
@@ -579,34 +578,34 @@ function useResponsiveScene() {
 }
 
 // Wrap the environment-dependent components in a component inside Canvas
-function ThemeAwareEnvironment() {
-  // Add mounted state to handle hydration
-  const [mounted, setMounted] = useState(false)
-  const { theme, systemTheme } = useTheme()
+// function ThemeAwareEnvironment() {
+//   // Add mounted state to handle hydration
+//   const [mounted, setMounted] = useState(false)
+//   const { theme, systemTheme } = useTheme()
 
-  // Handle hydration mismatch
-  useEffect(() => {
-    setMounted(true)
-  }, [])
+//   // Handle hydration mismatch
+//   useEffect(() => {
+//     setMounted(true)
+//   }, [])
 
-  if (!mounted) {
-    return <LightEnvironment /> // Default fallback during SSR
-  }
+//   if (!mounted) {
+//     return <LightEnvironment /> // Default fallback during SSR
+//   }
 
-  // Determine the actual theme
-  const currentTheme = theme === 'system' ? systemTheme : theme
-  const isDark = currentTheme === 'dark'
+//   // Determine the actual theme
+//   const currentTheme = theme === 'system' ? systemTheme : theme
+//   const isDark = currentTheme === 'dark'
 
-  return isDark ? (
-    <>
-      <DarkEnvironment />
-    </>
-  ) : (
-    <>
-      <LightEnvironment />
-    </>
-  )
-}
+//   return isDark ? (
+//     <>
+//       <DarkEnvironment />
+//     </>
+//   ) : (
+//     <>
+//       <LightEnvironment />
+//     </>
+//   )
+// }
 
 // Add this new component for lightning
 function Lightning() {
@@ -778,24 +777,24 @@ function RainEffect() {
 }
 
 // Clouds component
-function Clouds() {
-  return (
-    <group>
-      {Array.from({ length: 5 }).map((_, i) => (
-        <Cloud
-          key={i}
-          position={[
-            (Math.random() - 0.5) * 30,
-            10 + Math.random() * 5,
-            (Math.random() - 0.5) * 30,
-          ]}
-          opacity={0.5}
-          speed={0.2}
-        />
-      ))}
-    </group>
-  )
-}
+// function Clouds() {
+//   return (
+//     <group>
+//       {Array.from({ length: 5 }).map((_, i) => (
+//         <Cloud
+//           key={i}
+//           position={[
+//             (Math.random() - 0.5) * 30,
+//             10 + Math.random() * 5,
+//             (Math.random() - 0.5) * 30,
+//           ]}
+//           opacity={0.5}
+//           speed={0.2}
+//         />
+//       ))}
+//     </group>
+//   )
+// }
 
 function TokenizationFlow({ theme = 'light' }) {
   const isDark = theme === 'dark'
