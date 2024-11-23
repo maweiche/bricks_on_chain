@@ -88,7 +88,7 @@ export default function HeroSection() {
       <div className="relative mt-12 hidden md:block">
         {/* Slanted Overlay */}
         <div
-          className="absolute bottom-[400px] left-0 right-0 z-[11] h-[250px] bg-background"
+          className="absolute bottom-[400px] left-0 right-0 z-[11] h-[250px] bg-background md:bottom-[150px] lg:bottom-[350px] xl:bottom-[550px]"
           style={{
             transform: 'skewY(-6deg)',
             transformOrigin: 'bottom left',
@@ -100,7 +100,7 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="relative -right-[300px] -top-[600px] mx-auto px-4"
+          className="relative -right-[300px] -top-[600px] mx-auto px-4 md:-right-[325px] md:-top-[400px] lg:-right-[300px] lg:-top-[600px]"
           style={{
             width: '80%',
             marginTop: '2rem',

@@ -270,7 +270,7 @@ export function Cart() {
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <SheetContent className="w-full transition-transform duration-300 sm:max-w-lg">
+      <SheetContent className="z-[201] w-full pt-20 transition-transform duration-300 sm:max-w-lg">
         <CartContents />
       </SheetContent>
     </Sheet>
