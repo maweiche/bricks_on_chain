@@ -84,7 +84,7 @@ const ConsolidatedInvestments: React.FC<ConsolidatedInvestmentsProps> = ({
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="grid grid-cols-2 gap-6"
+      className="grid grid-cols-1 md:grid-cols-2 gap-6"
     >
       {consolidatedInvestments.map((investment) => (
         <Card key={investment.property.id}>

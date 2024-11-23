@@ -131,14 +131,14 @@ export default function PropertyListings() {
       {/* Filters */}
       <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
         <div className="flex flex-col gap-2">
-          <span className="text-sm font-medium text-muted-foreground">
+          <span className="text-sm font-medium text-black">
             Property Type
           </span>
           <Select
             value={filters.type}
             onValueChange={(value) => setFilters({ ...filters, type: value })}
           >
-            <SelectTrigger className="bg-white">
+            <SelectTrigger className="bg-white text-black">
               <SelectValue placeholder="All Types" />
             </SelectTrigger>
             <SelectContent>
@@ -163,7 +163,7 @@ export default function PropertyListings() {
               setFilters({ ...filters, location: value })
             }
           >
-            <SelectTrigger className="bg-white">
+            <SelectTrigger className="bg-white text-black">
               <SelectValue placeholder="All Locations" />
             </SelectTrigger>
             <SelectContent>
@@ -186,7 +186,7 @@ export default function PropertyListings() {
               setFilters({ ...filters, fundingStatus: value })
             }
           >
-            <SelectTrigger className="bg-white">
+            <SelectTrigger className="bg-white text-black">
               <SelectValue placeholder="All Statuses" />
             </SelectTrigger>
             <SelectContent>

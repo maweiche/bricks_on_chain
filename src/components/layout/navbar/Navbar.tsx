@@ -27,6 +27,7 @@ import { useStore } from '@/lib/store'
 import UserDropdown from './UserDropdown'
 import { useSolanaPrice } from '@/hooks/use-solana-price'
 import {
+  IconBuilding,
   IconCurrencyDollar,
   IconCurrencySolana,
   IconDashboard,
@@ -184,7 +185,7 @@ export function Navbar() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="fixed left-0 right-0 top-[64px] z-50 border-t bg-muted/95 backdrop-blur supports-[backdrop-filter]:bg-muted/90"
+              className="fixed left-0 right-0 top-[64px] z-50 border-t bg-zinc-200/90 backdrop-blur-lg"
             >
               <div className="container py-4">
                 {user && (
@@ -263,11 +264,11 @@ export function Navbar() {
                       href={item.path}
                       className={cn(
                         'flex items-center space-x-2 rounded-lg p-2 text-sm font-medium transition-colors hover:bg-accent',
-                        pathname === item.path ? 'bg-accent' : 'text-white'
+                        pathname === item.path ? 'bg-accent' : 'text-black'
                       )}
                       onClick={() => setIsOpen(false)}
                     >
-                      <Home className="h-4 w-4" />
+                      <IconBuilding className="h-4 w-4" />
                       <span>{item.name}</span>
                     </Link>
                   ))}
@@ -281,6 +282,7 @@ export function Navbar() {
                     <div className="space-y-2">
                       <Link
                         href="/dashboard"
+                        onClick={() => setIsOpen(false)}
                         className="flex items-center space-x-2 rounded-lg p-2 text-sm font-medium transition-colors hover:bg-accent"
                       >
                         <IconDashboard className="h-4 w-4" />
@@ -288,6 +290,7 @@ export function Navbar() {
                       </Link>
                       <Link
                         href="/dashboard/settings"
+                        onClick={() => setIsOpen(false)}
                         className="flex items-center space-x-2 rounded-lg p-2 text-sm font-medium transition-colors hover:bg-accent"
                       >
                         <Settings className="h-4 w-4" />
@@ -295,6 +298,7 @@ export function Navbar() {
                       </Link>
                       <Link
                         href="/union"
+                        onClick={() => setIsOpen(false)}
                         className="flex items-center space-x-2 rounded-lg p-2 text-sm font-medium transition-colors hover:bg-accent"
                       >
                         <Vote className="h-4 w-4" />
@@ -303,6 +307,7 @@ export function Navbar() {
                       {user.role === 'admin' && (
                         <Link
                           href="/admin"
+                          onClick={() => setIsOpen(false)}
                           className="flex items-center space-x-2 rounded-lg p-2 text-sm font-medium transition-colors hover:bg-accent"
                         >
                           <LockKeyhole className="h-4 w-4" />

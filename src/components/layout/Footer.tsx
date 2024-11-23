@@ -117,9 +117,9 @@ export default function Footer() {
           </Button>
           {openSection === 'legal' && (
             <div className="bg-slate-800 p-4">
-              <FooterLink href="/terms">Terms of Service</FooterLink>
-              <FooterLink href="/privacy">Privacy Policy</FooterLink>
-              <FooterLink href="/disclaimer">Risk Disclaimer</FooterLink>
+              <FooterLink href="/#">Terms of Service</FooterLink>
+              <FooterLink href="/#">Privacy Policy</FooterLink>
+              <FooterLink href="/#">Risk Disclaimer</FooterLink>
             </div>
           )}
         </div>
@@ -141,13 +141,13 @@ export default function Footer() {
         <div>
           <h2 className="mb-4 font-bold text-white">Connect</h2>
           <div className="flex flex-col gap-2">
-            <FooterLink href="https://twitter.com/BricksOnChain">
+            <FooterLink href="#">
               Twitter
             </FooterLink>
-            <FooterLink href="https://discord.gg/bricksonchain">
+            <FooterLink href="#">
               Discord
             </FooterLink>
-            <FooterLink href="https://docs.bricksonchain.com">
+            <FooterLink href="#">
               Documentation
             </FooterLink>
           </div>
@@ -157,9 +157,9 @@ export default function Footer() {
         <div>
           <h2 className="mb-4 font-bold text-white">Legal</h2>
           <div className="flex flex-col gap-2">
-            <FooterLink href="/terms">Terms of Service</FooterLink>
-            <FooterLink href="/privacy">Privacy Policy</FooterLink>
-            <FooterLink href="/disclaimer">Risk Disclaimer</FooterLink>
+            <FooterLink href="/#">Terms of Service</FooterLink>
+            <FooterLink href="/#">Privacy Policy</FooterLink>
+            <FooterLink href="/#">Risk Disclaimer</FooterLink>
           </div>
         </div>
       </div>
