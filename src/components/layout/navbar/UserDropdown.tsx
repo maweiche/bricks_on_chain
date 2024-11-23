@@ -33,6 +33,7 @@ import { USDC_MINT } from '@/components/solana'
 import { rpcManager } from '@/lib/rpc/rpc-manager'
 import { getAssociatedTokenAddress } from '@solana/spl-token'
 import { PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js'
+import Link from 'next/link'
 
 const UserDropdown = () => {
   const router = useRouter()
@@ -185,35 +186,43 @@ const UserDropdown = () => {
           <div className="py-2">
             <DropdownMenuItem
               className="flex items-center space-x-2 rounded-lg px-2 py-2"
-              onSelect={() => router.push('/dashboard')}
+              asChild
             >
-              <IconDashboard className="h-4 w-4" />
-              <span>Dashboard</span>
+              <Link href="/dashboard">
+                <IconDashboard className="h-4 w-4" />
+                <span>Dashboard</span>
+              </Link>
             </DropdownMenuItem>
 
             <DropdownMenuItem
               className="flex items-center space-x-2 rounded-lg px-2 py-2"
-              onSelect={() => router.push('/dashboard/settings')}
+              asChild
             >
-              <Settings className="h-4 w-4" />
-              <span>Settings</span>
+              <Link href="/dashboard/settings">
+                <Settings className="h-4 w-4" />
+                <span>Settings</span>
+              </Link>
             </DropdownMenuItem>
 
             <DropdownMenuItem
               className="flex items-center space-x-2 rounded-lg px-2 py-2"
-              onSelect={() => router.push('/union')}
+              asChild
             >
-              <Vote className="h-4 w-4" />
-              <span>Governance</span>
+              <Link href="/union">
+                <Vote className="h-4 w-4" />
+                <span>Governance</span>
+              </Link>
             </DropdownMenuItem>
 
             {user.role === 'admin' && (
               <DropdownMenuItem
                 className="flex items-center space-x-2 rounded-lg px-2 py-2"
-                onSelect={() => router.push('/admin')}
+                asChild
               >
-                <LockKeyhole className="h-4 w-4" />
-                <span>Admin</span>
+                <Link href="/admin">
+                  <LockKeyhole className="h-4 w-4" />
+                  <span>Admin</span>
+                </Link>
               </DropdownMenuItem>
             )}
           </div>

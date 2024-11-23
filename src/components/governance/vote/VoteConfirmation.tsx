@@ -55,7 +55,7 @@ export function VoteConfirmationDialog({
           </motion.div>
         </div>
 
-        <DialogFooter className="gap-2 sm:gap-0">
+        <DialogFooter className="gap-2 sm:gap-0 w-full flex flex-row justify-center">
           <Button variant="outline" onClick={onCancel}>
             Cancel
           </Button>

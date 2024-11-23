@@ -35,6 +35,8 @@ import {
 import { Progress } from '@/components/ui/progress'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { FullScreenLoader } from '@/components/loading'
+import Investments from './Investments'
+import RecentInvestments from './RecentInvestments'
 
 export default function Dashboard() {
   const { user, isAuthenticated } = useAuth()
@@ -309,214 +311,19 @@ export default function Dashboard() {
 
             {/* Recent Activity */}
             <motion.div variants={itemVariants}>
-              <Card>
-                <CardHeader>
-                  <CardTitle>Recent Investments</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {activeInvestments
-                      .slice(-3)
-                      .reverse()
-                      .map(
-                        (investment: {
-                          propertyId: any
-                          id: React.Key | null | undefined
-                          amount: {
-                            toLocaleString: () =>
-                              | string
-                              | number
-                              | bigint
-                              | boolean
-                              | React.ReactElement<
-                                  any,
-                                  string | React.JSXElementConstructor<any>
-                                >
-                              | Iterable<React.ReactNode>
-                              | React.ReactPortal
-                              | Promise<React.AwaitedReactNode>
-                              | null
-                              | undefined
-                          }
-                          fractionCount:
-                            | string
-                            | number
-                            | bigint
-                            | boolean
-                            | React.ReactElement<
-                                any,
-                                string | React.JSXElementConstructor<any>
-                              >
-                            | Iterable<React.ReactNode>
-                            | React.ReactPortal
-                            | Promise<React.AwaitedReactNode>
-                            | null
-                            | undefined
-                          purchaseDate: string | number | Date
-                        }) => {
-                          const property = propertiesData?.properties?.find(
-                            (p: { id: any }) => p.id === investment.propertyId
-                          )
-                          return (
-                            <div
-                              key={investment.id}
-                              className="flex items-center"
-                            >
-                              <div className="bg-brand-primary mr-2 h-2 w-2 rounded-full" />
-                              <div className="flex-1">
-                                <p className="text-sm font-medium">
-                                  {property?.title || 'Property Investment'}
-                                </p>
-                                <p className="text-xs text-muted-foreground">
-                                  ${investment.amount.toLocaleString()} -{' '}
-                                  {investment.fractionCount} fraction(s)
-                                </p>
-                              </div>
-                              <p className="text-xs text-muted-foreground">
-                                {format(
-                                  new Date(investment.purchaseDate),
-                                  'MMM dd'
-                                )}
-                              </p>
-                            </div>
-                          )
-                        }
-                      )}
-                  </div>
-                </CardContent>
-              </Card>
+              <RecentInvestments 
+                investments={userData.investments} 
+                properties={propertiesData?.properties} 
+              />
             </motion.div>
           </motion.div>
         </TabsContent>
 
         <TabsContent value="investments">
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            className="grid grid-cols-1 gap-6 md:grid-cols-2"
-          >
-            {investmentDetails.map(
-              (investment: {
-                id: React.Key | null | undefined
-                property: {
-                  title: any
-                  location:
-                    | string
-                    | number
-                    | bigint
-                    | boolean
-                    | React.ReactElement<
-                        any,
-                        string | React.JSXElementConstructor<any>
-                      >
-                    | Iterable<React.ReactNode>
-                    | React.ReactPortal
-                    | Promise<React.AwaitedReactNode>
-                    | null
-                    | undefined
-                  fundingGoal: any
-                  roi:
-                    | string
-                    | number
-                    | bigint
-                    | boolean
-                    | React.ReactElement<
-                        any,
-                        string | React.JSXElementConstructor<any>
-                      >
-                    | Iterable<React.ReactNode>
-                    | React.ReactPortal
-                    | Promise<React.AwaitedReactNode>
-                    | null
-                    | undefined
-                }
-                amount: number
-                fractionCount:
-                  | string
-                  | number
-                  | bigint
-                  | boolean
-                  | React.ReactElement<
-                      any,
-                      string | React.JSXElementConstructor<any>
-                    >
-                  | Iterable<React.ReactNode>
-                  | React.ReactPortal
-                  | Promise<React.AwaitedReactNode>
-                  | null
-                  | undefined
-                purchaseDate: string | number | Date
-              }) => (
-                <motion.div key={investment.id} variants={itemVariants}>
-                  <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0">
-                      <div>
-                        <CardTitle>
-                          {investment.property?.title || 'Property Investment'}
-                        </CardTitle>
-                        <CardDescription>
-                          {investment.property?.location}
-                        </CardDescription>
-                      </div>
-                      <Button variant="ghost" size="icon">
-                        <ChevronRight className="h-4 w-4" />
-                      </Button>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-4">
-                        <div className="flex justify-between text-sm">
-                          <span className="text-muted-foreground">
-                            Investment Amount
-                          </span>
-                          <span className="font-medium">
-                            ${investment.amount.toLocaleString()}
-                          </span>
-                        </div>
-                        <div className="space-y-2">
-                          <div className="flex justify-between text-sm">
-                            <span className="text-muted-foreground">
-                              Fractions Owned
-                            </span>
-                            <span>{investment.fractionCount}</span>
-                          </div>
-                          <Progress
-                            value={
-                              (investment.amount /
-                                (investment.property?.fundingGoal || 1)) *
-                              100
-                            }
-                            className="h-2"
-                          />
-                        </div>
-                        <div className="flex justify-between text-sm">
-                          <span className="text-muted-foreground">
-                            Purchase Date
-                          </span>
-                          <span>
-                            {format(
-                              new Date(investment.purchaseDate),
-                              'MMM dd, yyyy'
-                            )}
-                          </span>
-                        </div>
-                        {investment.property?.roi && (
-                          <div className="flex justify-between text-sm">
-                            <span className="text-muted-foreground">
-                              Expected ROI
-                            </span>
-                            <span className="text-green-500">
-                              {investment.property.roi}%
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              )
-            )}
-          </motion.div>
+          <Investments 
+            investmentDetails={investmentDetails} 
+            properties={propertiesData.properties} 
+          />
         </TabsContent>
       </Tabs>
     </div>
