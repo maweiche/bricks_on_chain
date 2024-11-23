@@ -18,6 +18,7 @@ export interface Property {
 
 export interface User {
   id: string
+  pfp?: string
   address: string
   name?: string
   email?: string

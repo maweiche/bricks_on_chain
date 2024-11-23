@@ -19,7 +19,7 @@ import { IconCurrencyDollar, IconCurrencySolana } from '@tabler/icons-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useSolanaPrice } from '@/hooks/use-solana-price'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { WalletButton } from '@/components/providers'
@@ -87,6 +87,7 @@ const UserDropdown = ({ user }: { user: User }) => {
           onClick={() => setDropdownOpen(!dropdownOpen)}
         >
           <Avatar>
+            <AvatarImage src={user.pfp} alt={user.name} />
             <AvatarFallback>
               <div className="h-16 w-16 rounded-3xl bg-black dark:bg-white"></div>
             </AvatarFallback>
@@ -101,6 +102,7 @@ const UserDropdown = ({ user }: { user: User }) => {
         {/* User Profile Section */}
         <div className="flex items-center space-x-4">
           <Avatar className="h-16 w-16">
+            <AvatarImage src={user.pfp} alt={user.name} />
             <AvatarFallback>
               <div className="h-16 w-16 rounded-3xl bg-black dark:bg-white"></div>
             </AvatarFallback>

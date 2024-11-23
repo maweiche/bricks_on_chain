@@ -66,6 +66,7 @@ export function useAuth() {
           id: `user_${Math.floor(Math.random() * 10000000000000)}`,
           joinedAt: new Date(),
           role: 'user',
+          pfp: 'https://picsum.photos/200',
         })
         setShowProfileDialog(false)
       } catch (error) {

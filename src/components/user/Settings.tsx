@@ -19,14 +19,15 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { ButtonLoader, FullScreenLoader } from '@/components/loading'
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 
 export default function SettingsPage() {
   const { user, isAuthenticated } = useAuth()
-  // Use separate selectors to prevent unnecessary re-renders
   const settings = useStore((state) => state.settings)
   const updateSettings = useStore((state) => state.updateSettings)
   const { toast } = useToast()
   const [isSaving, setIsSaving] = useState(false)
+  const [pfpPreview, setPfpPreview] = useState(user?.pfp || '')
 
   const handleUpdateProfile = async (
     event: React.FormEvent<HTMLFormElement>
@@ -43,6 +44,7 @@ export default function SettingsPage() {
           id: user?.id,
           name: formData.get('name'),
           email: formData.get('email'),
+          pfp: formData.get('pfp'),
         }),
       })
 
@@ -60,6 +62,10 @@ export default function SettingsPage() {
     } finally {
       setIsSaving(false)
     }
+  }
+
+  const handlePfpChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPfpPreview(event.target.value)
   }
 
   // Memoize update handlers to prevent recreation on every render
@@ -135,7 +141,27 @@ export default function SettingsPage() {
             </CardDescription>
           </CardHeader>
           <form onSubmit={handleUpdateProfile}>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-6">
+              {/* Profile Picture Preview */}
+              <div className="flex flex-col items-center space-y-4">
+                <Avatar className="h-24 w-24">
+                  <AvatarImage src={pfpPreview} alt={user?.name || 'Profile'} />
+                  <AvatarFallback>
+                    {user?.name?.charAt(0) || '?'}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="w-full space-y-2">
+                  <Label htmlFor="pfp">Profile Picture URL</Label>
+                  <Input
+                    id="pfp"
+                    name="pfp"
+                    defaultValue={user?.pfp}
+                    placeholder="https://example.com/your-image.jpg"
+                    onChange={handlePfpChange}
+                  />
+                </div>
+              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="name">Name</Label>
                 <Input
