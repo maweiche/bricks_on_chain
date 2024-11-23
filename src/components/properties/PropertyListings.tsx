@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState } from 'react'
-import Link from 'next/link'
 import { useQuery } from '@tanstack/react-query'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
@@ -9,32 +8,15 @@ import {
   Building2,
   ChevronLeft,
   ChevronRight,
-  DollarSign,
   Home,
-  MapPin,
-  TrendingUp,
 } from 'lucide-react'
 
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import { Progress } from '@/components/ui/progress'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Slider } from '@/components/ui/slider'
 
-import { PurchaseButton } from '../purchasing/PurchaseButton'
+import PropertyCard, { Property } from './PropertyCard'
 
 // Constants for filtering
 const ITEMS_PER_PAGE = 10
@@ -142,64 +124,96 @@ export default function PropertyListings() {
     <div className="container mx-auto py-20">
       {/* Filters */}
       <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Select
-          value={filters.type}
-          onValueChange={(value) => setFilters({ ...filters, type: value })}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Property Type" />
-          </SelectTrigger>
-          <SelectContent>
-            {PROPERTY_TYPES.map((type) => (
-              <SelectItem key={type} value={type}>
-                {type.charAt(0).toUpperCase() + type.slice(1)}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        <Select
-          value={filters.location}
-          onValueChange={(value) => setFilters({ ...filters, location: value })}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Location" />
-          </SelectTrigger>
-          <SelectContent>
-            {LOCATIONS.map((location) => (
-              <SelectItem key={location} value={location}>
-                {location}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        <Select
-          value={filters.fundingStatus}
-          onValueChange={(value) =>
-            setFilters({ ...filters, fundingStatus: value })
-          }
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Funding Status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All</SelectItem>
-            <SelectItem value="funded">Funded</SelectItem>
-            <SelectItem value="funding">In Progress</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="flex flex-col gap-2">
+          <span className="text-sm font-medium text-muted-foreground">
+            Property Type
+          </span>
+          <Select
+            value={filters.type}
+            onValueChange={(value) => setFilters({ ...filters, type: value })}
+          >
+            <SelectTrigger className="bg-white">
+              <SelectValue placeholder="All Types" />
+            </SelectTrigger>
+            <SelectContent>
+              {PROPERTY_TYPES.map((type) => (
+                <SelectItem key={type} value={type}>
+                  {type === 'all'
+                    ? 'All Types'
+                    : type.charAt(0).toUpperCase() + type.slice(1)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
         <div className="flex flex-col gap-2">
-          <span className="text-sm">Price Range</span>
-          <Slider
-            defaultValue={[filters.minPrice, filters.maxPrice]}
-            max={5000000}
-            step={100000}
-            onValueChange={([min, max]) =>
-              setFilters({ ...filters, minPrice: min, maxPrice: max })
+          <span className="text-sm font-medium text-muted-foreground">
+            Location
+          </span>
+          <Select
+            value={filters.location}
+            onValueChange={(value) =>
+              setFilters({ ...filters, location: value })
             }
-          />
+          >
+            <SelectTrigger className="bg-white">
+              <SelectValue placeholder="All Locations" />
+            </SelectTrigger>
+            <SelectContent>
+              {LOCATIONS.map((location) => (
+                <SelectItem key={location} value={location}>
+                  {location === 'all' ? 'All Locations' : location}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <span className="text-sm font-medium text-muted-foreground">
+            Funding Status
+          </span>
+          <Select
+            value={filters.fundingStatus}
+            onValueChange={(value) =>
+              setFilters({ ...filters, fundingStatus: value })
+            }
+          >
+            <SelectTrigger className="bg-white">
+              <SelectValue placeholder="All Statuses" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Statuses</SelectItem>
+              <SelectItem value="funded">Funded</SelectItem>
+              <SelectItem value="funding">In Progress</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <span className="text-sm font-medium text-muted-foreground">
+            Price Range
+          </span>
+          <div className="flex flex-col gap-1">
+            <Slider
+              defaultValue={[filters.minPrice, filters.maxPrice]}
+              max={5000000}
+              step={100000}
+              onValueChange={([min, max]) =>
+                setFilters({ ...filters, minPrice: min, maxPrice: max })
+              }
+              className="py-2"
+            />
+            <div className="flex justify-between text-xs text-muted-foreground">
+              <span>
+                ${new Intl.NumberFormat('en-US').format(filters.minPrice)}
+              </span>
+              <span>
+                ${new Intl.NumberFormat('en-US').format(filters.maxPrice)}
+              </span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -231,168 +245,13 @@ export default function PropertyListings() {
           ))
         ) : (
           <AnimatePresence mode="wait">
-            {currentProperties.map(
-              (property: {
-                id: React.Key | null | undefined
-                images: (string | undefined)[]
-                title:
-                  | string
-                  | number
-                  | bigint
-                  | boolean
-                  | React.ReactElement<
-                      any,
-                      string | React.JSXElementConstructor<any>
-                    >
-                  | Iterable<React.ReactNode>
-                  | Promise<React.AwaitedReactNode>
-                  | null
-                  | undefined
-                funded: any
-                type: any
-                location:
-                  | string
-                  | number
-                  | bigint
-                  | boolean
-                  | React.ReactElement<
-                      any,
-                      string | React.JSXElementConstructor<any>
-                    >
-                  | Iterable<React.ReactNode>
-                  | React.ReactPortal
-                  | Promise<React.AwaitedReactNode>
-                  | null
-                  | undefined
-                price: string | number | bigint
-                currentFunding: number
-                fundingGoal: number
-                roi:
-                  | string
-                  | number
-                  | bigint
-                  | boolean
-                  | React.ReactElement<
-                      any,
-                      string | React.JSXElementConstructor<any>
-                    >
-                  | Iterable<React.ReactNode>
-                  | React.ReactPortal
-                  | Promise<React.AwaitedReactNode>
-                  | null
-                  | undefined
-              }) => (
-                <motion.div
-                  key={property.id}
-                  variants={itemVariants}
-                  initial="hidden"
-                  animate="show"
-                  exit="hidden"
-                  layout
-                  className="h-full"
-                >
-                  <Card className="flex h-full flex-col transition-shadow duration-300 hover:shadow-lg">
-                    <CardHeader className="p-0">
-                      <div className="relative aspect-video overflow-hidden rounded-t-lg">
-                        <motion.img
-                          src={property.images[0]}
-                          alt={property.title?.toString()}
-                          className="h-full w-full object-cover"
-                          whileHover={{ scale: 1.05 }}
-                          transition={{ duration: 0.3 }}
-                        />
-                        <Badge
-                          className={`absolute right-2 top-2 ${
-                            property.funded ? 'bg-green-500' : 'bg-blue-500'
-                          }`}
-                        >
-                          {property.funded ? 'Funded' : 'Funding'}
-                        </Badge>
-                      </div>
-                    </CardHeader>
-
-                    <CardContent className="flex-1 pt-4">
-                      <div className="mb-2 flex items-center justify-between">
-                        <CardTitle className="text-xl">
-                          {property.title}
-                        </CardTitle>
-                        {getPropertyIcon(property.type)}
-                      </div>
-
-                      <div className="mb-2 flex items-center text-muted-foreground">
-                        <MapPin className="mr-1 h-4 w-4" />
-                        <span className="text-sm">{property.location}</span>
-                      </div>
-
-                      <div className="mb-4 flex items-center text-xl font-bold">
-                        <DollarSign className="h-5 w-5" />
-                        {new Intl.NumberFormat('en-US').format(
-                          Number(property.price)
-                        )}
-                      </div>
-
-                      <div className="space-y-4">
-                        <div>
-                          <div className="mb-1 flex justify-between text-sm">
-                            <span>Funding Progress</span>
-                            <span>
-                              {Math.round(
-                                (property.currentFunding /
-                                  property.fundingGoal) *
-                                  100
-                              )}
-                              %
-                            </span>
-                          </div>
-                          <Progress
-                            value={
-                              (property.currentFunding / property.fundingGoal) *
-                              100
-                            }
-                            className="h-2"
-                          />
-                        </div>
-
-                        <div className="flex items-center justify-between text-sm">
-                          <div className="flex items-center">
-                            <TrendingUp className="mr-1 h-4 w-4" />
-                            <span>Expected ROI</span>
-                          </div>
-                          <span className="font-semibold text-green-500">
-                            {property.roi}%
-                          </span>
-                        </div>
-                      </div>
-                    </CardContent>
-
-                    <CardFooter className="flex flex-col gap-2 pt-2">
-                      <Link
-                        href={`/properties/${property.id}`}
-                        className="w-full"
-                      >
-                        <Button
-                          className="w-full"
-                          variant={property.funded ? 'secondary' : 'default'}
-                        >
-                          {property.funded
-                            ? 'See what you missed!'
-                            : 'View Details'}
-                        </Button>
-                      </Link>
-                      {property && !property.funded && (
-                        <PurchaseButton
-                          property={{
-                            ...property,
-                            title: property.title?.toString() || '',
-                            price: Number(property.price),
-                          }}
-                        />
-                      )}
-                    </CardFooter>
-                  </Card>
-                </motion.div>
-              )
-            )}
+            {currentProperties.map((property: Property, index: number) => (
+              <PropertyCard
+                key={property.id}
+                property={property}
+                index={index}
+              />
+            ))}
           </AnimatePresence>
         )}
       </motion.div>
