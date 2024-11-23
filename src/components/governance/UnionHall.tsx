@@ -390,7 +390,7 @@ export default function UnionHall() {
                 transition={{ delay: 0.6 }}
               >
                 <Tabs defaultValue="active" className="space-y-6">
-                  <TabsList className="grid w-full md:w-[400px] grid-cols-3">
+                  <TabsList className="grid w-full grid-cols-3 md:w-[400px]">
                     <TabsTrigger value="active">
                       Active ({activeProposals.length})
                     </TabsTrigger>

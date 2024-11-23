@@ -39,7 +39,7 @@ export function PurchaseDialog({
   onClose,
   property,
 }: PurchaseDialogProps) {
-  const { user } = useAuth();
+  const { user } = useAuth()
   const [fractionCount, setFractionCount] = useState(1)
   const [purchaseStep, setPurchaseStep] = useState<
     'input' | 'confirm' | 'processing'
@@ -77,7 +77,7 @@ export function PurchaseDialog({
         fractionCount: fractionCount,
         pricePerFraction: FRACTION_PRICE,
         totalAmount: totalAmount,
-        wallet: user.address
+        wallet: user.address,
       }
 
       console.log('Sending purchase data:', purchaseData) // For debugging
@@ -114,7 +114,10 @@ export function PurchaseDialog({
       console.error('Purchase error:', error)
       toast({
         title: 'Purchase Failed',
-        description: error instanceof Error ? error.message : 'Failed to complete purchase',
+        description:
+          error instanceof Error
+            ? error.message
+            : 'Failed to complete purchase',
         variant: 'destructive',
       })
       setPurchaseStep('input')
@@ -124,9 +127,9 @@ export function PurchaseDialog({
   const handlePurchase = () => {
     if (!user?.address) {
       toast({
-        title: "Authentication Required",
-        description: "Please connect your wallet to purchase",
-        variant: "destructive",
+        title: 'Authentication Required',
+        description: 'Please connect your wallet to purchase',
+        variant: 'destructive',
       })
       return
     }
@@ -142,9 +145,9 @@ export function PurchaseDialog({
   const handleAddToCart = () => {
     if (!user?.address) {
       toast({
-        title: "Authentication Required",
-        description: "Please connect your wallet first",
-        variant: "destructive",
+        title: 'Authentication Required',
+        description: 'Please connect your wallet first',
+        variant: 'destructive',
       })
       return
     }
@@ -263,10 +266,10 @@ export function PurchaseDialog({
           )}
         </AnimatePresence>
 
-        <DialogFooter className="w-full" >
-          <div className="w-full flex flex-col">
+        <DialogFooter className="w-full">
+          <div className="flex w-full flex-col">
             {purchaseStep !== 'processing' && (
-              <div className="w-full flex flex-row justify-evenly">
+              <div className="flex w-full flex-row justify-evenly">
                 <Button
                   variant="secondary"
                   className="w-1/3"
@@ -285,9 +288,13 @@ export function PurchaseDialog({
                 </Button>
               </div>
             )}
-            <div className="w-full flex flex-row justify-center mt-6">
+            <div className="mt-6 flex w-full flex-row justify-center">
               {purchaseStep === 'input' && (
-                <Button variant="outline" className="bg-white/40 w-1/2 border border-white" onClick={handleAddToCart}>
+                <Button
+                  variant="outline"
+                  className="w-1/2 border border-white bg-white/40"
+                  onClick={handleAddToCart}
+                >
                   <IconShoppingCartDollar className="mr-2 h-4 w-4" />
                   Add to Cart
                 </Button>
