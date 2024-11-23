@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { AnimatePresence, motion } from 'framer-motion'
-import { DollarSign, Loader2 } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 
 import { useStore } from '@/lib/store'
 import { useToast } from '@/hooks/use-toast'
@@ -16,6 +16,8 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
+import { useAuth } from '@/hooks/use-auth'
+import { IconShoppingCartDollar } from '@tabler/icons-react'
 
 interface PurchaseDialogProps {
   isOpen: boolean
@@ -37,6 +39,7 @@ export function PurchaseDialog({
   onClose,
   property,
 }: PurchaseDialogProps) {
+  const { user } = useAuth();
   const [fractionCount, setFractionCount] = useState(1)
   const [purchaseStep, setPurchaseStep] = useState<
     'input' | 'confirm' | 'processing'
@@ -64,26 +67,35 @@ export function PurchaseDialog({
   // Purchase mutation
   const purchaseMutation = useMutation({
     mutationFn: async () => {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000))
+      if (!user?.address) {
+        throw new Error('No wallet connected')
+      }
+
+      const purchaseData = {
+        propertyId: property.id,
+        propertyTitle: property.title,
+        fractionCount: fractionCount,
+        pricePerFraction: FRACTION_PRICE,
+        totalAmount: totalAmount,
+        wallet: user.address
+      }
+
+      console.log('Sending purchase data:', purchaseData) // For debugging
 
       const response = await fetch(`/api/properties/${property.id}/purchase`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          fractionCount,
-          totalAmount,
-        }),
+        body: JSON.stringify(purchaseData),
       })
 
       if (!response.ok) {
-        throw new Error('Purchase failed')
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to complete purchase')
       }
 
       return response.json()
     },
     onSuccess: () => {
-      // Invalidate and refetch
       queryClient.invalidateQueries({
         queryKey: ['property', property.id],
       })
@@ -91,20 +103,18 @@ export function PurchaseDialog({
         queryKey: ['user-investments'],
       })
 
-      // Show success message
       toast({
         title: 'Purchase Successful!',
         description: `You have successfully purchased ${fractionCount} fractions of ${property.title}`,
       })
 
-      // Close dialog
       onClose()
     },
-    onError: () => {
+    onError: (error) => {
+      console.error('Purchase error:', error)
       toast({
         title: 'Purchase Failed',
-        description:
-          'There was an error processing your purchase. Please try again.',
+        description: error instanceof Error ? error.message : 'Failed to complete purchase',
         variant: 'destructive',
       })
       setPurchaseStep('input')
@@ -112,6 +122,15 @@ export function PurchaseDialog({
   })
 
   const handlePurchase = () => {
+    if (!user?.address) {
+      toast({
+        title: "Authentication Required",
+        description: "Please connect your wallet to purchase",
+        variant: "destructive",
+      })
+      return
+    }
+
     if (purchaseStep === 'input') {
       setPurchaseStep('confirm')
     } else if (purchaseStep === 'confirm') {
@@ -121,6 +140,15 @@ export function PurchaseDialog({
   }
 
   const handleAddToCart = () => {
+    if (!user?.address) {
+      toast({
+        title: "Authentication Required",
+        description: "Please connect your wallet first",
+        variant: "destructive",
+      })
+      return
+    }
+
     addToCart({
       propertyId: property.id,
       propertyTitle: property.title,
@@ -235,33 +263,37 @@ export function PurchaseDialog({
           )}
         </AnimatePresence>
 
-        <DialogFooter>
-          {purchaseStep !== 'processing' && (
-            <>
-              <Button
-                variant="outline"
-                onClick={() => {
-                  if (purchaseStep === 'confirm') {
-                    setPurchaseStep('input')
-                  } else {
-                    onClose()
-                  }
-                }}
-              >
-                {purchaseStep === 'confirm' ? 'Back' : 'Cancel'}
-              </Button>
-              <Button onClick={handlePurchase}>
-                {purchaseStep === 'confirm' ? 'Confirm Purchase' : 'Continue'}
-              </Button>
-            </>
-          )}
-
-          {purchaseStep === 'input' && (
-            <Button variant="outline" onClick={handleAddToCart}>
-              <DollarSign className="mr-2 h-4 w-4" />
-              Add to Cart
-            </Button>
-          )}
+        <DialogFooter className="w-full" >
+          <div className="w-full flex flex-col">
+            {purchaseStep !== 'processing' && (
+              <div className="w-full flex flex-row justify-evenly">
+                <Button
+                  variant="secondary"
+                  className="w-1/3"
+                  onClick={() => {
+                    if (purchaseStep === 'confirm') {
+                      setPurchaseStep('input')
+                    } else {
+                      onClose()
+                    }
+                  }}
+                >
+                  {purchaseStep === 'confirm' ? 'Back' : 'Cancel'}
+                </Button>
+                <Button onClick={handlePurchase} className="w-1/3">
+                  {purchaseStep === 'confirm' ? 'Confirm Purchase' : 'Continue'}
+                </Button>
+              </div>
+            )}
+            <div className="w-full flex flex-row justify-center mt-6">
+              {purchaseStep === 'input' && (
+                <Button variant="outline" className="bg-white/40 w-1/2 border border-white" onClick={handleAddToCart}>
+                  <IconShoppingCartDollar className="mr-2 h-4 w-4" />
+                  Add to Cart
+                </Button>
+              )}
+            </div>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>

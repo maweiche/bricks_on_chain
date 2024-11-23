@@ -28,6 +28,7 @@ import {
 
 import { useAuth } from '@/hooks/use-auth'
 import { useToast } from '@/hooks/use-toast'
+import { useCopy } from '@/hooks/use-copy'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -65,30 +66,111 @@ const investorDistribution = [
 export default function PropertyDetails({ id }: { id: string }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [isPurchaseDialogOpen, setIsPurchaseDialogOpen] = useState(false)
-  const { isAuthenticated } = useAuth()
+  const { user, isAuthenticated } = useAuth()
   const { toast } = useToast()
-
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const { copyToClipboard } = useCopy(`${window.location.origin}/properties/${id}`)
   // Fetch property details
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, refetch } = useQuery({
     queryKey: ['property', id],
     queryFn: async () => {
-      const res = await fetch(`/api/properties/${id}`)
-      if (!res.ok) throw new Error('Failed to fetch property')
-      return res.json()
+      const res = await fetch(`/api/properties/${id}`);
+      if (!res.ok) throw new Error('Failed to fetch property');
+      return res.json();
     },
-  })
+  });
 
-  // const handleInvest = () => {
-  //   if (!isAuthenticated) {
-  //     toast({
-  //       title: 'Authentication Required',
-  //       description: 'Please connect your wallet to invest',
-  //       variant: 'destructive',
-  //     })
-  //     return
-  //   }
-  //   // Implement investment logic
-  // }
+  const handleInvest = async () => {
+    if (!isAuthenticated) {
+      toast({
+        title: "Authentication Required",
+        description: "Please connect your wallet to invest",
+        variant: "destructive",
+      });
+      return;
+    }
+  
+    if (!user) {
+      toast({
+        title: "Wallet Error",
+        description: "No wallet connected",
+        variant: "destructive",
+      });
+      return;
+    }
+  
+    if (!property) {
+      toast({
+        title: "Error",
+        description: "Property data not available",
+        variant: "destructive",
+      });
+      return;
+    }
+  
+    try {
+      setIsSubmitting(true);
+      
+      // Set default fraction count and calculate amounts
+      const fractionCount = 1; // Default to 1 fraction
+      const pricePerFraction = Math.floor(property.price / 100); // Assuming 100 fractions per property, ensure it's a number
+      const totalAmount = pricePerFraction * fractionCount;
+  
+      // Log the values to verify them
+      console.log('Purchase Data:', {
+        propertyId: property.id,
+        propertyTitle: property.title,
+        fractionCount,
+        pricePerFraction,
+        totalAmount,
+        wallet: user.address
+      });
+  
+      // Prepare purchase data matching the Zod schema
+      const purchaseData = {
+        propertyId: property.id,
+        propertyTitle: property.title,
+        fractionCount: fractionCount,
+        pricePerFraction: pricePerFraction,
+        totalAmount: totalAmount,
+        wallet: user.address,
+      };
+  
+      const response = await fetch(`/api/properties/${id}/purchase`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(purchaseData),
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to complete purchase');
+      }
+  
+      const result = await response.json();
+      console.log('Purchase Result:', result);
+  
+      toast({
+        title: "Purchase Successful",
+        description: `Successfully invested ${fractionCount} fraction(s) in ${property.title}`,
+      });
+  
+      // Refetch property data to update UI
+      refetch();
+  
+    } catch (error) {
+      console.error('Purchase error:', error);
+      toast({
+        title: "Purchase Failed",
+        description: error instanceof Error ? error.message : 'Failed to complete purchase',
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const getPropertyIcon = (type?: string) => {
     switch (type) {
@@ -118,6 +200,8 @@ export default function PropertyDetails({ id }: { id: string }) {
     )
   }
 
+  const property = data?.property;
+
   return (
     <div className="container mx-auto py-20">
       {/* Image Gallery */}
@@ -129,8 +213,8 @@ export default function PropertyDetails({ id }: { id: string }) {
           transition={{ duration: 0.5 }}
         >
           <Image
-            src={data.property?.images[currentImageIndex]}
-            alt={data.property?.title}
+            src={property.images[currentImageIndex]}
+            alt={property?.title}
             className="h-full w-full object-cover"
             width={1920}
             height={1080}
@@ -139,7 +223,7 @@ export default function PropertyDetails({ id }: { id: string }) {
 
         {/* Image Navigation */}
         <div className="absolute inset-x-0 bottom-0 flex justify-center gap-2 bg-gradient-to-t from-black/50 to-transparent p-4">
-          {data.property?.images.map((_: any, index: number) => (
+          {property?.images.map((_: any, index: number) => (
             <button
               key={index}
               className={`h-2 w-2 rounded-full ${
@@ -157,7 +241,7 @@ export default function PropertyDetails({ id }: { id: string }) {
           className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/20 hover:bg-black/40"
           onClick={() =>
             setCurrentImageIndex((i) =>
-              i > 0 ? i - 1 : data.property?.images.length - 1
+              i > 0 ? i - 1 : property?.images.length - 1
             )
           }
         >
@@ -169,7 +253,7 @@ export default function PropertyDetails({ id }: { id: string }) {
           className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/20 hover:bg-black/40"
           onClick={() =>
             setCurrentImageIndex((i) =>
-              i < data.property?.images.length - 1 ? i + 1 : 0
+              i < property?.images.length - 1 ? i + 1 : 0
             )
           }
         >
@@ -184,20 +268,20 @@ export default function PropertyDetails({ id }: { id: string }) {
           <div className="flex items-start justify-between">
             <div>
               <h1 className="mb-2 text-3xl font-bold">
-                {data.property?.title}
+                {property?.title}
               </h1>
               <div className="flex items-center gap-4 text-muted-foreground">
                 <div className="flex items-center gap-1">
                   <MapPin className="h-4 w-4" />
-                  <span>{data.property?.location}</span>
+                  <span>{property?.location}</span>
                 </div>
                 <Badge variant="secondary">
-                  {getPropertyIcon(data.property?.type)}
-                  <span className="ml-1 capitalize">{data.property?.type}</span>
+                  {getPropertyIcon(property?.type)}
+                  <span className="ml-1 capitalize">{property?.type}</span>
                 </Badge>
               </div>
             </div>
-            <Button variant="outline" size="icon">
+            <Button variant="outline" size="icon" onClick={()=> copyToClipboard()}>
               <Share2 className="h-4 w-4" />
             </Button>
           </div>
@@ -218,11 +302,11 @@ export default function PropertyDetails({ id }: { id: string }) {
                 </CardHeader>
                 <CardContent>
                   <p className="leading-relaxed">
-                    {data.property?.description}
+                    {property?.description}
                   </p>
                 </CardContent>
               </Card>
-              <ROISimulationChart expectedROI={data.property?.roi} />
+              <ROISimulationChart expectedROI={property?.roi} />
             </TabsContent>
 
             <TabsContent value="financials" className="space-y-4">
@@ -237,7 +321,7 @@ export default function PropertyDetails({ id }: { id: string }) {
                         Purchase Price
                       </div>
                       <div className="text-2xl font-bold">
-                        ${data.property?.price.toLocaleString()}
+                        ${property?.price.toLocaleString()}
                       </div>
                     </div>
                     <div className="rounded-lg bg-secondary/10 p-4">
@@ -245,7 +329,7 @@ export default function PropertyDetails({ id }: { id: string }) {
                         Expected ROI
                       </div>
                       <div className="text-2xl font-bold text-green-600">
-                        {data.property?.roi}%
+                        {property?.roi}%
                       </div>
                     </div>
                     <div className="rounded-lg bg-secondary/10 p-4">
@@ -333,95 +417,82 @@ export default function PropertyDetails({ id }: { id: string }) {
         </div>
 
         {/* Investment Card */}
-        <div className="lg:row-start-1">
-          <Card className="sticky top-8">
-            <CardHeader>
-              <CardTitle>Investment Overview</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-2">
-                <div className="text-sm text-muted-foreground">
-                  Funding Progress
-                </div>
-                <Progress
-                  value={
-                    (data.property?.currentFunding /
-                      data.property?.fundingGoal) *
-                    100
-                  }
-                  className="h-2"
-                />
-                <div className="flex justify-between text-sm">
-                  <span>
-                    ${data.property?.currentFunding.toLocaleString()} raised
-                  </span>
-                  <span>
-                    ${data.property?.fundingGoal.toLocaleString()} goal
-                  </span>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">
-                    Min. Investment
-                  </span>
-                  <span className="font-medium">$5,000</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">
-                    Expected ROI
-                  </span>
-                  <span className="font-medium text-green-600">
-                    {data.property?.roi}%
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">
-                    Investment Term
-                  </span>
-                  <span className="font-medium">36 months</span>
-                </div>
-              </div>
-
-              {!isAuthenticated ? (
-                <WalletButton className="w-full" />
-              ) : (
-                <Button
-                  className="w-full"
-                  size="lg"
-                  onClick={() => {
-                    if (!isAuthenticated) {
-                      toast({
-                        title: 'Authentication Required',
-                        description: 'Please connect your wallet to invest',
-                        variant: 'destructive',
-                      })
-                      return
-                    }
-                    setIsPurchaseDialogOpen(true)
-                  }}
-                  disabled={data.property?.funded}
-                >
-                  {data.property?.funded ? 'Fully Funded' : 'Invest Now'}
-                </Button>
-              )}
-
-              <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-                <Users className="h-4 w-4" />
-                <span>{Math.floor(Math.random() * 50) + 20} investors</span>
-                <span>•</span>
-                <Calendar className="h-4 w-4" />
-                <span>{Math.floor(Math.random() * 20) + 5} days left</span>
-              </div>
-            </CardContent>
-          </Card>
-          <PurchaseDialog
-            isOpen={isPurchaseDialogOpen}
-            onClose={() => setIsPurchaseDialogOpen(false)}
-            property={data.property}
-          />
+<div className="lg:row-start-1">
+  <Card className="sticky top-8">
+    <CardHeader>
+      <CardTitle>Investment Overview</CardTitle>
+    </CardHeader>
+    <CardContent className="space-y-6">
+      <div className="space-y-2">
+        <div className="text-sm text-muted-foreground">Funding Progress</div>
+        <Progress 
+          value={(property?.currentFunding / property?.fundingGoal) * 100} 
+          className="h-2" 
+        />
+        <div className="flex justify-between text-sm">
+          <span>${property?.currentFunding.toLocaleString()} raised</span>
+          <span>${property?.fundingGoal.toLocaleString()} goal</span>
         </div>
+      </div>
+
+      <div className="space-y-4">
+        <div className="flex justify-between items-center">
+          <span className="text-sm text-muted-foreground">Min. Investment</span>
+          <span className="font-medium">$5,000</span>
+        </div>
+        <div className="flex justify-between items-center">
+          <span className="text-sm text-muted-foreground">Expected ROI</span>
+          <span className="font-medium text-green-600">{property?.roi}%</span>
+        </div>
+        <div className="flex justify-between items-center">
+          <span className="text-sm text-muted-foreground">Investment Term</span>
+          <span className="font-medium">36 months</span>
+        </div>
+      </div>
+
+      {!isAuthenticated ? (
+        <WalletButton className="w-full" />
+      ) : (
+        <div className="space-y-3">
+          {/* Instant Purchase Button */}
+          <Button 
+            className="w-full" 
+            size="lg"
+            onClick={handleInvest}
+            disabled={property?.funded || isSubmitting}
+          >
+            {isSubmitting ? 'Processing...' : property?.funded ? 'Fully Funded' : 'Instant Purchase'}
+          </Button>
+
+          {/* Advanced Purchase Button */}
+          <Button 
+            className="w-full" 
+            variant="outline"
+            onClick={() => setIsPurchaseDialogOpen(true)}
+            disabled={property?.funded}
+          >
+            More Options
+          </Button>
+        </div>
+      )}
+
+      <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+        <Users className="w-4 h-4" />
+        <span>{Math.floor(Math.random() * 50) + 20} investors</span>
+        <span>•</span>
+        <Calendar className="w-4 h-4" />
+        <span>{Math.floor(Math.random() * 20) + 5} days left</span>
+      </div>
+    </CardContent>
+  </Card>
+
+  {/* Purchase Dialog */}
+  <PurchaseDialog
+    isOpen={isPurchaseDialogOpen}
+    onClose={() => setIsPurchaseDialogOpen(false)}
+    property={property}
+  />
+</div>
       </div>
     </div>
   )

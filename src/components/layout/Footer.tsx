@@ -72,7 +72,6 @@ export default function Footer() {
               <FooterLink href="/properties">Browse Properties</FooterLink>
               <FooterLink href="/dashboard">My Investments</FooterLink>
               <FooterLink href="/governance">Governance</FooterLink>
-              <FooterLink href="/about">About Us</FooterLink>
             </div>
           )}
         </div>
@@ -135,7 +134,6 @@ export default function Footer() {
             <FooterLink href="/properties">Browse Properties</FooterLink>
             <FooterLink href="/dashboard">My Investments</FooterLink>
             <FooterLink href="/governance">Governance</FooterLink>
-            <FooterLink href="/about">About Us</FooterLink>
           </div>
         </div>
 

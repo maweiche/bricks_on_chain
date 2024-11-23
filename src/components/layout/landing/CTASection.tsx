@@ -28,7 +28,7 @@ const fadeInUp = {
 
 export function CTASection() {
   return (
-    <section className="relative min-h-[80vh] w-full overflow-hidden bg-gradient-to-r from-secondary/50 to-primary/50">
+    <section className="relative min-h-[80vh] w-full overflow-hidden bg-gradient-to-r from-secondary/50 to-primary/50 overflow-hidden">
       {/* Background decoration */}
       <motion.div
         initial={{ scale: 0 }}
@@ -39,6 +39,24 @@ export function CTASection() {
         <div className="absolute right-0 top-0 h-1/3 w-1/3 -translate-y-1/2 translate-x-1/2 transform rounded-full bg-white/5 blur-3xl" />
         <div className="absolute bottom-0 left-0 h-1/3 w-1/3 -translate-x-1/2 translate-y-1/2 transform rounded-full bg-white/5 blur-3xl" />
       </motion.div>
+
+      {/* Slanted Overlay Top */}
+      <div
+        className="hidden md:block absolute -top-[50px] left-0 right-0 h-[50px] bg-background "
+        style={{
+          transform: 'skewY(2deg)',
+          transformOrigin: 'bottom left',
+        }}
+      />
+
+      {/* Slanted Overlay Bottom */}
+      <div
+        className="hidden md:block absolute -bottom-[50px] left-0 right-0 h-[125px] bg-background "
+        style={{
+          transform: 'skewY(2deg)',
+          transformOrigin: 'bottom left',
+        }}
+      />
 
       <motion.div
         initial={{ scale: 0 }}
