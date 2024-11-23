@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
-import { Raleway, Cormorant_Infant, Syne } from 'next/font/google'
+import { Raleway, Syne } from 'next/font/google'
+// Note: Cormorant Infant needs to use special import syntax for fonts with spaces
+import localFont from 'next/font/local'
 import './globals.css'
 import { UiLayout } from '@/components/layout'
 import { SolanaProvider } from '@/components/providers'
@@ -9,20 +11,12 @@ import { FullScreenLoader } from '@/components/loading'
 import { Suspense } from 'react'
 
 // Initialize fonts
-const raleway = Raleway({
+const raleway = Raleway({ 
   subsets: ['latin'],
-  variable: '--font-raleway',
-})
-
-const cormorant = Cormorant_Infant({
-  subsets: ['latin'],
-  variable: '--font-cormorant',
-  weight: ['300', '400', '500', '600', '700'],
 })
 
 const syne = Syne({
   subsets: ['latin'],
-  variable: '--font-syne',
 })
 
 export const metadata: Metadata = {
@@ -36,10 +30,9 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
-        suppressHydrationWarning
-        className={`${raleway.variable} ${cormorant.variable} ${syne.variable}`}
+        className={`${raleway.className} ${syne.className}`}
       >
         <ReactQueryProvider>
           <SolanaProvider>
