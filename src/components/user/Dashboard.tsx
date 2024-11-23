@@ -8,7 +8,6 @@ import {
   Activity,
   AlertCircle,
   Building,
-  ChevronRight,
   DollarSign,
   RefreshCcw,
   Wallet,
@@ -32,7 +31,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { Progress } from '@/components/ui/progress'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { FullScreenLoader } from '@/components/loading'
 import Investments from './Investments'
@@ -311,18 +309,18 @@ export default function Dashboard() {
 
             {/* Recent Activity */}
             <motion.div variants={itemVariants}>
-              <RecentInvestments 
-                investments={userData.investments} 
-                properties={propertiesData?.properties} 
+              <RecentInvestments
+                investments={userData.investments}
+                properties={propertiesData?.properties}
               />
             </motion.div>
           </motion.div>
         </TabsContent>
 
         <TabsContent value="investments">
-          <Investments 
-            investmentDetails={investmentDetails} 
-            properties={propertiesData.properties} 
+          <Investments
+            investmentDetails={investmentDetails}
+            properties={propertiesData.properties}
           />
         </TabsContent>
       </Tabs>
