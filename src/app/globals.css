@@ -89,3 +89,12 @@
     @apply bg-background text-foreground;
   }
 }
+
+.wallet-adapter-dropdown >  .wallet-adapter-dropdown-list-active {
+  z-index: 2000;
+  transform: translateY(-200px);
+}
+
+.data-radix-popper-content-wrapper {
+  z-index: 2000;
+}

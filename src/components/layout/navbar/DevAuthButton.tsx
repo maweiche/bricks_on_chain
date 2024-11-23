@@ -1,5 +1,5 @@
 import React from 'react'
-import { Users, UserPlus } from 'lucide-react' // Added UserPlus icon
+import { Users, UserPlus } from 'lucide-react'
 import { useStore } from '@/lib/store'
 import {
   DropdownMenu,
@@ -11,8 +11,8 @@ import { Button } from '@/components/ui/button'
 import { WalletButton } from '@/components/providers'
 import { motion } from 'framer-motion'
 import { useToast } from '@/hooks/use-toast'
-import { useWallet } from '@solana/wallet-adapter-react' // Added
-import { useAuth } from '@/hooks/use-auth' // Added
+import { useWallet } from '@solana/wallet-adapter-react'
+import { useAuth } from '@/hooks/use-auth'
 
 const DevAuthButton = () => {
   const simulateAuth = useStore((state) => state.simulateAuth)
@@ -49,7 +49,7 @@ const DevAuthButton = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="relative">
+        <Button variant="outline" className="relative w-full">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -62,7 +62,7 @@ const DevAuthButton = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
-        className="flex h-fit w-48 flex-col items-center justify-center gap-2 py-6"
+        className="mr-12 mt-2 flex h-fit w-48 flex-col items-center justify-center gap-2 py-6 md:mt-0"
       >
         {/* Show Create Profile option when wallet is connected but user isn't authenticated */}
         {publicKey && !isAuthenticated && (

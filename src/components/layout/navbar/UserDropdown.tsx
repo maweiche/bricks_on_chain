@@ -1,40 +1,47 @@
-import { toast } from '@/hooks/use-toast'
-import { User, useStore } from '@/lib/store'
+'use client'
+
+import { useEffect, useState } from 'react'
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
 import {
   ChevronDown,
   Copy,
   LogOut,
   Settings,
-  IdCard,
   Vote,
   LockKeyhole,
 } from 'lucide-react'
-import { IconCurrencyDollar, IconCurrencySolana } from '@tabler/icons-react'
-import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
-import { Button } from '@/components/ui/button'
+import {
+  IconCurrencyDollar,
+  IconCurrencySolana,
+  IconDashboard,
+} from '@tabler/icons-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
+import { useRouter } from 'next/navigation'
+import { useAuth } from '@/hooks/use-auth'
+import { toast } from '@/hooks/use-toast'
 import { useSolanaPrice } from '@/hooks/use-solana-price'
 import { useWallet } from '@solana/wallet-adapter-react'
-import { WalletButton } from '@/components/providers'
+import { useStore } from '@/lib/store'
 import { USDC_MINT } from '@/components/solana'
-import { PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js'
-import { getAssociatedTokenAddress } from '@solana/spl-token'
 import { rpcManager } from '@/lib/rpc/rpc-manager'
+import { getAssociatedTokenAddress } from '@solana/spl-token'
+import { PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js'
 
-const UserDropdown = ({ user }: { user: User }) => {
-  const [dropdownOpen, setDropdownOpen] = useState(false)
-  const { publicKey, disconnect } = useWallet()
-  const [userBalance, setUserBalance] = useState({ sol: 0, usdc: 0 })
+const UserDropdown = () => {
   const router = useRouter()
+  const { user } = useAuth()
+  const [isOpen, setIsOpen] = useState(false)
+  const { disconnect } = useWallet()
   const logout = useStore((state) => state.disconnect)
-  const { solToUsd } = useSolanaPrice()
+  const { solToUsd, currentPrice } = useSolanaPrice()
+  const [userBalance, setUserBalance] = useState({ sol: 0, usdc: 0 })
 
   useEffect(() => {
     const getBalances = async (pubKey: PublicKey) => {
@@ -56,18 +63,12 @@ const UserDropdown = ({ user }: { user: User }) => {
       }
     }
 
-    if (publicKey) {
-      getBalances(publicKey)
+    if (user) {
+      getBalances(new PublicKey(user.address))
     }
-  }, [publicKey])
+  }, [user])
 
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text)
-    toast({
-      title: 'Copied to clipboard',
-      description: text,
-    })
-  }
+  if (!user) return null
 
   const handleLogout = async () => {
     await disconnect(), logout(), router.push('/')
@@ -77,132 +78,165 @@ const UserDropdown = ({ user }: { user: User }) => {
     })
   }
 
-  if (!user) return null
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text)
+    toast({
+      title: 'Copied to clipboard',
+      description: text,
+    })
+  }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger>
-        <div
-          className="flex cursor-pointer items-center gap-2"
-          onClick={() => setDropdownOpen(!dropdownOpen)}
+    <div className="hidden md:block">
+      <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
+        <DropdownMenuTrigger>
+          <div className="flex items-center space-x-2">
+            <Avatar>
+              <AvatarImage src={user.pfp} alt={user.name} />
+              <AvatarFallback>{user.name?.charAt(0) || '?'}</AvatarFallback>
+            </Avatar>
+            <ChevronDown className="h-4 w-4" />
+          </div>
+        </DropdownMenuTrigger>
+
+        <DropdownMenuContent
+          align="end"
+          className="mt-2 w-[300px] rounded-lg border border-border bg-card/60 px-4 py-3 backdrop-blur-lg dark:bg-secondary/60"
         >
-          <Avatar>
-            <AvatarImage src={user.pfp} alt={user.name} />
-            <AvatarFallback>
-              <div className="h-16 w-16 rounded-3xl bg-black dark:bg-white"></div>
-            </AvatarFallback>
-          </Avatar>
-          <ChevronDown className="text-secondary" />
-        </div>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent
-        align="end"
-        className="flex w-screen flex-col items-center rounded-3xl border border-zinc-300 bg-white p-4 dark:border-zinc-700 dark:bg-white md:w-[340px]"
-      >
-        {/* User Profile Section */}
-        <div className="flex items-center space-x-4">
-          <Avatar className="h-16 w-16">
-            <AvatarImage src={user.pfp} alt={user.name} />
-            <AvatarFallback>
-              <div className="h-16 w-16 rounded-3xl bg-black dark:bg-white"></div>
-            </AvatarFallback>
-          </Avatar>
-          <div>
-            <h2 className="text-3xl font-semibold text-secondary">
-              {user?.name || `User_${user?.address.slice(-4)}`}
-            </h2>
-            <div className="flex items-center text-gray-500">
-              <span className="mr-1 truncate">
-                {user?.address?.slice(0, 4)}...{user?.address.slice(-4)}
+          {/* User Info */}
+          <div className="flex items-center space-x-3 pb-3">
+            <Avatar className="h-10 w-10">
+              <AvatarImage src={user.pfp} alt={user.name} />
+              <AvatarFallback>{user.name?.charAt(0) || '?'}</AvatarFallback>
+            </Avatar>
+            <div>
+              <p className="font-semibold">{user.name}</p>
+              <div className="flex items-center text-sm text-card-foreground">
+                <span className="truncate">
+                  {user.address.slice(0, 4)}...{user.address.slice(-4)}
+                </span>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="ml-1 h-4 w-4 p-0 hover:bg-transparent"
+                  onClick={() => copyToClipboard(user.address)}
+                >
+                  <Copy className="h-3 w-3" />
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          <DropdownMenuSeparator />
+
+          <div className="space-y-3 py-3">
+            <div className="flex items-center justify-between rounded-lg bg-accent/50 p-2">
+              <span className="text-sm text-card-foreground">
+                Current Solana Price
               </span>
-              <Copy
-                className="ml-2 cursor-pointer"
-                onClick={() => copyToClipboard(user?.address)}
-              />
+              <span className="text-lg font-semibold">
+                ${((currentPrice || 0) / 100000000).toFixed(2)}
+              </span>
             </div>
           </div>
-        </div>
 
-        {/* Site Navigation */}
-        <div className="mb-2 mt-2 grid w-full grid-cols-2 items-center rounded-2xl border border-zinc-300 p-2 dark:border-zinc-600">
-          <DropdownMenuItem
-            className="flex w-fit cursor-pointer flex-row items-center gap-2 rounded-full px-4 text-secondary hover:bg-slate-200"
-            onClick={() => router.push('/dashboard/settings')}
-          >
-            <Settings size={24} />
-            <span className="text-lg font-semibold">Settings</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            className="flex w-fit cursor-pointer flex-row items-center gap-2 rounded-full px-4 text-secondary hover:bg-slate-200"
-            onClick={() => router.push('/dashboard')}
-          >
-            <IdCard size={24} />
-            <span className="text-lg font-semibold">Dashboard</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            className="flex w-fit cursor-pointer flex-row items-center gap-2 rounded-full px-4 text-secondary hover:bg-slate-200"
-            onClick={() => router.push('/union')}
-          >
-            <Vote size={24} />
-            <span className="text-lg font-semibold">Governance</span>
-          </DropdownMenuItem>
-          {user.role === 'admin' && (
+          <DropdownMenuSeparator />
+
+          {/* Buying Power Section */}
+          <div className="space-y-3 py-3">
+            <div className="flex items-center justify-between rounded-lg bg-accent/50 p-2">
+              <span className="text-sm text-card-foreground">
+                Total Buying Power
+              </span>
+              <span className="text-lg font-semibold">
+                ${(solToUsd(userBalance.sol) + userBalance.usdc).toFixed(2)}
+              </span>
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex items-center justify-between rounded-lg bg-accent/50 p-2">
+                <div className="flex items-center space-x-2">
+                  <div className="rounded-full bg-background p-1">
+                    <IconCurrencySolana className="h-4 w-4" />
+                  </div>
+                  <span className="text-sm">
+                    {userBalance.sol.toFixed(4)} SOL
+                  </span>
+                </div>
+                <span className="text-sm text-card-foreground">
+                  ≈ ${solToUsd(userBalance.sol).toFixed(2)}
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between rounded-lg bg-accent/50 p-2">
+                <div className="flex items-center space-x-2">
+                  <div className="rounded-full bg-background p-1">
+                    <IconCurrencyDollar className="h-4 w-4" />
+                  </div>
+                  <span className="text-sm">{userBalance.usdc} USDC</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <DropdownMenuSeparator />
+
+          {/* Navigation Links */}
+          <div className="py-2">
             <DropdownMenuItem
-              className="flex w-fit cursor-pointer flex-row items-center gap-2 rounded-full px-4 text-secondary hover:bg-slate-200"
-              onClick={() => router.push('/admin')}
+              className="flex items-center space-x-2 rounded-lg px-2 py-2"
+              onSelect={() => router.push('/dashboard')}
             >
-              <LockKeyhole size={24} />
-              <span className="text-lg font-semibold">Admin</span>
+              <IconDashboard className="h-4 w-4" />
+              <span>Dashboard</span>
             </DropdownMenuItem>
-          )}
-        </div>
 
-        {/* Wallet Balance / Buying Power */}
-        <div className="w-full rounded-3xl border border-zinc-300 bg-transparent p-4 dark:border-zinc-600">
-          <div className="flex items-center justify-between">
-            <div className="text-secondary">Buying power</div>
-            <div className="text-xl font-bold text-secondary">
-              $
-              {userBalance.sol
-                ? (solToUsd(userBalance.sol) + userBalance.usdc).toFixed(2)
-                : '0.00'}
-            </div>
-          </div>
-          <div className="mt-2 flex items-center">
-            <div className="flex flex-1 items-center gap-2 text-secondary">
-              <div className="bg-bg h-4 w-4 rounded-full border border-solid border-[#D4D4D8]">
-                <IconCurrencySolana className="h-4 w-4" />
-              </div>
-              <span>{userBalance.sol.toFixed(4)} SOL</span>
-            </div>
-            <div className="text-zinc-500">
-              ${solToUsd(userBalance.sol).toFixed(2)}
-            </div>
-          </div>
-          <div className="mt-2 flex items-center">
-            <div className="flex flex-1 items-center gap-2 text-secondary">
-              <div className="bg-bg h-4 w-4 rounded-full border border-solid border-[#D4D4D8]">
-                <IconCurrencyDollar className="h-full w-full" />
-              </div>
-              <span>{userBalance.usdc} USDC</span>
-            </div>
-          </div>
-          <div className="mt-2 flex flex-col items-center justify-center">
-            <WalletButton />
-          </div>
-        </div>
+            <DropdownMenuItem
+              className="flex items-center space-x-2 rounded-lg px-2 py-2"
+              onSelect={() => router.push('/dashboard/settings')}
+            >
+              <Settings className="h-4 w-4" />
+              <span>Settings</span>
+            </DropdownMenuItem>
 
-        {/* Logout Button */}
-        <Button
-          variant="destructive"
-          className="mt-4 w-full"
-          onClick={handleLogout}
-        >
-          <LogOut className="mr-2 h-4 w-4" />
-          Logout
-        </Button>
-      </DropdownMenuContent>
-    </DropdownMenu>
+            <DropdownMenuItem
+              className="flex items-center space-x-2 rounded-lg px-2 py-2"
+              onSelect={() => router.push('/union')}
+            >
+              <Vote className="h-4 w-4" />
+              <span>Governance</span>
+            </DropdownMenuItem>
+
+            {user.role === 'admin' && (
+              <DropdownMenuItem
+                className="flex items-center space-x-2 rounded-lg px-2 py-2"
+                onSelect={() => router.push('/admin')}
+              >
+                <LockKeyhole className="h-4 w-4" />
+                <span>Admin</span>
+              </DropdownMenuItem>
+            )}
+          </div>
+
+          <DropdownMenuSeparator />
+
+          {/* Logout */}
+          <div className="pt-2">
+            <Button
+              variant="destructive"
+              className="w-full"
+              onClick={() => {
+                handleLogout()
+                setIsOpen(false)
+              }}
+            >
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>Logout</span>
+            </Button>
+          </div>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
   )
 }
 
