@@ -23,25 +23,7 @@ const server = new ApolloServer<Context>({
 
 export default startServerAndCreateNextHandler(server, {
   context: async (req, res): Promise<Context> => {
-    const address = req.headers['x-wallet-address'] as string
-    
-    let user
-    if (address) {
-      const dbUser = await User.findOne({ address })
-      if (dbUser) {
-        user = {
-          id: dbUser._id.toString(),
-          address: dbUser.address,
-          role: dbUser.role
-        }
-      }
-    }
-
-    return {
-      req,
-      res,
-      user,
-      pubsub
-    }
+    const user = await User.findOne({ address: req.headers['x-address'] as string })
+    return { req, res, user, pubsub }
   },
 })

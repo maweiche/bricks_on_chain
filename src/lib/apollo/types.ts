@@ -1,3 +1,4 @@
+import { PubSubEvents } from './pubsub'
 import { PubSub } from 'graphql-subscriptions'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import type { Document, Types } from 'mongoose'
@@ -57,18 +58,6 @@ export interface IUser extends BaseDocument {
   }
   joinedAt: Date
 }
-
-// PubSub Event types
-export interface PubSubEvents {
-  propertyUpdated: { property: IProperty }
-  propertyCreated: { property: IProperty }
-  propertyDeleted: { propertyId: string }
-  investmentCreated: { investment: IInvestment }
-  investmentUpdated: { investment: IInvestment }
-  myInvestmentUpdated: { investment: IInvestment }
-  [key: string]: unknown
-}
-
 
 export interface User {
   id: string
