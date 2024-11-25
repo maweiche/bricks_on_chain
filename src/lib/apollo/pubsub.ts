@@ -1,35 +1,8 @@
+import { DELETE } from '@/app/api/properties/[id]/route'
 import { PubSub } from 'graphql-subscriptions'
 import type { Document } from 'mongoose'
+import { IProperty, IInvestment, IProposal } from './types'
 
-// Define base model interfaces
-interface IProperty extends Document {
-  _id: string
-  title: string
-  description: string
-  location: string
-  price: number
-  type: 'house' | 'apartment' | 'commercial'
-  images: string[]
-  funded: boolean
-  fundingGoal: number
-  currentFunding: number
-  roi: number
-  tokenAddress?: string
-  mintAuthority?: string
-  createdAt: Date
-  updatedAt: Date
-}
-
-interface IInvestment extends Document {
-  _id: string
-  userId: string
-  propertyId: string
-  amount: number
-  fractionCount: number
-  status: 'pending' | 'active' | 'completed'
-  purchaseDate: Date
-  transactionSignature?: string
-}
 
 // Define event payload types
 export interface PubSubEvents {
@@ -41,6 +14,15 @@ export interface PubSubEvents {
   // Investment events
   'INVESTMENT_CREATED': { investment: IInvestment }
   'INVESTMENT_UPDATED': { investment: IInvestment }
+
+  // Proposal events
+  'PROPOSAL_CREATED': { proposal: IProposal }
+  'PROPOSAL_UPDATED': { proposal: IProposal }
+  'PROPOSAL_DELETED': { proposalId: string }
+  'PROPOSAL_VOTE': { proposal: IProposal }
+
+  // Settings events
+  'SETTINGS_UPDATED': { settings: any }
   
   // Property-specific events
   [key: `PROPERTY_UPDATED_${string}`]: { property: IProperty }
@@ -58,6 +40,15 @@ export const EVENTS = {
     CREATED: 'INVESTMENT_CREATED',
     UPDATED: 'INVESTMENT_UPDATED',
   },
+  SETTINGS: {
+    UPDATED: 'SETTINGS_UPDATED',
+  },
+  PROPOSAL: {
+    CREATED: 'PROPOSAL_CREATED',
+    VOTE: (id: string) => `PROPOSAL_VOTE_${id}`,
+    UPDATED: (id: string) => `PROPOSAL_UPDATED_${id}`
+  },
+
 } as const
 
 // Create PubSub instance with proper typing for asyncIterator

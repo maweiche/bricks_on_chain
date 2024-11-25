@@ -1,96 +1,153 @@
-import { Settings } from '@/lib/models/Settings'
+// src/lib/apollo/schema/settings.ts
+
+import { User } from '@/lib/models'
 import { AuthenticationError, UserInputError } from 'apollo-server'
 import type { Context } from '../types'
-import type { Document } from 'mongoose'
+import { pubsub, EVENTS } from '../pubsub'
 
-interface SettingsDocument extends Document {
-    platformName: string
-    supportEmail: string
-    maintenanceMode: boolean
-    minimumInvestment: number
-    maximumInvestment: number
-    platformFee: number
-    proposalDuration: number
-    minimumQuorum: number
-    votingDelay: number
-    twoFactorRequired: boolean
-    passwordExpiration: number
-    sessionTimeout: number
-    emailNotifications: boolean
-    investmentAlerts: boolean
-    proposalAlerts: boolean
-    maintenanceAlerts: boolean
-    updatedBy: string
-}
-
-interface UpdateSettingsInput {
-    platformName?: string
-    supportEmail?: string
-    maintenanceMode?: boolean
-    minimumInvestment?: number
-    maximumInvestment?: number
-    platformFee?: number
-    proposalDuration?: number
-    minimumQuorum?: number
-    votingDelay?: number
-    twoFactorRequired?: boolean
-    passwordExpiration?: number
-    sessionTimeout?: number
-    emailNotifications?: boolean
-    investmentAlerts?: boolean
-    proposalAlerts?: boolean
-    maintenanceAlerts?: boolean
+interface UserSettings {
+  theme: 'light' | 'dark' | 'system'
+  notifications: {
+    email: boolean
+    push: boolean
+    investmentUpdates: boolean
+    marketingUpdates: boolean
+  }
+  display: {
+    compactView: boolean
+    showProfitLoss: boolean
+    currency: 'USD' | 'EUR' | 'GBP'
+  }
 }
 
 export const typeDefs = `#graphql
-    type Settings {
-        platformName: String!
-        supportEmail: String!
-        maintenanceMode: Boolean!
-        minimumInvestment: Float!
-        maximumInvestment: Float!
-        platformFee: Float!
-        proposalDuration: Int!
-        minimumQuorum: Int!
-        votingDelay: Int!
-        twoFactorRequired: Boolean!
-        passwordExpiration: Int!
-        sessionTimeout: Int!
-        emailNotifications: Boolean!
-        investmentAlerts: Boolean!
-        proposalAlerts: Boolean!
-        maintenanceAlerts: Boolean!
-        updatedBy: String!
-    }
+  enum Theme {
+    light
+    dark
+    system
+  }
+
+  enum Currency {
+    USD
+    EUR
+    GBP
+  }
+
+  type NotificationSettings {
+    email: Boolean!
+    push: Boolean!
+    investmentUpdates: Boolean!
+    marketingUpdates: Boolean!
+  }
+
+  type DisplaySettings {
+    compactView: Boolean!
+    showProfitLoss: Boolean!
+    currency: Currency!
+  }
+
+  type UserSettings {
+    theme: Theme!
+    notifications: NotificationSettings!
+    display: DisplaySettings!
+  }
+
+  input NotificationSettingsInput {
+    email: Boolean
+    push: Boolean
+    investmentUpdates: Boolean
+    marketingUpdates: Boolean
+  }
+
+  input DisplaySettingsInput {
+    compactView: Boolean
+    showProfitLoss: Boolean
+    currency: Currency
+  }
+
+  input UpdateUserSettingsInput {
+    theme: Theme
+    notifications: NotificationSettingsInput
+    display: DisplaySettingsInput
+  }
+
+  extend type Query {
+    userSettings: UserSettings!
+  }
+
+  extend type Mutation {
+    updateUserSettings(input: UpdateUserSettingsInput!): UserSettings!
+  }
 `
 
 export const resolvers = {
-    Query: {
-        settings: async (_parent: unknown, _args: unknown, { user }: Context): Promise<SettingsDocument> => {
-            if (!user) throw new AuthenticationError('Unauthenticated')
+  Query: {
+    userSettings: async (_: unknown, __: unknown, { user }: Context) => {
+      if (!user) throw new AuthenticationError('Authentication required')
 
-            const settings = await Settings.findOne().exec()
-            if (!settings) throw new UserInputError('Settings not found')
+      const dbUser = await User.findById(user.id)
+      if (!dbUser) throw new UserInputError('User not found')
 
-            return settings
+      return dbUser.settings || {
+        theme: 'system',
+        notifications: {
+          email: true,
+          push: true,
+          investmentUpdates: true,
+          marketingUpdates: false,
         },
-    },
-    Mutation: {
-        updateSettings: async (
-            _parent: unknown,
-            { input }: { input: UpdateSettingsInput },
-            { user }: Context
-        ): Promise<SettingsDocument> => {
-            if (!user) throw new AuthenticationError('Unauthenticated')
+        display: {
+          compactView: false,
+          showProfitLoss: true,
+          currency: 'USD',
+        }
+      }
+    }
+  },
 
-            const settings = await Settings.findOne().exec()
-            if (!settings) throw new UserInputError('Settings not found')
+  Mutation: {
+    updateUserSettings: async (
+      _: unknown,
+      { input }: { input: Partial<UserSettings> },
+      { user }: Context
+    ) => {
+      if (!user) throw new AuthenticationError('Authentication required')
 
-            Object.assign(settings, input)
-            settings.updatedBy = user.id
-            await settings.save()
+      const dbUser = await User.findById(user.id)
+      if (!dbUser) throw new UserInputError('User not found')
 
-            return settings
+      // Merge new settings with existing ones
+      const updatedSettings = {
+        ...dbUser.settings,
+        ...input,
+        notifications: {
+          ...dbUser.settings?.notifications,
+          ...input.notifications
         },
-    },
+        display: {
+          ...dbUser.settings?.display,
+          ...input.display
+        }
+      }
+
+      const updatedUser = await User.findByIdAndUpdate(
+        user.id,
+        { 
+          $set: { 
+            settings: updatedSettings,
+            updatedAt: new Date()
+          }
+        },
+        { new: true, runValidators: true }
+      )
+
+      if (!updatedUser) throw new UserInputError('Failed to update settings')
+
+      await pubsub.publish(EVENTS.SETTINGS.UPDATED, {
+        settingsUpdated: updatedUser.settings
+      })
+
+      return updatedUser.settings
+    }
+  }
 }

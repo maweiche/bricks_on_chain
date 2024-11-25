@@ -1,7 +1,7 @@
 import { PubSubEvents } from './pubsub'
 import { PubSub } from 'graphql-subscriptions'
 import type { NextApiRequest, NextApiResponse } from 'next'
-import type { Document, Types } from 'mongoose'
+import type { Document, ObjectId, Types } from 'mongoose'
 
 // Base document interface
 interface BaseDocument {
@@ -101,4 +101,91 @@ export interface PaginatedResponse<T> {
 export interface SubscriptionFilter {
   propertyId?: string
   userId?: string
+}
+
+export type ProposalType = 'PROPERTY_IMPROVEMENT' | 'MAINTENANCE' | 'POLICY_CHANGE' | 'OTHER'
+export type ProposalStatus = 'ACTIVE' | 'PASSED' | 'REJECTED' | 'EXPIRED'
+
+export interface VotingPower {
+  for: number
+  against: number
+  total: number
+}
+
+export interface Votes {
+  for: string[]
+  against: string[]
+}
+
+export interface IProposal extends Document {
+  title: string
+  description: string
+  type: ProposalType
+  status: ProposalStatus
+  creatorId: Types.ObjectId
+  startDate: Date
+  endDate: Date
+  propertyId?: Types.ObjectId
+  requiredQuorum: number
+  votingPower: VotingPower
+  votes: Votes
+  createdAt: Date
+  updatedAt: Date
+}
+
+export interface CreateProposalInput {
+  title: string
+  description: string
+  type: ProposalType
+  startDate: Date
+  endDate: Date
+  propertyId?: string
+  requiredQuorum: number
+}
+
+export interface VoteInput {
+  proposalId: string
+  vote: 'for' | 'against'
+}
+
+export interface ProposalFilters {
+  status?: ProposalStatus
+  type?: ProposalType
+  propertyId?: string
+  creatorId?: string
+  offset?: number
+  limit?: number
+}
+
+export interface ProposalConnection {
+  nodes: IProposal[]
+  pageInfo: {
+    hasNextPage: boolean
+    endCursor?: string
+  }
+  totalCount: number
+}
+
+
+export interface CreateProposalInput {
+  title: string
+  description: string
+  type: ProposalType
+  startDate: Date
+  endDate: Date
+  propertyId?: string
+  requiredQuorum: number
+}
+
+export interface VoteInput {
+  proposalId: string
+  vote: 'for' | 'against'
+}
+
+export interface ProposalsQueryInput {
+  offset?: number
+  limit?: number
+  status?: ProposalStatus
+  type?: ProposalType
+  propertyId?: string
 }

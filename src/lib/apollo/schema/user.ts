@@ -147,6 +147,27 @@ export const resolvers = {
   },
 
   Mutation: {
+    updateUser: async (
+      _: unknown, 
+      { input }: { input: Partial<typeof User> }, 
+      { user }: Context
+    ) => {
+      if (!user) throw new AuthenticationError('Not authenticated')
+
+      const updatedUser = await User.findOneAndUpdate(
+        { address: user.address },
+        { 
+          $set: {
+            ...input,
+            updatedAt: new Date()
+          }
+        },
+        { new: true }
+      )
+
+      if (!updatedUser) throw new UserInputError('User not found')
+      return updatedUser
+    },
     updateUserSettings: async (_: unknown, { settings }: { settings: UpdateSettingsInput }, { user }: Context) => {
       if (!user) throw new AuthenticationError('Not authenticated')
       

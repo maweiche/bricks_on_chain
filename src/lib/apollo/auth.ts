@@ -36,10 +36,23 @@ export async function getUser(req: NextApiRequest): Promise<AuthUser | null> {
     
     if (!user) {
       user = await User.create({
-        address,
+        address: address.toLowerCase(),
         role: 'user',
         joinedAt: new Date(),
-        settings: DEFAULT_USER_SETTINGS,
+        settings: {
+          theme: 'system',
+          notifications: {
+            email: true,
+            push: true,
+            investmentUpdates: true,
+            marketingUpdates: false,
+          },
+          display: {
+            compactView: false,
+            showProfitLoss: true,
+            currency: 'USD',
+          },
+        },
       })
     }
 
