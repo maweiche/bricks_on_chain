@@ -16,6 +16,17 @@ export const CREATE_PROPERTY = gql`
     }
   }
 `
+export const PURCHASE_PROPERTY = gql`
+  mutation PurchaseProperty($input: PurchasePropertyInput!) {
+    purchaseProperty(input: $input) {
+      _id
+      title
+      currentFunding
+      fundingGoal
+      funded
+    }
+  }
+`
 
 export const UPDATE_PROPERTY = gql`
   mutation UpdateProperty($input: UpdatePropertyInput!) {

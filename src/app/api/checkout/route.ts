@@ -1,8 +1,7 @@
-import fs from 'fs/promises'
-import path from 'path'
 import { NextRequest, NextResponse } from 'next/server'
 import { PublicKey } from '@solana/web3.js'
 import { z } from 'zod'
+import { connectToDatabase } from '@/lib/mongodb'
 
 // Validation schemas
 const CartItemSchema = z.object({
@@ -18,11 +17,6 @@ const CheckoutRequestSchema = z.object({
   wallet: z.string(), // Solana public key
 })
 
-// File paths
-const PROPERTIES_PATH = path.join(process.cwd(), 'data', 'properties.json')
-const USERS_PATH = path.join(process.cwd(), 'data', 'users.json')
-
-// Helper to validate Solana address
 function isValidSolanaAddress(address: string): boolean {
   try {
     new PublicKey(address)
@@ -37,111 +31,122 @@ export async function POST(request: NextRequest) {
     const json = await request.json()
     const { items, wallet } = CheckoutRequestSchema.parse(json)
 
-    // Validate Solana address
     if (!isValidSolanaAddress(wallet)) {
       throw new Error('Invalid Solana wallet address')
     }
 
-    // Read current data
-    const [propertiesData, usersData] = await Promise.all([
-      fs.readFile(PROPERTIES_PATH, 'utf-8').then(JSON.parse),
-      fs.readFile(USERS_PATH, 'utf-8').then(JSON.parse),
-    ])
+    // Connect to MongoDB
+    const { client, db } = await connectToDatabase()
+    const session = await client.startSession()
 
-    // Find user by Solana address
-    const user = usersData.find((u: any) => u.address === wallet)
-    if (!user) {
-      throw new Error('User not found for the provided wallet address')
-    }
+    try {
+      // Start transaction
+      const summary = await session.withTransaction(async () => {
+        // Find user by wallet address
+        const user = await db
+          .collection('users')
+          .findOne({ address: wallet }, { session })
 
-    // Validate and update each property
-    for (const item of items) {
-      const propertyIndex = propertiesData.properties.findIndex(
-        (p: any) => p.id === item.propertyId
-      )
+        if (!user) {
+          throw new Error('User not found for the provided wallet address')
+        }
 
-      if (propertyIndex === -1) {
-        throw new Error(`Property ${item.propertyId} not found`)
-      }
+        // Process each item in the cart
+        for (const item of items) {
+          // Get property
+          const property = await db
+            .collection('properties')
+            .findOne({ _id: item.propertyId } as any, { session })
 
-      const property = propertiesData.properties[propertyIndex]
+          if (!property) {
+            throw new Error(`Property ${item.propertyId} not found`)
+          }
 
-      // Check if property is already funded
-      if (property.funded) {
-        throw new Error(
-          `Property ${item.propertyTitle} is already fully funded`
-        )
-      }
+          if (property.funded) {
+            throw new Error(
+              `Property ${item.propertyTitle} is already fully funded`
+            )
+          }
 
-      // Calculate remaining funding needed
-      const remainingToFund = property.fundingGoal - property.currentFunding
+          const remainingToFund = property.fundingGoal - property.currentFunding
+          if (item.totalAmount > remainingToFund) {
+            throw new Error(
+              `Purchase amount exceeds remaining funding needed for ${item.propertyTitle}`
+            )
+          }
 
-      // Check if purchase amount exceeds remaining funding needed
-      if (item.totalAmount > remainingToFund) {
-        throw new Error(
-          `Purchase amount exceeds remaining funding needed for ${item.propertyTitle}`
-        )
-      }
+          // Update property funding
+          const newFunding = property.currentFunding + item.totalAmount
+          await db.collection('properties').updateOne(
+            { _id: item.propertyId } as any,
+            {
+              $set: {
+                currentFunding: newFunding,
+                funded: newFunding >= property.fundingGoal,
+                updatedAt: new Date(),
+              },
+            },
+            { session }
+          )
+        }
 
-      // Update property funding
-      property.currentFunding += item.totalAmount
-      property.funded = property.currentFunding >= property.fundingGoal
-      propertiesData.properties[propertyIndex] = property
-    }
+        // Create investments
+        const timestamp = new Date()
+        const mockTxSignature = `${Date.now()}_${Math.random().toString(36).substring(7)}`
 
-    // Update user investments
-    const userIndex = usersData.findIndex((u: any) => u.address === wallet)
-    if (userIndex === -1) {
-      throw new Error('User not found')
-    }
+        const investments = items.map((item) => ({
+          _id: `inv_${Date.now()}_${item.propertyId}`,
+          propertyId: item.propertyId,
+          userId: user._id,
+          amount: item.totalAmount,
+          fractionCount: item.fractionCount,
+          purchaseDate: timestamp,
+          status: 'active',
+          transactionSignature: mockTxSignature,
+          wallet,
+          createdAt: timestamp,
+          updatedAt: timestamp,
+        }))
 
-    // Ensure user has investments array
-    if (!usersData[userIndex].investments) {
-      usersData[userIndex].investments = []
-    }
+        // Insert all investments
+        await db
+          .collection('investments')
+          .insertMany(investments as any, { session })
 
-    // Add new investments with transaction signature (mock for now)
-    const timestamp = new Date().toISOString()
-    const mockTxSignature = `${Date.now()}_${Math.random().toString(36).substring(7)}`
-
-    items.forEach((item) => {
-      usersData[userIndex].investments.push({
-        id: `inv_${Date.now()}_${item.propertyId}`,
-        propertyId: item.propertyId,
-        amount: item.totalAmount,
-        fractionCount: item.fractionCount,
-        purchaseDate: timestamp,
-        status: 'active',
-        transactionSignature: mockTxSignature, // Will be replaced with actual Solana tx sig
-        wallet: wallet, // Store the wallet address used for the purchase
+        // Return transaction summary
+        return {
+          transactionId: mockTxSignature,
+          timestamp,
+          wallet,
+          totalAmount: items.reduce((sum, item) => sum + item.totalAmount, 0),
+          items: items.map((item) => ({
+            propertyId: item.propertyId,
+            fractionCount: item.fractionCount,
+            amount: item.totalAmount,
+          })),
+        }
       })
-    })
 
-    // Save all updates
-    await Promise.all([
-      fs.writeFile(PROPERTIES_PATH, JSON.stringify(propertiesData, null, 2)),
-      fs.writeFile(USERS_PATH, JSON.stringify(usersData, null, 2)),
-    ])
-
-    // Generate transaction summary
-    const summary = {
-      transactionId: mockTxSignature,
-      timestamp,
-      wallet,
-      totalAmount: items.reduce((sum, item) => sum + item.totalAmount, 0),
-      items: items.map((item) => ({
-        propertyId: item.propertyId,
-        fractionCount: item.fractionCount,
-        amount: item.totalAmount,
-      })),
+      return NextResponse.json({
+        success: true,
+        ...summary,
+      })
+    } finally {
+      await session.endSession()
     }
-
-    return NextResponse.json({
-      success: true,
-      ...summary,
-    })
   } catch (error: any) {
     console.error('Checkout error:', error)
+
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        {
+          error: 'Invalid request data',
+          details: error.issues,
+        },
+        { status: 400 }
+      )
+    }
+
     return NextResponse.json(
       {
         error: error.message || 'Checkout failed',

@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { Raleway, Cormorant_Infant, Syne } from 'next/font/google'
 import './globals.css'
 import { UiLayout } from '@/components/layout'
-import { SolanaProvider } from '@/components/providers'
+import { ApolloWrapper, SolanaProvider } from '@/components/providers'
 import { ThemeProvider } from '@/components/theme'
 import { ReactQueryProvider } from './react-query-provider'
 import { FullScreenLoader } from '@/components/loading'
@@ -41,20 +41,22 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${raleway.variable} ${cormorant.variable} ${syne.variable}`}
       >
-        <ReactQueryProvider>
-          <SolanaProvider>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
-              <Suspense fallback={<FullScreenLoader />}>
-                <UiLayout>{children}</UiLayout>
-              </Suspense>
-            </ThemeProvider>
-          </SolanaProvider>
-        </ReactQueryProvider>
+        <ApolloWrapper>
+          <ReactQueryProvider>
+            <SolanaProvider>
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="system"
+                enableSystem
+                disableTransitionOnChange
+              >
+                <Suspense fallback={<FullScreenLoader />}>
+                  <UiLayout>{children}</UiLayout>
+                </Suspense>
+              </ThemeProvider>
+            </SolanaProvider>
+          </ReactQueryProvider>
+        </ApolloWrapper>
       </body>
     </html>
   )

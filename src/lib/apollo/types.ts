@@ -1,11 +1,12 @@
 import { PubSubEvents } from './pubsub'
 import { PubSub } from 'graphql-subscriptions'
 import type { NextApiRequest, NextApiResponse } from 'next'
-import type { Document, ObjectId, Types } from 'mongoose'
+import type { Document, Types } from 'mongoose'
+import { Db } from 'mongodb'
 
 // Base document interface
 interface BaseDocument {
-  _id: Types.ObjectId
+  _id: string
   createdAt: Date
   updatedAt: Date
 }
@@ -60,7 +61,7 @@ export interface IUser extends BaseDocument {
 }
 
 export interface User {
-  id: string
+  _id: string
   address: string
   role: 'user' | 'admin'
 }
@@ -68,7 +69,8 @@ export interface User {
 export interface Context {
   req: NextApiRequest
   res: NextApiResponse
-  user?: User
+  db: Db
+  user: User | null
   pubsub: PubSub & {
     asyncIterator<T extends keyof PubSubEvents>(
       triggers: T | T[]
@@ -103,7 +105,11 @@ export interface SubscriptionFilter {
   userId?: string
 }
 
-export type ProposalType = 'PROPERTY_IMPROVEMENT' | 'MAINTENANCE' | 'POLICY_CHANGE' | 'OTHER'
+export type ProposalType =
+  | 'PROPERTY_IMPROVEMENT'
+  | 'MAINTENANCE'
+  | 'POLICY_CHANGE'
+  | 'OTHER'
 export type ProposalStatus = 'ACTIVE' | 'PASSED' | 'REJECTED' | 'EXPIRED'
 
 export interface VotingPower {
@@ -165,7 +171,6 @@ export interface ProposalConnection {
   }
   totalCount: number
 }
-
 
 export interface CreateProposalInput {
   title: string

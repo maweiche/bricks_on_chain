@@ -1,43 +1,9 @@
 import { gql } from 'graphql-tag'
 
 export const GET_PROPERTIES = gql`
-  query GetProperties($filter: PropertyFilterInput, $first: Int, $after: String) {
-    properties(filter: $filter, first: $first, after: $after) {
-      edges {
-        node {
-          id
-          title
-          description
-          location
-          price
-          type
-          images
-          funded
-          fundingGoal
-          currentFunding
-          roi
-          tokenAddress
-          mintAuthority
-          investorCount
-          fundingProgress
-          createdAt
-          updatedAt
-        }
-        cursor
-      }
-      pageInfo {
-        hasNextPage
-        endCursor
-      }
-      totalCount
-    }
-  }
-`
-
-export const GET_PROPERTY = gql`
-  query GetProperty($id: ID!) {
-    property(id: $id) {
-      id
+  query GetProperties {
+    properties {
+      _id
       title
       description
       location
@@ -48,18 +14,26 @@ export const GET_PROPERTY = gql`
       fundingGoal
       currentFunding
       roi
-      tokenAddress
-      mintAuthority
-      investments {
-        id
-        amount
-        fractionCount
-        status
-        purchaseDate
-        transactionSignature
-      }
-      investorCount
-      fundingProgress
+      createdAt
+      updatedAt
+    }
+  }
+`
+
+export const GET_PROPERTY = gql`
+  query GetProperty($id: String!) {
+    property(id: $id) {
+      _id
+      title
+      description
+      location
+      price
+      type
+      images
+      funded
+      fundingGoal
+      currentFunding
+      roi
       createdAt
       updatedAt
     }
@@ -69,7 +43,7 @@ export const GET_PROPERTY = gql`
 export const GET_FEATURED_PROPERTIES = gql`
   query GetFeaturedProperties {
     featuredProperties {
-      id
+      _id
       title
       description
       location
@@ -80,7 +54,8 @@ export const GET_FEATURED_PROPERTIES = gql`
       fundingGoal
       currentFunding
       roi
-      fundingProgress
+      createdAt
+      updatedAt
     }
   }
 `
@@ -88,7 +63,7 @@ export const GET_FEATURED_PROPERTIES = gql`
 export const GET_MY_INVESTED_PROPERTIES = gql`
   query GetMyInvestedProperties {
     myInvestedProperties {
-      id
+      _id
       title
       description
       location
@@ -99,14 +74,15 @@ export const GET_MY_INVESTED_PROPERTIES = gql`
       fundingGoal
       currentFunding
       roi
-      fundingProgress
       investments {
-        id
+        _id
         amount
         fractionCount
         status
         purchaseDate
       }
+      createdAt
+      updatedAt
     }
   }
 `

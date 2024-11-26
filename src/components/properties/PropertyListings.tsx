@@ -1,10 +1,10 @@
 'use client'
 
-import React, { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import React, { useEffect, useState } from 'react'
+import { useQuery } from '@apollo/client'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-
+import { GET_PROPERTIES } from '@/lib/apollo/graphql'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import {
@@ -15,10 +15,9 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Slider } from '@/components/ui/slider'
+import PropertyCard from './PropertyCard'
 
-import PropertyCard, { Property } from './PropertyCard'
-
-// Constants for filtering
+// Constants
 const ITEMS_PER_PAGE = 10
 const PROPERTY_TYPES = ['all', 'house', 'apartment', 'commercial']
 const LOCATIONS = [
@@ -33,10 +32,17 @@ const LOCATIONS = [
   'Seattle, WA',
 ]
 
+interface PropertyFilters {
+  type: string
+  location: string
+  minPrice: number
+  maxPrice: number
+  fundingStatus: string
+}
+
 export default function PropertyListings() {
-  // State
   const [currentPage, setCurrentPage] = useState(1)
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<PropertyFilters>({
     type: 'all',
     location: 'all',
     minPrice: 0,
@@ -44,54 +50,38 @@ export default function PropertyListings() {
     fundingStatus: 'all',
   })
 
-  // Fetch properties using React Query
-  const { data: propertiesData, isLoading } = useQuery({
-    queryKey: ['properties'],
-    queryFn: async () => {
-      const response = await fetch('/api/properties')
-      return response.json()
+  const getGraphQLFilters = () => {
+    const graphqlFilters: any = {}
+
+    if (filters.type !== 'all') graphqlFilters.type = filters.type.toUpperCase()
+    if (filters.location !== 'all') graphqlFilters.location = filters.location
+    if (filters.minPrice > 0) graphqlFilters.minPrice = filters.minPrice
+    if (filters.maxPrice < 5000000) graphqlFilters.maxPrice = filters.maxPrice
+    if (filters.fundingStatus !== 'all') {
+      graphqlFilters.funded = filters.fundingStatus === 'funded'
+    }
+
+    return Object.keys(graphqlFilters).length > 0 ? graphqlFilters : undefined
+  }
+
+  console.log('PropertyListings component rendering')
+
+  const { data, loading } = useQuery(GET_PROPERTIES, {
+    variables: {
+      filter: getGraphQLFilters(),
+      first: ITEMS_PER_PAGE,
+      after: currentPage > 1 ? (currentPage - 1) * ITEMS_PER_PAGE : undefined,
     },
   })
+  console.log('GraphQL Response:', data)
 
-  // Filter properties
-  const filteredProperties =
-    propertiesData?.properties.filter(
-      (property: {
-        type: string
-        location: string
-        price: number
-        funded: any
-      }) => {
-        if (filters.type !== 'all' && property.type !== filters.type)
-          return false
-        if (
-          filters.location !== 'all' &&
-          property.location !== filters.location
-        )
-          return false
-        if (
-          property.price < filters.minPrice ||
-          property.price > filters.maxPrice
-        )
-          return false
-        if (filters.fundingStatus !== 'all') {
-          if (filters.fundingStatus === 'funded' && !property.funded)
-            return false
-          if (filters.fundingStatus === 'funding' && property.funded)
-            return false
-        }
-        return true
-      }
-    ) || []
+  // Update how we access the properties
+  const properties = data?.properties || []
+  const totalPages = properties.length
+    ? Math.ceil(properties.length / ITEMS_PER_PAGE)
+    : 0
 
-  // Pagination
-  const totalPages = Math.ceil(filteredProperties.length / ITEMS_PER_PAGE)
-  const currentProperties = filteredProperties.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
-  )
-
-  // Animation variants
+  // Animation variants remain the same
   const containerVariants = {
     hidden: { opacity: 0 },
     show: {
@@ -106,6 +96,12 @@ export default function PropertyListings() {
     hidden: { opacity: 0, y: 20 },
     show: { opacity: 1, y: 0 },
   }
+
+  useEffect(() => {
+    if (!loading && data) {
+      console.log('data from useQuery:', data)
+    }
+  }, [loading, data])
 
   return (
     <div className="container mx-auto py-20">
@@ -209,7 +205,7 @@ export default function PropertyListings() {
         animate="show"
         className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
       >
-        {isLoading ? (
+        {loading ? (
           // Loading skeleton
           [...Array(6)].map((_, index) => (
             <motion.div
@@ -230,7 +226,7 @@ export default function PropertyListings() {
           ))
         ) : (
           <AnimatePresence mode="wait">
-            {currentProperties.map((property: Property, index: number) => (
+            {properties.map((property: any, index: number) => (
               <PropertyCard
                 key={property.id}
                 property={property}
@@ -242,7 +238,7 @@ export default function PropertyListings() {
       </motion.div>
 
       {/* Pagination */}
-      {!isLoading && totalPages > 1 && (
+      {!loading && totalPages > 1 && (
         <motion.div
           className="mt-8 flex items-center justify-center gap-2"
           initial={{ opacity: 0 }}
@@ -281,7 +277,7 @@ export default function PropertyListings() {
       )}
 
       {/* No results message */}
-      {!isLoading && filteredProperties.length === 0 && (
+      {!loading && properties.length === 0 && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

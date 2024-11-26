@@ -22,7 +22,7 @@ import {
 import { PurchaseButton } from '../purchasing/PurchaseButton'
 
 export interface Property {
-  id: string
+  _id: string
   title: string
   images: string[]
   type: 'house' | 'apartment' | 'commercial'
@@ -40,6 +40,7 @@ interface PropertyCardProps {
 }
 
 const PropertyCard: React.FC<PropertyCardProps> = ({ property, index }) => {
+  console.log('PropertyCard -> property', property)
   const getPropertyIcon = (type: string) => {
     switch (type) {
       case 'house':
@@ -180,7 +181,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, index }) => {
 
         <CardFooter className="grid gap-3 p-6 pt-0">
           <motion.div whileHover={{ scale: 1.07 }} whileTap={{ scale: 0.98 }}>
-            <Link href={`/properties/${property.id}`} className="w-full">
+            <Link href={`/properties/${property._id}`} className="w-full">
               <Button
                 className="w-full border-primary bg-transparent text-primary transition-all duration-300 hover:border-secondary hover:bg-secondary/90 hover:text-white"
                 variant="outline"

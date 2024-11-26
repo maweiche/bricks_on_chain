@@ -1,5 +1,0 @@
-export * from './Property'
-export * from './User'
-export * from './Investment'
-export * from './Proposal'
-export * from './Settings'

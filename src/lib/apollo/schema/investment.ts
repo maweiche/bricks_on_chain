@@ -1,11 +1,10 @@
 import { AuthenticationError, UserInputError } from 'apollo-server'
-import { PubSub as GraphQLPubSub } from 'graphql-subscriptions'
-import { Investment, Property, User } from '@/lib/models'
-import { pubsub, EVENTS, PubSubEvents } from '../pubsub'
+import { pubsub, EVENTS } from '../pubsub'
 import mongoose from 'mongoose'
 import { Context } from '../types'
+import { connectToDatabase } from '@/lib/mongodb'
 
-export const typeDefs = `#graphql
+export const typeDefs = `
   enum InvestmentStatus {
     pending
     active
@@ -30,6 +29,33 @@ export const typeDefs = `#graphql
     amount: Float!
     fractionCount: Int!
     transactionSignature: String
+  }
+
+  type Query {
+    investment(id: ID!): Investment
+    investments(
+      propertyId: ID
+      status: InvestmentStatus
+      first: Int
+      after: String
+    ): InvestmentConnection!
+    myInvestments: [Investment!]!
+    myInvestmentStats: InvestmentStats!
+  }
+
+  type Mutation {
+    createInvestment(input: CreateInvestmentInput!): Investment!
+    cancelInvestment(id: ID!): Investment!
+  }
+
+  type Subscription {
+    investmentCreated(propertyId: ID): Investment!
+    myInvestmentUpdated: Investment!
+  }
+  
+  type PageInfo {
+    hasNextPage: Boolean!
+    endCursor: String
   }
 
   type InvestmentConnection {
@@ -77,8 +103,9 @@ export const resolvers = {
   Query: {
     investment: async (_: any, { id }: any, { user }: { user: any }) => {
       if (!user) throw new AuthenticationError('Not authenticated')
+      const db = (await connectToDatabase()).db
+      const investment = await db.collection('investments').findOne({ _id: id })
 
-      const investment = await Investment.findById(id)
       if (!investment) throw new UserInputError('Investment not found')
 
       // Only allow users to view their own investments unless they're admin
@@ -89,7 +116,11 @@ export const resolvers = {
       return investment
     },
 
-    investments: async (_: any, { propertyId, status, first = 10, after }: any, { user }: any) => {
+    investments: async (
+      _: any,
+      { propertyId, status, first = 10, after }: any,
+      { user }: any
+    ) => {
       if (!user) throw new AuthenticationError('Not authenticated')
 
       // Build query
@@ -98,18 +129,18 @@ export const resolvers = {
       if (status) query.status = status
       if (user.role !== 'admin') query.userId = user.id
       if (after) query._id = { $gt: new mongoose.Types.ObjectId(after) }
-
-      const investments = await Investment.find(query)
-        .sort({ _id: 1 })
-        .limit(first + 1)
-
-      const hasNextPage = investments.length > first
-      const edges = investments.slice(0, first).map(investment => ({
-        node: investment,
-        cursor: investment._id.toString(),
+      const db = (await connectToDatabase()).db
+      // const investment = await db.collection('investments').findOne({ _id: id })
+      const investments = db.collection('investments').find(query)
+      const hasNextPage = (await investments.count()) > first
+      const edges = (await investments.limit(first).toArray()).map((node) => ({
+        node,
+        cursor: node._id.toString(),
       }))
 
-      const totalCount = await Investment.countDocuments(query)
+      const totalCount = await db
+        .collection('investments')
+        .countDocuments(query)
 
       return {
         edges,
@@ -123,23 +154,41 @@ export const resolvers = {
 
     myInvestments: async (_: any, __: any, { user }: any) => {
       if (!user) throw new AuthenticationError('Not authenticated')
-      return await Investment.find({ userId: user.id })
+      const db = (await connectToDatabase()).db
+      return await db
+        .collection('investments')
+        .find({ userId: user.id })
+        .toArray()
     },
 
     myInvestmentStats: async (_: any, __: any, { user }: any) => {
       if (!user) throw new AuthenticationError('Not authenticated')
+      const db = (await connectToDatabase()).db
+      const investments = await db
+        .collection('investments')
+        .find({ userId: user.id })
+        .toArray()
+      const propertyIds = Array.from(
+        new Set(investments.map((inv) => inv.propertyId))
+      )
+      const properties = await db
+        .collection('properties')
+        .find({ _id: { $in: propertyIds } })
+        .toArray()
 
-      const investments = await Investment.find({ userId: user.id })
-      const propertyIds = Array.from(new Set(investments.map(inv => inv.propertyId)))
-      const properties = await Property.find({ _id: { $in: propertyIds } })
-
-      const totalInvested = investments.reduce((sum, inv) => sum + inv.amount, 0)
+      const totalInvested = investments.reduce(
+        (sum, inv) => sum + inv.amount,
+        0
+      )
       const totalProperties = propertyIds.length
       const totalEstimatedReturns = investments.reduce((sum, inv) => {
-        const property = properties.find(p => p._id.toString() === inv.propertyId)
-        return sum + (inv.amount * (1 + (property?.roi || 0) / 100))
+        const property = properties.find(
+          (p) => p._id.toString() === inv.propertyId
+        )
+        return sum + inv.amount * (1 + (property?.roi || 0) / 100)
       }, 0)
-      const averageRoi = properties.reduce((sum, prop) => sum + prop.roi, 0) / totalProperties
+      const averageRoi =
+        properties.reduce((sum, prop) => sum + prop.roi, 0) / totalProperties
 
       return {
         totalInvested,
@@ -158,20 +207,26 @@ export const resolvers = {
       session.startTransaction()
 
       try {
-        const property = await Property.findById(input.propertyId).session(session)
+        const db = (await connectToDatabase()).db
+
+        const property = await db
+          .collection('properties')
+          .findOne({ _id: input.propertyId })
         if (!property) throw new UserInputError('Property not found')
-        
+
         // Validate investment
         if (property.funded) {
           throw new UserInputError('Property is already fully funded')
         }
-        
+
         if (property.currentFunding + input.amount > property.fundingGoal) {
-          throw new UserInputError('Investment amount exceeds remaining funding goal')
+          throw new UserInputError(
+            'Investment amount exceeds remaining funding goal'
+          )
         }
 
         // Create investment
-        const investment = await Investment.create([{
+        const investment = await db.collection('investments').insertOne({
           userId: user.id,
           propertyId: input.propertyId,
           amount: input.amount,
@@ -179,15 +234,16 @@ export const resolvers = {
           status: 'active',
           purchaseDate: new Date(),
           transactionSignature: input.transactionSignature,
-        }], { session })
+        })
 
         // Update property funding
-        await Property.findByIdAndUpdate(
+        await db.collection('properties').updateOne(
           input.propertyId,
           {
             $inc: { currentFunding: input.amount },
             $set: {
-              funded: property.currentFunding + input.amount >= property.fundingGoal,
+              funded:
+                property.currentFunding + input.amount >= property.fundingGoal,
               updatedAt: new Date(),
             },
           },
@@ -198,11 +254,11 @@ export const resolvers = {
 
         // Publish events
         pubsub.publish(EVENTS.INVESTMENT.CREATED, {
-          investmentCreated: investment[0],
+          investmentCreated: investment.insertedId,
           propertyId: input.propertyId,
         })
 
-        return investment[0]
+        return investment
       } catch (error) {
         await session.abortTransaction()
         throw error
@@ -214,11 +270,12 @@ export const resolvers = {
     cancelInvestment: async (_: any, { id }: any, { user }: any) => {
       if (!user) throw new AuthenticationError('Not authenticated')
 
-      const session = await mongoose.startSession()
-      session.startTransaction()
+      const db = (await connectToDatabase()).db
 
       try {
-        const investment = await Investment.findById(id).session(session)
+        const investment = await db
+          .collection('investments')
+          .findOne({ _id: id })
         if (!investment) throw new UserInputError('Investment not found')
 
         if (user.role !== 'admin' && investment.userId !== user.id) {
@@ -230,24 +287,22 @@ export const resolvers = {
         }
 
         // Update investment status
-        const updatedInvestment = await Investment.findByIdAndUpdate(
-          id,
-          { $set: { status: 'completed', updatedAt: new Date() } },
-          { new: true, session }
-        )
+        const updatedInvestment = await db
+          .collection('investments')
+          .updateOne(id, {
+            $set: { status: 'completed', updatedAt: new Date() },
+          })
 
         // Update property funding
-        await Property.findByIdAndUpdate(
-          investment.propertyId,
-          {
-            $inc: { currentFunding: -investment.amount },
-            $set: { funded: false, updatedAt: new Date() },
-          },
-          { session }
-        )
+        await db.collection('properties').updateOne(investment.propertyId, {
+          $inc: { currentFunding: -investment.amount },
+          $set: { updatedAt: new Date() },
+        })
 
-        await session.commitTransaction()
-
+        await db.collection('properties').updateOne(investment.propertyId, {
+          $set: { funded: false },
+          $currentFunding: -investment.amount,
+        })
         // Publish update event
         pubsub.publish(EVENTS.INVESTMENT.UPDATED, {
           myInvestmentUpdated: updatedInvestment,
@@ -256,47 +311,55 @@ export const resolvers = {
 
         return updatedInvestment
       } catch (error) {
-        await session.abortTransaction()
+        console.error(error)
         throw error
-      } finally {
-        session.endSession()
       }
     },
   },
 
   Subscription: {
     investmentCreated: {
-      subscribe: (_: unknown, { propertyId }: { propertyId?: string }) => 
+      subscribe: (_: unknown, { propertyId }: { propertyId?: string }) =>
         (pubsub as any).asyncIterator(
           `${EVENTS.INVESTMENT.CREATED}_${propertyId || ''}`
-        )
+        ),
     },
     myInvestmentUpdated: {
       subscribe: (_: unknown, __: unknown, { user }: Context) => {
         if (!user) throw new AuthenticationError('Not authenticated')
         return (pubsub as any).asyncIterator(
-          `${EVENTS.INVESTMENT.UPDATED}_${user.id}`
+          `${EVENTS.INVESTMENT.UPDATED}_${user._id}`
         )
-      }
-    }
+      },
+    },
   },
 
   Investment: {
     user: async (parent: { userId: any }) => {
-      return await User.findById(parent.userId)
+      const db = (await connectToDatabase()).db
+      return await db.collection('users').findOne({ _id: parent.userId })
     },
 
     property: async (parent: { propertyId: any }) => {
-      return await Property.findById(parent.propertyId)
+      const db = (await connectToDatabase()).db
+      return await db
+        .collection('properties')
+        .findOne({ _id: parent.propertyId })
     },
 
     roi: async (parent: { propertyId: any }) => {
-      const property = await Property.findById(parent.propertyId)
+      const db = (await connectToDatabase()).db
+      const property = await db
+        .collection('properties')
+        .findOne({ _id: parent.propertyId })
       return property?.roi || 0
     },
 
     estimatedReturns: async (parent: { propertyId: any; amount: number }) => {
-      const property = await Property.findById(parent.propertyId)
+      const db = (await connectToDatabase()).db
+      const property = await db
+        .collection('properties')
+        .findOne({ _id: parent.propertyId })
       return parent.amount * (1 + (property?.roi || 0) / 100)
     },
   },

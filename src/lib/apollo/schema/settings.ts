@@ -1,9 +1,8 @@
-// src/lib/apollo/schema/settings.ts
-
-import { User } from '@/lib/models'
 import { AuthenticationError, UserInputError } from 'apollo-server'
 import type { Context } from '../types'
 import { pubsub, EVENTS } from '../pubsub'
+import { connectToDatabase } from '@/lib/mongodb'
+import { ObjectId } from 'mongodb'
 
 interface UserSettings {
   theme: 'light' | 'dark' | 'system'
@@ -20,7 +19,7 @@ interface UserSettings {
   }
 }
 
-export const typeDefs = `#graphql
+export const typeDefs = `
   enum Theme {
     light
     dark
@@ -31,6 +30,18 @@ export const typeDefs = `#graphql
     USD
     EUR
     GBP
+  }
+
+  type User {
+    id: ID!
+    address: String!
+    name: String
+    email: String
+    avatar: String
+    role: UserRole!
+    joinedAt: Date!
+    settings: UserSettings
+    investments: [Investment!]!
   }
 
   type NotificationSettings {
@@ -76,7 +87,7 @@ export const typeDefs = `#graphql
   }
 
   extend type Mutation {
-    updateUserSettings(input: UpdateUserSettingsInput!): UserSettings!
+    updateUserSettings(input: UpdateUserSettingsInput!): User!
   }
 `
 
@@ -84,25 +95,29 @@ export const resolvers = {
   Query: {
     userSettings: async (_: unknown, __: unknown, { user }: Context) => {
       if (!user) throw new AuthenticationError('Authentication required')
-
-      const dbUser = await User.findById(user.id)
+      const db = (await connectToDatabase()).db
+      const dbUser = await db
+        .collection('users')
+        .findOne({ _id: new ObjectId(user._id) })
       if (!dbUser) throw new UserInputError('User not found')
 
-      return dbUser.settings || {
-        theme: 'system',
-        notifications: {
-          email: true,
-          push: true,
-          investmentUpdates: true,
-          marketingUpdates: false,
-        },
-        display: {
-          compactView: false,
-          showProfitLoss: true,
-          currency: 'USD',
+      return (
+        dbUser.settings || {
+          theme: 'system',
+          notifications: {
+            email: true,
+            push: true,
+            investmentUpdates: true,
+            marketingUpdates: false,
+          },
+          display: {
+            compactView: false,
+            showProfitLoss: true,
+            currency: 'USD',
+          },
         }
-      }
-    }
+      )
+    },
   },
 
   Mutation: {
@@ -112,8 +127,10 @@ export const resolvers = {
       { user }: Context
     ) => {
       if (!user) throw new AuthenticationError('Authentication required')
-
-      const dbUser = await User.findById(user.id)
+      const db = (await connectToDatabase()).db
+      const dbUser = await db
+        .collection('users')
+        .findOne({ _id: new ObjectId(user._id) })
       if (!dbUser) throw new UserInputError('User not found')
 
       // Merge new settings with existing ones
@@ -122,32 +139,32 @@ export const resolvers = {
         ...input,
         notifications: {
           ...dbUser.settings?.notifications,
-          ...input.notifications
+          ...input.notifications,
         },
         display: {
           ...dbUser.settings?.display,
-          ...input.display
-        }
+          ...input.display,
+        },
       }
 
-      const updatedUser = await User.findByIdAndUpdate(
-        user.id,
-        { 
-          $set: { 
+      const updatedUser = await db.collection('users').findOneAndUpdate(
+        { _id: new ObjectId(user._id) },
+        {
+          $set: {
             settings: updatedSettings,
-            updatedAt: new Date()
-          }
+            updatedAt: new Date(),
+          },
         },
-        { new: true, runValidators: true }
+        { returnDocument: 'after' }
       )
 
       if (!updatedUser) throw new UserInputError('Failed to update settings')
 
       await pubsub.publish(EVENTS.SETTINGS.UPDATED, {
-        settingsUpdated: updatedUser.settings
+        settingsUpdated: updatedUser.settings,
       })
 
       return updatedUser.settings
-    }
-  }
+    },
+  },
 }

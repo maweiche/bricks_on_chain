@@ -1,17 +1,16 @@
-// src/lib/apollo/schema/proposal.ts
-
-import { Proposal } from '@/lib/models'
 import { AuthenticationError, UserInputError } from 'apollo-server'
+import { ObjectId } from 'mongodb'
 import { pubsub, EVENTS } from '../pubsub'
-import type { 
+import type {
   Context,
-  CreateProposalInput, 
-  VoteInput, 
+  CreateProposalInput,
+  VoteInput,
   ProposalsQueryInput,
-  ProposalStatus 
+  ProposalStatus,
 } from '../types'
+import { connectToDatabase } from '@/lib/mongodb'
 
-export const typeDefs = `#graphql
+export const typeDefs = `
   enum ProposalType {
     PROPERTY_IMPROVEMENT
     MAINTENANCE
@@ -99,7 +98,32 @@ export const typeDefs = `#graphql
 
 export const resolvers = {
   Query: {
-    // ... rest of your resolvers stay the same ...
+    proposals: async (
+      _parent: unknown,
+      { input }: { input: ProposalsQueryInput }
+    ) => {
+      const { offset = 0, limit = 10, ...query } = input
+      const db = (await connectToDatabase()).db
+      const proposals = await db
+        .collection('proposals')
+        .find(query)
+        .skip(offset)
+        .limit(limit)
+        .toArray()
+
+      const totalCount = await db.collection('proposals').countDocuments(query)
+
+      return {
+        nodes: proposals,
+        pageInfo: { offset, limit },
+        totalCount,
+      }
+    },
+
+    proposal: async (_parent: unknown, { id }: { id: string }) => {
+      const db = (await connectToDatabase()).db
+      return await db.collection('proposals').findOne({ _id: new ObjectId(id) })
+    },
   },
 
   Mutation: {
@@ -109,17 +133,17 @@ export const resolvers = {
       { user }: Context
     ) => {
       if (!user) throw new AuthenticationError('Authentication required')
-
-      const proposal = await Proposal.create({
+      const db = (await connectToDatabase()).db
+      const proposal = await db.collection('proposals').insertOne({
         ...input,
-        creatorId: user.id,
+        creatorId: user._id,
         status: 'ACTIVE' as ProposalStatus,
         votingPower: { for: 0, against: 0, total: 0 },
-        votes: { for: [], against: [] }
+        votes: { for: [], against: [] },
       })
 
       await pubsub.publish(EVENTS.PROPOSAL.CREATED, {
-        proposalCreated: proposal
+        proposalCreated: proposal,
       })
 
       return proposal
@@ -131,8 +155,10 @@ export const resolvers = {
       { user }: Context
     ) => {
       if (!user) throw new AuthenticationError('Authentication required')
-
-      const proposal = await Proposal.findById(proposalId)
+      const db = (await connectToDatabase()).db
+      const proposal = await db
+        .collection('proposals')
+        .findOne({ _id: new ObjectId(proposalId) })
       if (!proposal) throw new UserInputError('Proposal not found')
 
       if (proposal.status !== 'ACTIVE') {
@@ -140,46 +166,47 @@ export const resolvers = {
       }
 
       if (
-        proposal.votes.for.includes(user.id) ||
-        proposal.votes.against.includes(user.id)
+        proposal.votes.for.includes(user._id) ||
+        proposal.votes.against.includes(user._id)
       ) {
         throw new UserInputError('Already voted')
       }
 
       const voteArray = vote === 'for' ? 'for' : 'against'
-      
-      await Proposal.findByIdAndUpdate(
-        proposalId,
+
+      await db.collection('proposals').findOneAndUpdate(
+        { _id: new ObjectId(proposalId) },
         {
-          $push: { [`votes.${voteArray}`]: user.id },
+          $set: {
+            [`votes.${voteArray}`]: [...proposal.votes[voteArray], user._id],
+          },
           $inc: {
             [`votingPower.${voteArray}`]: 1,
-            'votingPower.total': 1
-          }
-        },
-        { new: true }
+            'votingPower.total': 1,
+          },
+        }
       )
 
-      const updatedProposal = await Proposal.findById(proposalId)
+      const updatedProposal = await db
+        .collection('proposals')
+        .findOne({ _id: new ObjectId(proposalId) })
       if (!updatedProposal) throw new UserInputError('Proposal not found')
 
       const channel = `PROPOSAL_UPDATED_${proposalId}` as const
       await pubsub.publish(channel, {
-        proposalUpdated: updatedProposal
+        proposalUpdated: updatedProposal,
       })
 
       return updatedProposal
-    }
+    },
   },
 
   Subscription: {
     proposalUpdated: {
       subscribe: (_parent: unknown, { id }: { id: string }) => {
         const channel = `PROPOSAL_UPDATED_${id}`
-        return (pubsub as any).asyncIterator(
-          channel
-        )
-      }
-    }
-  }
+        return (pubsub as any).asyncIterator(channel)
+      },
+    },
+  },
 }

@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery } from '@apollo/client'
 import { motion } from 'framer-motion'
 import {
   Building,
@@ -25,7 +25,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-
+import { GET_PROPERTY } from '@/lib/apollo/graphql'
 import { useAuth } from '@/hooks/use-auth'
 import { useToast } from '@/hooks/use-toast'
 import { useCopy } from '@/hooks/use-copy'
@@ -73,15 +73,19 @@ export default function PropertyDetails({ id }: { id: string }) {
     `${window.location.origin}/properties/${id}`
   )
   // Fetch property details
-  const { data, isLoading, refetch } = useQuery({
-    queryKey: ['property', id],
-    queryFn: async () => {
-      const res = await fetch(`/api/properties/${id}`)
-      if (!res.ok) throw new Error('Failed to fetch property')
-      return res.json()
-    },
-  })
-
+  // const { data, isLoading, refetch } = useQuery({
+  //   queryKey: ['property', id],
+  //   queryFn: async () => {
+  //     const res = await fetch(`/api/properties/${id}`)
+  //     if (!res.ok) throw new Error('Failed to fetch property')
+  //     return res.json()
+  //   },
+  // })
+  const { data, loading } = useQuery(GET_PROPERTY, { variables: { id } })
+  let isLoading = loading
+  if (!loading) {
+    console.log(data)
+  }
   const handleInvest = async () => {
     if (!isAuthenticated) {
       toast({
@@ -158,9 +162,6 @@ export default function PropertyDetails({ id }: { id: string }) {
         title: 'Purchase Successful',
         description: `Successfully invested ${fractionCount} fraction(s) in ${property.title}`,
       })
-
-      // Refetch property data to update UI
-      refetch()
     } catch (error) {
       console.error('Purchase error:', error)
       toast({

@@ -1,29 +1,12 @@
-import { User, Investment } from '@/lib/models'
 import { AuthenticationError, UserInputError } from 'apollo-server'
 import type { Context } from '../types'
-import type { Document } from 'mongoose'
+import { ObjectId } from 'mongodb'
 
-interface UserDocument extends Document {
-  address: string
+// Types
+interface UpdateUserInput {
   name?: string
   email?: string
   avatar?: string
-  role: 'user' | 'admin'
-  joinedAt: Date
-  settings: {
-    theme?: string
-    notifications: {
-      email: boolean
-      push: boolean
-      investmentUpdates: boolean
-      marketingUpdates: boolean
-    }
-    display: {
-      compactView: boolean
-      showProfitLoss: boolean
-      currency: string
-    }
-  }
 }
 
 interface UpdateSettingsInput {
@@ -52,13 +35,13 @@ interface UsersQueryInput {
   role?: 'user' | 'admin'
 }
 
-export const typeDefs = `#graphql
+export const typeDefs = `
   enum UserRole {
     user
     admin
   }
 
-  type NotificationsSettings {
+  type NotificationSettings {
     email: Boolean!
     push: Boolean!
     investmentUpdates: Boolean!
@@ -68,17 +51,17 @@ export const typeDefs = `#graphql
   type DisplaySettings {
     compactView: Boolean!
     showProfitLoss: Boolean!
-    currency: String!
+    currency: Currency!
   }
 
   type UserSettings {
-    theme: String
-    notifications: NotificationsSettings!
+    theme: Theme
+    notifications: NotificationSettings!
     display: DisplaySettings!
   }
 
   type User {
-    id: ID!
+    _id: ID!
     address: String!
     name: String
     email: String
@@ -89,7 +72,13 @@ export const typeDefs = `#graphql
     investments: [Investment!]!
   }
 
-  input NotificationsSettingsInput {
+  input UpdateUserInput {
+    name: String
+    email: String
+    avatar: String
+  }
+
+  input NotificationSettingsInput {
     email: Boolean
     push: Boolean
     investmentUpdates: Boolean
@@ -99,12 +88,12 @@ export const typeDefs = `#graphql
   input DisplaySettingsInput {
     compactView: Boolean
     showProfitLoss: Boolean
-    currency: String
+    currency: Currency
   }
 
   input UserSettingsInput {
-    theme: String
-    notifications: NotificationsSettingsInput
+    theme: Theme
+    notifications: NotificationSettingsInput
     display: DisplaySettingsInput
   }
 
@@ -115,6 +104,7 @@ export const typeDefs = `#graphql
   }
 
   extend type Mutation {
+    updateUser(input: UpdateUserInput!): User!
     updateUserSettings(settings: UserSettingsInput!): User!
     updateUserRole(userId: ID!, role: UserRole!): User!
   }
@@ -122,90 +112,120 @@ export const typeDefs = `#graphql
 
 export const resolvers = {
   Query: {
-    me: async (_: unknown, __: unknown, { user }: Context) => {
+    me: async (_: unknown, __: unknown, { user, db }: Context) => {
       if (!user) throw new AuthenticationError('Not authenticated')
-      
-      const dbUser = await User.findOne({ address: user.address })
+
+      const dbUser = await db
+        .collection('users')
+        .findOne({ address: user.address })
       if (!dbUser) throw new UserInputError('User not found')
-      
+
       return dbUser
     },
-    
-    user: async (_: unknown, { id }: { id: string }) => {
-      const user = await User.findById(id)
+
+    user: async (_: unknown, { id }: { id: string }, { db }: Context) => {
+      const user = await db
+        .collection('users')
+        .findOne({ _id: new ObjectId(id) })
       if (!user) throw new UserInputError('User not found')
       return user
     },
-    
-    users: async (_: unknown, { offset = 0, limit = 10, role }: UsersQueryInput) => {
+
+    users: async (
+      _: unknown,
+      { offset = 0, limit = 10, role }: UsersQueryInput,
+      { db }: Context
+    ) => {
       const query = role ? { role } : {}
-      return await User.find(query)
+      return await db
+        .collection('users')
+        .find(query)
         .sort({ joinedAt: -1 })
         .skip(offset)
         .limit(limit)
+        .toArray()
     },
   },
 
   Mutation: {
     updateUser: async (
-      _: unknown, 
-      { input }: { input: Partial<typeof User> }, 
-      { user }: Context
+      _: unknown,
+      { input }: { input: UpdateUserInput },
+      { user, db }: Context
     ) => {
       if (!user) throw new AuthenticationError('Not authenticated')
 
-      const updatedUser = await User.findOneAndUpdate(
+      const updatedUser = await db.collection('users').findOneAndUpdate(
         { address: user.address },
-        { 
+        {
           $set: {
             ...input,
-            updatedAt: new Date()
-          }
+            updatedAt: new Date(),
+          },
         },
-        { new: true }
+        { returnDocument: 'after' }
       )
-
       if (!updatedUser) throw new UserInputError('User not found')
-      return updatedUser
+      if (!updatedUser.value) throw new UserInputError('User not found')
+      return updatedUser.value
     },
-    updateUserSettings: async (_: unknown, { settings }: { settings: UpdateSettingsInput }, { user }: Context) => {
+
+    updateUserSettings: async (
+      _: unknown,
+      { settings }: { settings: UpdateSettingsInput },
+      { user, db }: Context
+    ) => {
       if (!user) throw new AuthenticationError('Not authenticated')
-      
-      const updatedUser = await User.findOneAndUpdate(
-        { address: user.address },
-        { $set: { settings } },
-        { new: true, runValidators: true }
-      )
-      
+
+      const updatedUser = await db
+        .collection('users')
+        .findOneAndUpdate(
+          { address: user.address },
+          { $set: { settings } },
+          { returnDocument: 'after' }
+        )
       if (!updatedUser) throw new UserInputError('User not found')
-      return updatedUser
+      if (!updatedUser.value) throw new UserInputError('User not found')
+      return updatedUser.value
     },
 
-    updateUserRole: async (_: unknown, { userId, role }: UpdateRoleInput, { user }: Context) => {
+    updateUserRole: async (
+      _: unknown,
+      { userId, role }: UpdateRoleInput,
+      { user, db }: Context
+    ) => {
       if (!user?.role || user.role !== 'admin') {
         throw new AuthenticationError('Not authorized')
       }
 
-      // Prevent admin from changing their own role
-      if (userId === user.id) {
+      if (userId === user._id) {
         throw new UserInputError('Cannot change your own role')
       }
 
-      const updatedUser = await User.findByIdAndUpdate(
-        userId,
-        { $set: { role } },
-        { new: true, runValidators: true }
-      )
-
+      const updatedUser = await db
+        .collection('users')
+        .findOneAndUpdate(
+          { _id: new ObjectId(userId) },
+          { $set: { role } },
+          { returnDocument: 'after' }
+        )
       if (!updatedUser) throw new UserInputError('User not found')
-      return updatedUser
+      if (!updatedUser.value) throw new UserInputError('User not found')
+      return updatedUser.value
     },
   },
 
   User: {
-    investments: async (parent: UserDocument) => {
-      return await Investment.find({ userId: parent._id })
+    investments: async (
+      parent: { _id: string },
+      _: unknown,
+      { db }: Context
+    ) => {
+      return await db
+        .collection('investments')
+        .find({ userId: parent._id })
         .sort({ purchaseDate: -1 })
+        .toArray()
     },
   },
 }

@@ -13,6 +13,7 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,md,js,jsx,json}\""
   },
   "dependencies": {
+    "@apollo/client": "^3.11.10",
     "@apollo/server": "^4.11.2",
     "@as-integrations/next": "^3.2.0",
     "@coral-xyz/anchor": "^0.30.1",
@@ -56,6 +57,7 @@
     "date-fns": "^3.6.0",
     "framer-motion-3d": "^11.11.17",
     "graphql": "^16.9.0",
+    "graphql-request": "^7.1.2",
     "graphql-subscriptions": "^3.0.0",
     "graphql-tag": "^2.12.6",
     "graphql-ws": "^5.16.0",

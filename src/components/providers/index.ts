@@ -7,6 +7,8 @@ import {
   WalletButton,
 } from './SolanaProvider'
 
+import ApolloWrapper, { client } from './ApolloProvider'
+
 export {
   WalletButton,
   useAnchorProvider,
@@ -15,4 +17,6 @@ export {
   SolanaProvider,
   ErrorBoundary,
   SuspenseBoundary,
+  ApolloWrapper,
+  client,
 }

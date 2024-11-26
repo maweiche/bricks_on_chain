@@ -1,7 +1,13 @@
 // src/lib/apollo/schema/scalars.ts
 
 import gql from 'graphql-tag'
-import { GraphQLScalarType, Kind, ValueNode, ObjectValueNode, ListValueNode } from 'graphql'
+import {
+  GraphQLScalarType,
+  Kind,
+  ValueNode,
+  ObjectValueNode,
+  ListValueNode,
+} from 'graphql'
 
 export const scalarTypeDefs = gql`
   scalar Date
@@ -51,7 +57,7 @@ export const scalarResolvers = {
       return null
     },
   }),
-  
+
   JSON: new GraphQLScalarType({
     name: 'JSON',
     description: 'JSON custom scalar type',
@@ -61,6 +67,6 @@ export const scalarResolvers = {
     parseValue(value: any) {
       return value
     },
-    parseLiteral: parseJSONLiteral
+    parseLiteral: parseJSONLiteral,
   }),
 }

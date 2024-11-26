@@ -23,13 +23,13 @@ export class RpcManager {
         lastUsed: 0,
         isHealthy: true,
       },
-      {
-        url: 'https://devnet.helius-rpc.com/?api-key=b7faf1b9-5b70-4085-bf8e-a7be3e3b78c2',
-        weight: 2,
-        currentCalls: 0,
-        lastUsed: 0,
-        isHealthy: true,
-      },
+      // {
+      //   url: 'https://devnet.helius-rpc.com/?api-key=b7faf1b9-5b70-4085-bf8e-a7be3e3b78c2',
+      //   weight: 2,
+      //   currentCalls: 0,
+      //   lastUsed: 0,
+      //   isHealthy: true,
+      // },
       {
         url: 'https://soft-cold-energy.solana-devnet.quiknode.pro/ad0dda04b536ff45a76465f9ceee5eea6a048a8f',
         weight: 3,

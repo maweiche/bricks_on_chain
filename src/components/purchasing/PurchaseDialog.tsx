@@ -23,7 +23,7 @@ interface PurchaseDialogProps {
   isOpen: boolean
   onClose: () => void
   property: {
-    id: string
+    _id: string
     title: string
     price: number
     fundingGoal: number
@@ -72,7 +72,7 @@ export function PurchaseDialog({
       }
 
       const purchaseData = {
-        propertyId: property.id,
+        propertyId: property._id,
         propertyTitle: property.title,
         fractionCount: fractionCount,
         pricePerFraction: FRACTION_PRICE,
@@ -82,7 +82,7 @@ export function PurchaseDialog({
 
       console.log('Sending purchase data:', purchaseData) // For debugging
 
-      const response = await fetch(`/api/properties/${property.id}/purchase`, {
+      const response = await fetch(`/api/properties/${property._id}/purchase`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(purchaseData),
@@ -97,7 +97,7 @@ export function PurchaseDialog({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['property', property.id],
+        queryKey: ['property', property._id],
       })
       queryClient.invalidateQueries({
         queryKey: ['user-investments'],
@@ -152,8 +152,15 @@ export function PurchaseDialog({
       return
     }
 
+    console.log('Adding to cart:', {
+      propertyId: property._id,
+      propertyTitle: property.title,
+      fractionCount,
+      pricePerFraction: FRACTION_PRICE,
+    }) // For debugging
+
     addToCart({
-      propertyId: property.id,
+      propertyId: property._id,
       propertyTitle: property.title,
       fractionCount,
       pricePerFraction: FRACTION_PRICE,
@@ -201,7 +208,7 @@ export function PurchaseDialog({
                       )
                     )
                   }
-                  className="text-lg"
+                  className="bg-white/40 text-lg"
                 />
                 <p className="text-sm text-muted-foreground">
                   Maximum available: {maxFractions} fractions

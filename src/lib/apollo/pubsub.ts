@@ -1,29 +1,26 @@
-import { DELETE } from '@/app/api/properties/[id]/route'
 import { PubSub } from 'graphql-subscriptions'
-import type { Document } from 'mongoose'
 import { IProperty, IInvestment, IProposal } from './types'
-
 
 // Define event payload types
 export interface PubSubEvents {
   // Property events
-  'PROPERTY_UPDATED': { property: IProperty }
-  'PROPERTY_CREATED': { property: IProperty }
-  'PROPERTY_DELETED': { propertyId: string }
-  
+  PROPERTY_UPDATED: { property: IProperty }
+  PROPERTY_CREATED: { property: IProperty }
+  PROPERTY_DELETED: { propertyId: string }
+
   // Investment events
-  'INVESTMENT_CREATED': { investment: IInvestment }
-  'INVESTMENT_UPDATED': { investment: IInvestment }
+  INVESTMENT_CREATED: { investment: IInvestment }
+  INVESTMENT_UPDATED: { investment: IInvestment }
 
   // Proposal events
-  'PROPOSAL_CREATED': { proposal: IProposal }
-  'PROPOSAL_UPDATED': { proposal: IProposal }
-  'PROPOSAL_DELETED': { proposalId: string }
-  'PROPOSAL_VOTE': { proposal: IProposal }
+  PROPOSAL_CREATED: { proposal: IProposal }
+  PROPOSAL_UPDATED: { proposal: IProposal }
+  PROPOSAL_DELETED: { proposalId: string }
+  PROPOSAL_VOTE: { proposal: IProposal }
 
   // Settings events
-  'SETTINGS_UPDATED': { settings: any }
-  
+  SETTINGS_UPDATED: { settings: any }
+
   // Property-specific events
   [key: `PROPERTY_UPDATED_${string}`]: { property: IProperty }
   [key: `INVESTMENT_CREATED_${string}`]: { investment: IInvestment }
@@ -46,9 +43,8 @@ export const EVENTS = {
   PROPOSAL: {
     CREATED: 'PROPOSAL_CREATED',
     VOTE: (id: string) => `PROPOSAL_VOTE_${id}`,
-    UPDATED: (id: string) => `PROPOSAL_UPDATED_${id}`
+    UPDATED: (id: string) => `PROPOSAL_UPDATED_${id}`,
   },
-
 } as const
 
 // Create PubSub instance with proper typing for asyncIterator
@@ -61,6 +57,8 @@ const pubsub = new PubSub() as PubSub & {
 export { pubsub }
 
 // Type guard for checking if a string is a valid event
-export function isValidEvent(event: string | number): event is keyof PubSubEvents {
+export function isValidEvent(
+  event: string | number
+): event is keyof PubSubEvents {
   return event in pubsub
 }

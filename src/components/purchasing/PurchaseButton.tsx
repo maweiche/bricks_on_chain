@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation } from '@apollo/client'
+import { PURCHASE_PROPERTY } from '@/lib/apollo/graphql'
 import { Loader2 } from 'lucide-react'
-
-import { useStore } from '@/lib/store'
+import { useAuth } from '@/hooks/use-auth'
 import { useToast } from '@/hooks/use-toast'
 import { Button } from '@/components/ui/button'
 import {
@@ -16,7 +16,7 @@ import { Input } from '@/components/ui/input'
 
 interface PurchaseButtonProps {
   property: {
-    id: any
+    _id: string
     title: string
     price: number
     fundingGoal: number
@@ -29,50 +29,59 @@ export function PurchaseButton({ property }: PurchaseButtonProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [fractionCount, setFractionCount] = useState(1)
   const { toast } = useToast()
-  const user = useStore((state) => state.user)
+  const { user } = useAuth()
   const FRACTION_PRICE = 100 // Price per fraction in USD
 
-  const purchaseMutation = useMutation({
-    mutationFn: async () => {
-      if (!user?.address) {
-        throw new Error('No wallet connected')
-      }
-
-      const response = await fetch(`/api/properties/${property.id}/purchase`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          propertyId: property.id,
-          propertyTitle: property.title,
-          fractionCount,
-          pricePerFraction: FRACTION_PRICE,
-          totalAmount: fractionCount * FRACTION_PRICE,
-          wallet: user.address,
-        }),
-      })
-
-      if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.error || 'Purchase failed')
-      }
-
-      return response.json()
-    },
-    onSuccess: (data) => {
+  const [purchaseProperty, { loading }] = useMutation(PURCHASE_PROPERTY, {
+    onCompleted: () => {
       toast({
         title: 'Purchase Successful!',
-        description: `Transaction ID: ${data.transactionId}`,
+        description: `Successfully purchased ${fractionCount} fraction(s) of ${property.title}`,
       })
       setIsOpen(false)
     },
-    onError: (error: Error) => {
+    onError: (error) => {
       toast({
         title: 'Purchase Failed',
         description: error.message,
         variant: 'destructive',
       })
     },
+    // Optionally update the Apollo cache
+    update: (cache, { data }) => {
+      cache.modify({
+        id: cache.identify(property),
+        fields: {
+          currentFunding: () => data.purchaseProperty.currentFunding,
+          funded: () => data.purchaseProperty.funded,
+        },
+      })
+    },
   })
+
+  const handlePurchase = async () => {
+    if (!user) {
+      toast({
+        title: 'Authentication Required',
+        description: 'Please connect your wallet to purchase',
+        variant: 'destructive',
+      })
+      return
+    }
+
+    const totalAmount = fractionCount * FRACTION_PRICE
+
+    await purchaseProperty({
+      variables: {
+        input: {
+          propertyId: property._id,
+          fractionCount,
+          pricePerFraction: FRACTION_PRICE,
+          totalAmount,
+        },
+      },
+    })
+  }
 
   return (
     <>
@@ -106,7 +115,7 @@ export function PurchaseButton({ property }: PurchaseButtonProps) {
                 )}
                 value={fractionCount}
                 onChange={(e) => setFractionCount(Number(e.target.value))}
-                className="mt-1"
+                className="mt-1 bg-white/40"
               />
             </div>
 
@@ -121,11 +130,8 @@ export function PurchaseButton({ property }: PurchaseButtonProps) {
               <Button variant="outline" onClick={() => setIsOpen(false)}>
                 Cancel
               </Button>
-              <Button
-                onClick={() => purchaseMutation.mutate()}
-                disabled={purchaseMutation.isPending}
-              >
-                {purchaseMutation.isPending ? (
+              <Button onClick={handlePurchase} disabled={loading}>
+                {loading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Processing...

@@ -1,8 +1,5 @@
-// src/lib/apollo/auth.ts
-
-import { User } from '@/lib/models'
 import type { NextApiRequest } from 'next'
-import type { Document } from 'mongoose'
+import { connectToDatabase } from '../mongodb'
 
 interface AuthUser {
   id: string
@@ -32,34 +29,26 @@ export async function getUser(req: NextApiRequest): Promise<AuthUser | null> {
     if (!address || Array.isArray(address)) return null
 
     // Find or create user
-    let user = await User.findOne({ address })
-    
+    const db = (await connectToDatabase()).db
+    const user = await db.collection('users').findOne({ address })
+
+    let newUserId
+
     if (!user) {
-      user = await User.create({
+      const newUser = await db.collection('users').insertOne({
         address: address.toLowerCase(),
         role: 'user',
         joinedAt: new Date(),
-        settings: {
-          theme: 'system',
-          notifications: {
-            email: true,
-            push: true,
-            investmentUpdates: true,
-            marketingUpdates: false,
-          },
-          display: {
-            compactView: false,
-            showProfitLoss: true,
-            currency: 'USD',
-          },
-        },
+        settings: DEFAULT_USER_SETTINGS,
       })
+
+      newUserId = newUser.insertedId
     }
 
     return {
-      id: user._id.toString(),
-      address: user.address,
-      role: user.role,
+      id: newUserId?.toString() || user!._id.toString(),
+      address: address,
+      role: 'user',
     }
   } catch (error) {
     console.error('Auth error:', error)
