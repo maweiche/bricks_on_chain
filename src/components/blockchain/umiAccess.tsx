@@ -26,10 +26,10 @@ export const fetchAssets = async (owner: string): Promise<AssetV1[]> => {
       console.log('assetsByOwner', assetsByOwner);
   
       const filteredAccounts = assetsByOwner.filter((asset) => {
-        if (asset.oracles && asset.oracles[0] && asset.oracles[0].baseAddress === "7ruvHP3zbhszp2MaE9Z3DbzDZ5vbczxWN4KXEBWmg8tG") {
+        if (asset.oracles && asset.oracles[0] && asset.oracles[0].baseAddress === "3x6mnnQgVpY6k48DXyECpQprS6LEUS4wCDmVeJgGEYAV") {
           console.log('asset match ->', asset);
           console.log('oracle base ->', asset.oracles[0].baseAddress);
-          console.log("7ruvHP3zbhszp2MaE9Z3DbzDZ5vbczxWN4KXEBWmg8tG" === asset.oracles[0].baseAddress);
+          console.log("3x6mnnQgVpY6k48DXyECpQprS6LEUS4wCDmVeJgGEYAV" === asset.oracles[0].baseAddress);
           return true;
         }
         return false;
@@ -44,10 +44,9 @@ export const fetchAssets = async (owner: string): Promise<AssetV1[]> => {
   };
 
 export const fetchProducts = async (productList: any[]): Promise<{ 
-    availableWatches: CollectionV1[], 
-    availableDiamonds: CollectionV1[], 
-    comingSoonWatches: CollectionV1[], 
-    comingSoonDiamonds: CollectionV1[] } | 
+    availableApartments: CollectionV1[],
+    comingSoonApartments: CollectionV1[]
+  } | 
     undefined
 > => {
     const formatDateToDddMmm = (timestamp: number) => {
@@ -92,16 +91,12 @@ export const fetchProducts = async (productList: any[]): Promise<{
         console.log('detailedAvailableProducts', detailedAvailableProducts[0].objectType)
 
         // filter the products by type
-        const availableWatches = detailedAvailableProducts.filter(product => product.objectType.watch);
-        const availableDiamonds = detailedAvailableProducts.filter(product => product.objectType.diamonds);
-        const comingSoonWatches = detailedComingSoonProducts.filter(product => product.objectType.watch);
-        const comingSoonDiamonds = detailedComingSoonProducts.filter(product => product.objectType.diamond);
+        const availableApartments = detailedAvailableProducts.filter(product => product.objectType.apartment);
+        const comingSoonApartments = detailedComingSoonProducts.filter(product => product.objectType.apartment);
 
         const products = {
-            availableWatches: availableWatches as CollectionV1[],
-            availableDiamonds: availableDiamonds as CollectionV1[],
-            comingSoonWatches: comingSoonWatches as CollectionV1[],
-            comingSoonDiamonds: comingSoonDiamonds as CollectionV1[], 
+            availableApartments: availableApartments as CollectionV1[],
+            comingSoonApartments: comingSoonApartments as CollectionV1[],
         };
         console.log('products', products)
         return products 

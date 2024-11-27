@@ -205,6 +205,15 @@ const ROISimulationChart = ({ expectedROI = 12 }) => {
                 stroke="#2D3142"
                 strokeWidth={2}
                 dot={false}
+                className='dark:hidden'
+              />
+              <Line
+                type="monotone"
+                dataKey="value"
+                stroke="white"
+                strokeWidth={2}
+                dot={false}
+                className='hidden dark:block'
               />
             </LineChart>
           </ResponsiveContainer>

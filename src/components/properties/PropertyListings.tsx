@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useQuery } from '@apollo/client'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
@@ -16,6 +16,10 @@ import {
 } from '@/components/ui/select'
 import { Slider } from '@/components/ui/slider'
 import PropertyCard from './PropertyCard'
+import { useBricksProgram } from '../blockchain/protocolAccess'
+import { fetchCollectionV1 } from '@metaplex-foundation/mpl-core'
+import { createUmi } from '@metaplex-foundation/umi-bundle-defaults'
+import { publicKey } from '@metaplex-foundation/umi';
 
 // Constants
 const ITEMS_PER_PAGE = 10
@@ -41,6 +45,7 @@ interface PropertyFilters {
 }
 
 export default function PropertyListings() {
+  const { listings } = useBricksProgram();
   const [currentPage, setCurrentPage] = useState(1)
   const [filters, setFilters] = useState<PropertyFilters>({
     type: 'all',
@@ -49,6 +54,11 @@ export default function PropertyListings() {
     maxPrice: 5000000,
     fundingStatus: 'all',
   })
+  
+  const umi = useMemo(() => 
+    createUmi('https://soft-cold-energy.solana-devnet.quiknode.pro/ad0dda04b536ff45a76465f9ceee5eea6a048a8f'),
+    []
+  );
 
   const getGraphQLFilters = () => {
     const graphqlFilters: any = {}
@@ -63,7 +73,6 @@ export default function PropertyListings() {
 
     return Object.keys(graphqlFilters).length > 0 ? graphqlFilters : undefined
   }
-
   console.log('PropertyListings component rendering')
 
   const { data, loading } = useQuery(GET_PROPERTIES, {
@@ -102,6 +111,38 @@ export default function PropertyListings() {
       console.log('data from useQuery:', data)
     }
   }, [loading, data])
+
+  // Solana Program UseEffect
+  useEffect(() => {
+    const fetchProductDetails = async () => {
+      if (!listings.data) return;
+      
+      try {
+        const productPromises = listings.data.map(async (listing: any) => {
+          const productDetails = await fetchCollectionV1(
+            umi, 
+            publicKey(listing.account.object.toString())
+          );
+          
+          return {
+            ...listing,
+            details: productDetails,
+            type: listing.account.objectType
+          };
+        });
+
+        const productsWithDetails = await Promise.all(productPromises);
+        console.log('Products with details:', productsWithDetails);
+        // setProducts(productsWithDetails);
+        // setLoading(false);
+      } catch (error) {
+        console.error('Error fetching product details:', error);
+        // setLoading(false);
+      }
+    };
+
+    fetchProductDetails();
+  }, [listings.data, umi]);
 
   return (
     <div className="container mx-auto py-20">
