@@ -42,7 +42,7 @@ export function CTASection() {
 
       {/* Slanted Overlay Top */}
       <div
-        className="absolute -top-[55px] left-0 right-0 hidden h-[50px] bg-background md:block"
+        className="absolute -top-[55px] left-0 right-0 hidden h-[50px] lg:h-[60px] lg:-top-[60px] bg-background md:block"
         style={{
           transform: 'skewY(2deg)',
           transformOrigin: 'bottom left',
