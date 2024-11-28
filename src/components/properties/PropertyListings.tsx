@@ -20,6 +20,8 @@ import { useBricksProgram } from '../blockchain/protocolAccess'
 import { fetchCollectionV1 } from '@metaplex-foundation/mpl-core'
 import { createUmi } from '@metaplex-foundation/umi-bundle-defaults'
 import { publicKey } from '@metaplex-foundation/umi';
+import { set } from 'nprogress'
+import ProgramPropertyCard from '../blockchain/components/ProgramPropertyCard'
 
 // Constants
 const ITEMS_PER_PAGE = 10
@@ -47,6 +49,7 @@ interface PropertyFilters {
 export default function PropertyListings() {
   const { listings } = useBricksProgram();
   const [currentPage, setCurrentPage] = useState(1)
+  const [blockchainProducts, setBlockchainProducts] = useState<any[]>([]);
   const [filters, setFilters] = useState<PropertyFilters>({
     type: 'all',
     location: 'all',
@@ -133,6 +136,7 @@ export default function PropertyListings() {
 
         const productsWithDetails = await Promise.all(productPromises);
         console.log('Products with details:', productsWithDetails);
+        setBlockchainProducts(productsWithDetails);
         // setProducts(productsWithDetails);
         // setLoading(false);
       } catch (error) {
@@ -246,6 +250,13 @@ export default function PropertyListings() {
         animate="show"
         className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
       >
+        {!loading && blockchainProducts.length > 0 && blockchainProducts.map((property: any, index: number) => (
+          <ProgramPropertyCard
+            key={property.id}
+            property={property}
+            index={index}
+          />
+        ))}
         {loading ? (
           // Loading skeleton
           [...Array(6)].map((_, index) => (
